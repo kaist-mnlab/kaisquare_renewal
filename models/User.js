@@ -9,8 +9,9 @@ var userSchema = new mongoose.Schema(
 		username: String,
 		created: {type:Date, default:Date.now},
 		provider: String,
-		role_bitMask: Number,
-		role_title: String
+		role: {bitMask:Number, title:String} 
+		//role_bitMask: Number,
+		//role_title: String
 	}
 );
 

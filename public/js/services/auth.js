@@ -15,9 +15,12 @@ app
 
     return {
         authorize: function(accessLevel, role) {
+
             if(role === undefined) {
                 role = currentUser.role;
             }
+            console.log(currentUser);
+            console.log(role);
 
             return accessLevel.bitMask & role.bitMask;
         },

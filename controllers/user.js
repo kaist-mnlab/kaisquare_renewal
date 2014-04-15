@@ -1,5 +1,5 @@
 var _ =           require('underscore')
-    , User =      require('../models/User.js')
+    , User =      require('../routes/authentication.js')
     , userRoles = require('../models/accessCfg').userRoles;
 
 module.exports = {

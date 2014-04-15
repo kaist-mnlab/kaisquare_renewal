@@ -4,20 +4,22 @@ html(lang='en')
         meta(charset='utf-8')
         meta(name='viewport', content='width=device-width, initial-scale=1, user-scalable=no')
         title KAISquare
-        link(rel='stylesheet' href='//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css')
+        link(rel='stylesheet' href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
         link(rel='stylesheet' href='/css/poll.css')
-
-        link(data-ng-repeat="stylesheet in stylesheets" data-ng-href="{{stylesheet}}" type="text/css" rel="stylesheet")
+        link(rel='stylesheet', href='/css/auth.css')
+        
+        //link(data-ng-repeat="stylesheet in stylesheets" data-ng-href="{{stylesheet}}" type="text/css" rel="stylesheet")
 
         script(type="text/javascript").
             if (window.location.href.indexOf('#_=_') > 0) {
                  window.location = window.location.href.replace(/#.*/, '');
             }				
-        script(data-main='js/main' src='/lib/require/require.js')
+            
+        
 
-    body()
+    body(data-ng-cloak)
         .navbar(data-ng-controller="NavCtrl")
-            navbar-header
+            .navbar-header
                 a.navbar-brand(href='/polls') KAISquare
             .navbar-inner
                 .container-fluid
@@ -47,7 +49,10 @@ html(lang='en')
             button(type="button", class="close", data-ng-click="error = null;") &times;
             strong Oh no!&nbsp;
             span(data-ng-bind="error")
+          
 
+        script(data-main='/js/main' src='/lib/require/require.js')
+                script(src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js')  
         // Partial views... Load up front to make transitions smoother
         script(type="text/ng-template", id="404")
             include partials/404

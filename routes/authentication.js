@@ -71,8 +71,9 @@ module.exports = {
 	                username: profile.displayName, 
 	                provider: profile.provider,
 	                created: Date.now(),
-	                role_bitMask: userRoles.user.bitMask,
-	                role_title: userRoles.user.title
+	                role: userRoles.user
+	                //role_bitMask: userRoles.user.bitMask,
+	                //role_title: userRoles.user.title
 	            });
 	            
 	            users.push(user);
@@ -226,8 +227,6 @@ module.exports = {
         else        { done(null, false); }
         */
         User.findById(id, function(err, user){
-       	 console.log("user get");
-	     console.log(user);
 	     if(!err) done(null, user);
 	     else done(err, null);
  })

@@ -312,15 +312,12 @@ function ensureAuthorized(req, res, next) {
     var role = {};
     if(!req.user) role = userRoles.public;
     else {
-              role = {
-              	bitMask: req.user.role_bitMask,
-              	title: req.user.role_title
-              }
+              role = req.user.role;
     }
     
 
     var accessLevel = _.findWhere(routes, { path: req.route.path }).accessLevel || accessLevels.public;
-	console.log(req.user);
+	console.log(role);
     if(!(accessLevel.bitMask & role.bitMask)) return res.send(403);
     return next();
 }
