@@ -1,0 +1,75 @@
+doctype html
+html(lang='en')
+    head
+        meta(charset='utf-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1, user-scalable=no')
+        title KAISquare
+        link(rel='stylesheet' href='//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css')
+        link(rel='stylesheet' href='/css/poll.css')
+
+        link(data-ng-repeat="stylesheet in stylesheets" data-ng-href="{{stylesheet}}" type="text/css" rel="stylesheet")
+
+        script(type="text/javascript").
+            if (window.location.href.indexOf('#_=_') > 0) {
+                 window.location = window.location.href.replace(/#.*/, '');
+            }				
+        script(data-main='js/main' src='/lib/require/require.js')
+
+    body()
+        .navbar(data-ng-controller="NavCtrl")
+            navbar-header
+                a.navbar-brand(href='/polls') KAISquare
+            .navbar-inner
+                .container-fluid
+                    ul.nav.nav-tabs
+                        li(data-access-level='accessLevels.anon', active-nav)
+                            a(href='/login') Log in
+                        li(data-access-level='accessLevels.anon', active-nav)
+                            a(href='/register') Register
+                        li(data-access-level='accessLevels.user', active-nav)
+                            a(href='/') Home
+                        li(data-access-level='accessLevels.user', active-nav='nestedTop')
+                            a(href='/private') Private
+                        li(data-access-level='accessLevels.admin', active-nav)
+                            a(href='/admin') Admin
+                        li(data-access-level='accessLevels.anon', active-nav)
+                            a(href='/polls') Polls
+                        li(data-access-level='accessLevels.user')
+                            a(href="", data-ng-click="logout()")
+                                | Log out
+                        div#userInfo.pull-right(data-access-level='accessLevels.user')
+                            | Welcome&nbsp;
+                            strong {{ user.username }}&nbsp;
+                            span.label(data-ng-class='{"label-info": user.role.title == userRoles.user.title, "label-success": user.role.title == userRoles.admin.title}') {{ user.role.title }}
+
+        .container(data-ui-view)
+        #alertBox.alert.alert-danger(data-ng-show="error")
+            button(type="button", class="close", data-ng-click="error = null;") &times;
+            strong Oh no!&nbsp;
+            span(data-ng-bind="error")
+
+        // Partial views... Load up front to make transitions smoother
+        script(type="text/ng-template", id="404")
+            include partials/404
+        script(type="text/ng-template", id="admin")
+            include partials/admin
+        script(type="text/ng-template", id="home")
+            include partials/home
+        script(type="text/ng-template", id="login")
+            include partials/login
+        script(type="text/ng-template", id="private/layout")
+            include partials/private/layout
+        script(type="text/ng-template", id="private/home")
+            include partials/private/home
+        script(type="text/ng-template", id="private/nested")
+            include partials/private/nested
+        script(type="text/ng-template", id="private/nestedAdmin")
+            include partials/private/nestedAdmin
+        script(type="text/ng-template", id="register")
+            include partials/register
+        script(type="text/ng-template", id="list")
+            include partials/list.html
+        script(type="text/ng-template", id="new")
+            include partials/new.html
+        script(type="text/ng-template", id="item")
+            include partials/item.html

@@ -1,0 +1,38 @@
+{
+  "name": "kaisquare_renewal",
+  "version": "0.1.0",
+  "description": "Kaisquare Gae2",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
+  },
+  "dependencies": {
+    "express": "3.4.3",
+    "socket.io": "~0.9.16",
+    "jade": "*",
+    "mongoose": ">= 3.8.0",
+    "passport": "~0.2.0",
+    "passport-twitter": "~1.0.2",
+    "passport-facebook": "~1.0.3",
+    "passport-google": "~0.3.0",
+    "redis": "~0.10.1",
+    "connect": "~2.14.4",
+    "connect-redis": "~2.0.0",
+    "socket.io-client": "~0.9.16",
+    "express-session": "~1.0.2",
+    "underscore": "~1.6.0",
+    "validator": "~3.8.0",
+    "passport-local": "~1.0.0",
+    "path": "~0.4.9"
+  },
+  "repository": "",
+  "keywords": [
+    "Node.js",
+    "Eclipse",
+    "Nodeclipse"
+  ],
+  "author": "Ancom",
+  "license": "BSD",
+  "readmeFilename": "README.md"
+}
