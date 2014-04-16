@@ -1,26 +1,58 @@
 'use strict';
-//define(['app', 'accessCfg'], function(app, accessCfg) {
-angular.module('authentication')
+define(['angular', 'accessCfg'], function(angular, accessCfg) {
+angular.module('security.service', ['security.login', 'ui.bootstrap.dialog'])
 //app
-.factory('Auth', function($http, $cookieStore){
+//.factory('Auth', function($http, $cookieStore){
+.factory('security', ['$http', '$dialog', '$cookieStore', function($http, $dialog, $cookieStore) {
 
     var accessLevels = accessCfg.accessLevels
         , userRoles = accessCfg.userRoles
         , currentUser = $cookieStore.get('user') || { username: '', role: userRoles.public };
 
     $cookieStore.remove('user');
+    
+ // Login form dialog stuff
+    var loginDialog = null;
+    function openLoginDialog() {
+      if ( loginDialog ) {
+        throw new Error('Trying to open a dialog that is already open!');
+      }
+      loginDialog = $dialog.dialog();
+      //TODO partial view change
+      loginDialog.open('security/login/form.tpl.html', 'LoginFormController').then(onLoginDialogClose);
+    }
+    function closeLoginDialog(success) {
+      if (loginDialog) {
+        loginDialog.close(success);
+      }
+    }
+    function onLoginDialogClose(success) {
+      loginDialog = null;
+      if ( success ) {
+        //queue.retryAll();
+      } else {
+        //queue.cancelAll();
+        //redirect();
+      }
+    }
 
     function changeUser(user) {
         angular.extend(currentUser, user);
     }
 
-    return {
+    var service = {
+    	showLogin: function() {
+    		openLoginDialog();
+    	},
+        cancelLogin: function() {
+            closeLoginDialog(false);
+            redirect();
+        },
         authorize: function(accessLevel, role) {
 
             if(role === undefined) {
                 role = currentUser.role;
             }
-
             return accessLevel.bitMask & role.bitMask;
         },
         isLoggedIn: function(user) {
@@ -42,7 +74,7 @@ angular.module('authentication')
             }).error(error);
         },
         logout: function(success, error) {
-        	console.log("logout");
+
             $http.post('/logout').success(function(){
                 changeUser({
                     username: '',
@@ -53,11 +85,14 @@ angular.module('authentication')
         },
         accessLevels: accessLevels,
         userRoles: userRoles,
-        user: currentUser
+        user: currentUser,
+        //isAuthenticated, isAdmin --> deal with userRoles
     };
+    
+    return service;
 });
 
-angular.module('authentication')
+angular.module('security.service')
 //app
 .factory('Users', function($http) {
     return {
@@ -67,4 +102,4 @@ angular.module('authentication')
     };
 });
 
-//});
+});

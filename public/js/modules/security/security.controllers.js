@@ -1,8 +1,8 @@
 'use strict';
 
 /* Controllers */
-//define(['app', 'accessCfg'], function(app, accessCfg) {
-angular.module('authentication')
+define(['angular'], function(angular) {
+angular.module('security.controller', [])
 //app
 .controller('NavCtrl', ['$rootScope', '$scope', '$location', 'Auth', function($rootScope, $scope, $location, Auth) {
     $scope.user = Auth.user;
@@ -18,32 +18,34 @@ angular.module('authentication')
     };
 }]);
 
-angular.module('authentication')
-//app
+angular.module('security.controller')
 .controller('LoginCtrl',
-['$rootScope', '$scope', '$location', '$window', 'Auth', function($rootScope, $scope, $location, $window, Auth) {
+		['$rootScope', '$scope', '$location', '$window', 'security', function($rootScope, $scope, $location, $window, Auth) {
 
-    $scope.rememberme = true;
-    $scope.login = function() {
-        Auth.login({
-                username: $scope.username,
-                password: $scope.password,
-                rememberme: $scope.rememberme
-            },
-            function(res) {
-                $location.path('/');
-            },
-            function(err) {
-                $rootScope.error = "Failed to login";
-            });
-    };
+		    $scope.rememberme = true;
+		    $scope.login = function() {
+		        Auth.login({
+		                username: $scope.username,
+		                password: $scope.password,
+		                rememberme: $scope.rememberme
+		            },
+		            function(res) {
+		                $location.path('/');
+		            },
+		            function(err) {
+		                $rootScope.error = "Failed to login";
+		            });
+		    };
+		    $scope.cancelLogin = function() {
+		        security.cancelLogin();
+		      };
+		    $scope.loginOauth = function(provider) {
+		        $window.location.href = '/auth/' + provider;
+		    };
+		}]);
 
-    $scope.loginOauth = function(provider) {
-        $window.location.href = '/auth/' + provider;
-    };
-}]);
 
-angular.module('authentication')
+angular.module('security.controller')
 //app
 .controller('RegisterCtrl',
 ['$rootScope', '$scope', '$location', 'Auth', function($rootScope, $scope, $location, Auth) {
@@ -65,7 +67,7 @@ angular.module('authentication')
     };
 }]);
 
-angular.module('authentication')
+angular.module('security.controller')
 //app
 .controller('AdminCtrl',
 ['$rootScope', '$scope', 'Users', 'Auth', function($rootScope, $scope, Users, Auth) {
@@ -82,4 +84,4 @@ angular.module('authentication')
 
 }]);
 
-//});
+});
