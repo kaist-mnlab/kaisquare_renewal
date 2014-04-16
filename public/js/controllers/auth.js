@@ -1,9 +1,9 @@
 'use strict';
 
 /* Controllers */
-define(['app', 'accessCfg'], function(app, accessCfg) {
-//angular.module('kaisquare')
-app
+//define(['app', 'accessCfg'], function(app, accessCfg) {
+angular.module('authentication')
+//app
 .controller('NavCtrl', ['$rootScope', '$scope', '$location', 'Auth', function($rootScope, $scope, $location, Auth) {
     $scope.user = Auth.user;
     $scope.userRoles = Auth.userRoles;
@@ -18,8 +18,8 @@ app
     };
 }]);
 
-//angular.module('kaisquare')
-app
+angular.module('authentication')
+//app
 .controller('LoginCtrl',
 ['$rootScope', '$scope', '$location', '$window', 'Auth', function($rootScope, $scope, $location, $window, Auth) {
 
@@ -43,8 +43,8 @@ app
     };
 }]);
 
-//angular.module('kaisquare')
-app
+angular.module('authentication')
+//app
 .controller('RegisterCtrl',
 ['$rootScope', '$scope', '$location', 'Auth', function($rootScope, $scope, $location, Auth) {
     $scope.role = Auth.userRoles.user;
@@ -65,8 +65,8 @@ app
     };
 }]);
 
-//angular.module('kaisquare')
-app
+angular.module('authentication')
+//app
 .controller('AdminCtrl',
 ['$rootScope', '$scope', 'Users', 'Auth', function($rootScope, $scope, Users, Auth) {
     $scope.loading = true;
@@ -82,4 +82,4 @@ app
 
 }]);
 
-});
+//});
