@@ -14,9 +14,9 @@ requirejs.config({
 		'angular-cookies':'../lib/angular/angular-cookies',
 		'angular-ui-router':'../lib/angular/angular-ui-router.min',
 		'library': '../lib',
-		'poll': 'modules/poll/poll',
-		'security': 'modules/security/security',
-		'domReady': '../lib/require/domReady'
+		'poll': 'modules/poll,
+		'security': 'modules/security',
+		'domReady': '../lib/require'
 
 	},
 
@@ -55,10 +55,10 @@ requirejs.config({
 		},
 
 		'poll':{
-			deps:['angular']
+			deps:['angular', 'poll/poll.controller', 'poll/poll.service']
 		},
 		'security':{
-			deps:['angular']
+			deps:['angular', 'security/security.controllers', 'security/security.directives', 'security/security.service']
 		}
 	}
 });
@@ -80,7 +80,9 @@ requirejs( [
 
 		//'routes',
 		'security',
+		'security/security.controllers', 'security/security.directives', 'security/security.service',
 		'poll',
+		'poll/poll.controller', 'poll/poll.service',
 	
 	],
 
