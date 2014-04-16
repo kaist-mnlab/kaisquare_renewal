@@ -1,6 +1,7 @@
 'use strict';
-define(['app', 'accessCfg'], function(app, accessCfg) {
-app
+//define(['app', 'accessCfg'], function(app, accessCfg) {
+angular.module('authentication')
+//app
 .factory('Auth', function($http, $cookieStore){
 
     var accessLevels = accessCfg.accessLevels
@@ -19,8 +20,6 @@ app
             if(role === undefined) {
                 role = currentUser.role;
             }
-            console.log(currentUser);
-            console.log(role);
 
             return accessLevel.bitMask & role.bitMask;
         },
@@ -58,8 +57,8 @@ app
     };
 });
 
-//angular.module('kaisquare')
-app
+angular.module('authentication')
+//app
 .factory('Users', function($http) {
     return {
         getAll: function(success, error) {
@@ -68,4 +67,4 @@ app
     };
 });
 
-});
+//});

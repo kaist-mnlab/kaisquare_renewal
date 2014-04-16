@@ -1,16 +1,18 @@
 'use strict';
 
 /* Controllers */
-define(['app'], function(app) {
+//define(['app'], function(app) {
 
-app
+angular.module('poll').
+//app
 .controller('PollListCtrl',
 ['$rootScope', '$scope', 'Poll', function($rootScope, $scope, Poll) {
 	$scope.polls = Poll.query();
 }]);
 
 
-app
+//app
+angular.module('poll').
 .controller('PollItemCtrl',
 ['$scope', '$stateParams', 'socket', 'Poll', function($scope, $stateParams, socket, Poll) {
 
@@ -45,7 +47,8 @@ app
 	};
 }]);
 
-app
+//app
+angular.module('poll').
 .controller('PollNewCtrl',
 ['$scope', '$location','Poll', function($scope, $location, Poll) {
 // Define an empty poll model object
@@ -189,4 +192,4 @@ function PollNewCtrl($scope, $location, Poll) {
 	};
 }
 */
-});
+//});

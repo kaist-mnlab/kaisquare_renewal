@@ -1,6 +1,6 @@
 'use strict';
-define(['app'], function(app) {
-//angular.module('kaisquare')
+//define(['app'], function(app) {
+angular.module('authentication')
 app
 .directive('accessLevel', ['Auth', function(Auth) {
     return {
@@ -67,4 +67,4 @@ app.directive('activeNav', ['$location', function($location) {
     }
 
 }]);
-});
+//});
