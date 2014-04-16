@@ -5,16 +5,28 @@ var lecutreSchema = require('./Lecture').LectureSchema;
 var assignmentSchema = new mongoose.Schema(
 	{
 		description: {type:String, required: true},
-		deadLine: Date(),
-		//File?
-		submitMaterial: [{user: userSchema, material:File}]
+		deadLine: Date,
+		
+		materialURL: String,
+		submitMaterial: [{user: userSchema, materialURL:String}]
+	}
+);
+
+var noticeSchema = new mongoose.Schema(
+	{
+	
+		description: {type:String, required: true},
+		date: Date,
+		
+		materialURL: String,
+		
 	}
 );
 
 // Document schema for polls
 exports.CourseSchema = new mongoose.Schema({
 	title: String,
-	
+	code: String,
 	startTime: {type:Date, default: Date.now, required: true},
 	endTime: {type:Date, default: Date.now },
 	abstract: { type: String, required: true },

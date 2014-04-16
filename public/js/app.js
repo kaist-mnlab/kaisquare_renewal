@@ -34,6 +34,21 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
             templateUrl: 'item',
             controller: 'PollItemCtrl'
         })
+        .state('public.courses', {
+            url: '/courses/',
+            templateUrl: 'course_list',
+            controller: 'CourseListCtrl'
+        })
+        .state('public.course_new', {
+            url: '/course_new/',
+            templateUrl: 'course_new',
+            controller: 'CourseNewCtrl'
+        })
+        .state('public.course', {
+            url: '/course/:courseId',
+            templateUrl: 'course_item',
+            controller: 'CourseItemCtrl'
+        })
         ;
 
     // Anonymous routes

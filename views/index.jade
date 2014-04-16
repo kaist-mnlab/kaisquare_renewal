@@ -5,6 +5,7 @@ html(lang='en')
         meta(name='viewport', content='width=device-width, initial-scale=1, user-scalable=no')
         title KAISquare
         link(rel='stylesheet' href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
+        link(rel='stylesheet' href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css')
         link(rel='stylesheet' href='/css/poll.css')
         link(rel='stylesheet', href='/css/auth.css')
         
@@ -34,7 +35,7 @@ html(lang='en')
                             a(href='/private') Private
                         li(data-access-level='accessLevels.admin', active-nav)
                             a(href='/admin') Admin
-                        li(data-access-level='accessLevels.anon', active-nav)
+                        li(data-access-level='accessLevels.public', active-nav)
                             a(href='/polls') Polls
                         li(data-access-level='accessLevels.user')
                             a(href="", data-ng-click="logout()")

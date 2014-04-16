@@ -9,10 +9,10 @@ exports.LectureSchema = new mongoose.Schema({
 	index: Number,
 	startTime: {type:Date, default: Date.now, required: true},
 	endTime: {type:Date, default: Date.now },
-	
+	title: { type: String, required: true },
 	description: { type: String, required: true },
 	//File?
-	material:[{file: File}],
+	materialURL:[{url: String}],
 	
 	//
 	status: Number,
