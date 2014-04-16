@@ -14,7 +14,7 @@ requirejs.config({
 		'angular-cookies':'../lib/angular/angular-cookies',
 		'angular-ui-router':'../lib/angular/angular-ui-router.min',
 		'library': '../lib',
-		'poll': 'modules/poll,
+		'poll': 'modules/poll',
 		'security': 'modules/security',
 		'domReady': '../lib/require'
 
