@@ -4,13 +4,13 @@
 define(['angular'], function(angular) {
 angular.module('security.controller', [])
 //app
-.controller('NavCtrl', ['$rootScope', '$scope', '$location', 'Auth', function($rootScope, $scope, $location, Auth) {
-    $scope.user = Auth.user;
-    $scope.userRoles = Auth.userRoles;
-    $scope.accessLevels = Auth.accessLevels;
+.controller('NavCtrl', ['$rootScope', '$scope', '$location', 'security', function($rootScope, $scope, $location, security) {
+    $scope.user = security.user;
+    $scope.userRoles = security.userRoles;
+    $scope.accessLevels = security.accessLevels;
     
     $scope.logout = function() {
-        Auth.logout(function(res) {
+        security.logout(function(res) {
             $location.path('/login');
         }, function(err) {
             $rootScope.error = "Failed to logout";
@@ -20,11 +20,11 @@ angular.module('security.controller', [])
 
 angular.module('security.controller')
 .controller('LoginCtrl',
-		['$rootScope', '$scope', '$location', '$window', 'security', function($rootScope, $scope, $location, $window, Auth) {
+		['$rootScope', '$scope', '$location', '$window', 'security', function($rootScope, $scope, $location, $window, security) {
 
 		    $scope.rememberme = true;
 		    $scope.login = function() {
-		        Auth.login({
+		        security.login({
 		                username: $scope.username,
 		                password: $scope.password,
 		                rememberme: $scope.rememberme
@@ -48,12 +48,12 @@ angular.module('security.controller')
 angular.module('security.controller')
 //app
 .controller('RegisterCtrl',
-['$rootScope', '$scope', '$location', 'Auth', function($rootScope, $scope, $location, Auth) {
-    $scope.role = Auth.userRoles.user;
-    $scope.userRoles = Auth.userRoles;
+['$rootScope', '$scope', '$location', 'security', function($rootScope, $scope, $location, security) {
+    $scope.role = security.userRoles.user;
+    $scope.userRoles = security.userRoles;
 
     $scope.register = function() {
-        Auth.register({
+        security.register({
                 username: $scope.username,
                 password: $scope.password,
                 role: $scope.role
@@ -70,9 +70,9 @@ angular.module('security.controller')
 angular.module('security.controller')
 //app
 .controller('AdminCtrl',
-['$rootScope', '$scope', 'Users', 'Auth', function($rootScope, $scope, Users, Auth) {
+['$rootScope', '$scope', 'Users', 'security', function($rootScope, $scope, Users, security) {
     $scope.loading = true;
-    $scope.userRoles = Auth.userRoles;
+    $scope.userRoles = security.userRoles;
 
     Users.getAll(function(res) {
         $scope.users = res;

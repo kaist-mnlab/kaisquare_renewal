@@ -168,10 +168,10 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
 
 }])
 
-.run(['$rootScope', '$state', 'Auth', function ($rootScope, $state, Auth) {
+.run(['$rootScope', '$state', 'security', function ($rootScope, $state, Auth) {
 
     $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
-        console.log(toState.data.access);
+        
         if (!Auth.authorize(toState.data.access)) {
             $rootScope.error = "Seems like you tried accessing a route you don't have access to...";
             event.preventDefault();

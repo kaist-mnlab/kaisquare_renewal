@@ -1,9 +1,10 @@
 'use strict';
+
 define(['angular', 'accessCfg'], function(angular, accessCfg) {
-angular.module('security.service', ['security.login', 'ui.bootstrap.dialog'])
-//app
-//.factory('Auth', function($http, $cookieStore){
-.factory('security', ['$http', '$dialog', '$cookieStore', function($http, $dialog, $cookieStore) {
+//'ui.bootstrap.dialog'
+angular.module('security.service', [])
+//.factory('security', ['$http', '$dialog', '$cookieStore', function($http, $dialog, $cookieStore) {
+.factory('security', ['$http', '$cookieStore', function($http, $cookieStore) {
 
     var accessLevels = accessCfg.accessLevels
         , userRoles = accessCfg.userRoles
@@ -17,9 +18,9 @@ angular.module('security.service', ['security.login', 'ui.bootstrap.dialog'])
       if ( loginDialog ) {
         throw new Error('Trying to open a dialog that is already open!');
       }
-      loginDialog = $dialog.dialog();
+      //loginDialog = $dialog.dialog();
       //TODO partial view change
-      loginDialog.open('security/login/form.tpl.html', 'LoginFormController').then(onLoginDialogClose);
+      //loginDialog.open('security/login/form.tpl.html', 'LoginFormController').then(onLoginDialogClose);
     }
     
     function closeLoginDialog(success) {
@@ -93,7 +94,7 @@ angular.module('security.service', ['security.login', 'ui.bootstrap.dialog'])
     };
     
     return service;
-});
+}]);
 
 angular.module('security.service')
 //app

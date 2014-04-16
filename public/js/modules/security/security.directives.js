@@ -3,7 +3,7 @@ define(['angular'], function(angular) {
 	
 angular.module('security.directives', [])
 //app
-.directive('accessLevel', ['security', function(Auth) {
+.directive('accessLevel', ['security', function(security) {
     return {
         restrict: 'A',
         link: function($scope, element, attrs) {
@@ -11,7 +11,7 @@ angular.module('security.directives', [])
                 , userRole
                 , accessLevel;
 
-            $scope.user = Auth.user;
+            $scope.user = security.user;
             $scope.$watch('user', function(user) {
                 if(user.role)
                     userRole = user.role;
@@ -25,7 +25,7 @@ angular.module('security.directives', [])
 
             function updateCSS() {
                 if(userRole && accessLevel) {
-                    if(!Auth.authorize(accessLevel, userRole))
+                    if(!security.authorize(accessLevel, userRole))
                         element.css('display', 'none');
                     else
                         element.css('display', prevDisp);

@@ -16,7 +16,7 @@ requirejs.config({
 		'library': '../lib',
 		'poll': 'modules/poll',
 		'security': 'modules/security',
-		'domReady': '../lib/require'
+		'domReady': '../lib/require/domReady'
 
 	},
 
@@ -45,7 +45,7 @@ requirejs.config({
 			exports:'accessCfg'
 		},
 		'app':{
-			deps:['angular', 'accessCfg', 'security', 'poll']
+			deps:['angular', 'accessCfg', 'security/index', 'poll/index']
 		},
 		'auth':{
 			deps:['angular']
@@ -54,10 +54,10 @@ requirejs.config({
 			deps:['angular']
 		},
 
-		'poll':{
+		'poll/index':{
 			deps:['angular', 'poll/poll.controller', 'poll/poll.service']
 		},
-		'security':{
+		'security/index':{
 			deps:['angular', 'security/security.controllers', 'security/security.directives', 'security/security.service']
 		}
 	}
@@ -79,9 +79,9 @@ requirejs( [
 		'accessCfg',
 
 		//'routes',
-		'security',
+		'security/index',
 		'security/security.controllers', 'security/security.directives', 'security/security.service',
-		'poll',
+		'poll/index',
 		'poll/poll.controller', 'poll/poll.service',
 	
 	],
