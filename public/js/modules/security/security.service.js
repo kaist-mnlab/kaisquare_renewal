@@ -21,6 +21,7 @@ angular.module('security.service', ['security.login', 'ui.bootstrap.dialog'])
       //TODO partial view change
       loginDialog.open('security/login/form.tpl.html', 'LoginFormController').then(onLoginDialogClose);
     }
+    
     function closeLoginDialog(success) {
       if (loginDialog) {
         loginDialog.close(success);
@@ -30,9 +31,11 @@ angular.module('security.service', ['security.login', 'ui.bootstrap.dialog'])
       loginDialog = null;
       if ( success ) {
         //queue.retryAll();
+    	  ;
       } else {
         //queue.cancelAll();
         //redirect();
+    	  ;
       }
     }
 
