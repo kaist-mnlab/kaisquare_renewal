@@ -1,8 +1,9 @@
 'use strict';
-//define(['app'], function(app) {
-angular.module('authentication')
-app
-.directive('accessLevel', ['Auth', function(Auth) {
+define(['angular'], function(angular) {
+	
+angular.module('security.directives', [])
+//app
+.directive('accessLevel', ['security', function(Auth) {
     return {
         restrict: 'A',
         link: function($scope, element, attrs) {
@@ -34,8 +35,9 @@ app
     };
 }]);
 
-//angular.module('kaisquare')
-app.directive('activeNav', ['$location', function($location) {
+angular.module('security.directives')
+//app
+.directive('activeNav', ['$location', function($location) {
     return {
         restrict: 'A',
         link: function(scope, element, attrs) {
@@ -67,4 +69,4 @@ app.directive('activeNav', ['$location', function($location) {
     }
 
 }]);
-//});
+});

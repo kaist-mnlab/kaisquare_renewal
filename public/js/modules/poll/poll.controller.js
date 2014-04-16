@@ -1,9 +1,8 @@
 'use strict';
 
 /* Controllers */
-//define(['app'], function(app) {
-
-angular.module('poll').
+define(['angular'], function(angular) {
+angular.module('poll.controller', []).
 //app
 .controller('PollListCtrl',
 ['$rootScope', '$scope', 'Poll', function($rootScope, $scope, Poll) {
@@ -12,7 +11,7 @@ angular.module('poll').
 
 
 //app
-angular.module('poll').
+angular.module('poll.controller').
 .controller('PollItemCtrl',
 ['$scope', '$stateParams', 'socket', 'Poll', function($scope, $stateParams, socket, Poll) {
 
@@ -48,7 +47,7 @@ angular.module('poll').
 }]);
 
 //app
-angular.module('poll').
+angular.module('poll.controller').
 .controller('PollNewCtrl',
 ['$scope', '$location','Poll', function($scope, $location, Poll) {
 // Define an empty poll model object
@@ -192,4 +191,4 @@ function PollNewCtrl($scope, $location, Poll) {
 	};
 }
 */
-//});
+});

@@ -1,6 +1,6 @@
-//define(['app'], function(app) {
+define(['angular'], function(angular) {
 // Angular service module for connecting to JSON APIs
-angular.module('poll', ['ngResource']).
+angular.module('poll.service', ['ngResource']).
 //app
 	.factory('Poll', function($resource) {
 
@@ -33,4 +33,4 @@ angular.module('poll', ['ngResource']).
 		};
 	});
 	
-//});
+});

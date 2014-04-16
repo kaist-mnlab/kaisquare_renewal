@@ -14,11 +14,8 @@ requirejs.config({
 		'angular-cookies':'../lib/angular/angular-cookies',
 		'angular-ui-router':'../lib/angular/angular-ui-router.min',
 		'library': '../lib',
-		'service-poll': 'services/poll',
-		'controller-poll': 'controllers/poll',
-		'service-auth': 'services/auth',
-		'controller-auth': 'controllers/auth',
-		'directives-auth': 'directives/auth',
+		'poll': 'modules/poll/poll',
+		'security': 'modules/security/security',
 		'domReady': '../lib/require/domReady'
 
 	},
@@ -48,7 +45,7 @@ requirejs.config({
 			exports:'accessCfg'
 		},
 		'app':{
-			deps:['angular', 'accessCfg']
+			deps:['angular', 'accessCfg', 'security', 'poll']
 		},
 		'auth':{
 			deps:['angular']
@@ -57,20 +54,11 @@ requirejs.config({
 			deps:['angular']
 		},
 
-		'service_poll':{
-			deps:['angular', 'app']
+		'poll':{
+			deps:['angular']
 		},
-		'controller_poll':{
-			deps:['angular', 'app']
-		},
-		'service_auth':{
-			deps:['angular', 'app', 'accessCfg']
-		},
-		'controller_auth':{
-			deps:['angular', 'app', 'accessCfg']
-		},
-		'directive_auth':{
-			deps:['angular', 'app', 'accessCfg']
+		'security':{
+			deps:['angular']
 		}
 	}
 });
@@ -91,11 +79,9 @@ requirejs( [
 		'accessCfg',
 
 		//'routes',
-		'service-poll',
-		'controller-poll',
-		'service-auth',
-		'controller-auth',
-		'directives-auth'
+		'security',
+		'poll',
+	
 	],
 
 	//디펜던시 로드뒤 콜백함수
