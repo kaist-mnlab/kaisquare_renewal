@@ -21,32 +21,32 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
         })
         .state('public.polls', {
             url: '/polls/',
-            templateUrl: 'list',
+            templateUrl: 'poll/list',
             controller: 'PollListCtrl'
         })
         .state('public.new', {
-            url: '/new/',
-            templateUrl: 'new',
+            url: '/polls/new/',
+            templateUrl: 'poll/new',
             controller: 'PollNewCtrl'
         })
         .state('public.poll', {
-            url: '/poll/:pollId',
-            templateUrl: 'item',
+            url: '/polls/poll/:pollId',
+            templateUrl: 'poll/item',
             controller: 'PollItemCtrl'
         })
         .state('public.courses', {
             url: '/courses/',
-            templateUrl: 'course_list',
+            templateUrl: 'course/index',
             controller: 'CourseListCtrl'
         })
         .state('public.course_new', {
-            url: '/course_new/',
-            templateUrl: 'course_new',
+            url: '/courses/new/',
+            templateUrl: 'course/new',
             controller: 'CourseNewCtrl'
         })
         .state('public.course', {
-            url: '/course/:courseId',
-            templateUrl: 'course_item',
+            url: '/courses/course/:courseId',
+            templateUrl: 'course/item',
             controller: 'CourseItemCtrl'
         })
         ;

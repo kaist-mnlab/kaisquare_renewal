@@ -14,9 +14,7 @@ html(lang='en')
         script(type="text/javascript").
             if (window.location.href.indexOf('#_=_') > 0) {
                  window.location = window.location.href.replace(/#.*/, '');
-            }				
-            
-        
+            }				        
 
     body(data-ng-cloak)
         .navbar(data-ng-controller="NavCtrl")
@@ -37,6 +35,8 @@ html(lang='en')
                             a(href='/admin') Admin
                         li(data-access-level='accessLevels.public', active-nav)
                             a(href='/polls') Polls
+                        li(data-access-level='accessLevels.public', active-nav)
+                            a(href='/courses') Courses
                         li(data-access-level='accessLevels.user')
                             a(href="", data-ng-click="logout()")
                                 | Log out
@@ -79,3 +79,5 @@ html(lang='en')
             include partials/new.html
         script(type="text/ng-template", id="item")
             include partials/item.html
+        script(type="text/ng-template", id="course/index")
+            include partials/course_index
