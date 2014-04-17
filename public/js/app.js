@@ -1,6 +1,7 @@
 'use strict';
 define(['angular', 'accessCfg'], function(angular, accessCfg) {
-	var app = angular.module('kaisquare', ['ngCookies', 'ui.router', 'ngResource', 'poll', 'security'])
+	//var app = angular.module('kaisquare', ['ngCookies', 'ui.router', 'ngResource', 'poll', 'security'])
+	var app = angular.module('kaisquare', ['ngCookies', 'ui.router', 'ngResource', 'poll'])
 
     .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider', function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
 
@@ -168,10 +169,12 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
 
 }])
 
-.run(['$rootScope', '$state', 'security', function ($rootScope, $state, Auth) {
+//.run(['$rootScope', '$state', 'security', function ($rootScope, $state, Auth) {
+.run(['$rootScope', '$state', function ($rootScope, $state) {
 
     $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
         
+    	/*
         if (!Auth.authorize(toState.data.access)) {
             $rootScope.error = "Seems like you tried accessing a route you don't have access to...";
             event.preventDefault();
@@ -185,6 +188,7 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
                 }
             }
         }
+        */
     });
 
 }]);

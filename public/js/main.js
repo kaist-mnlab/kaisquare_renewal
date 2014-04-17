@@ -79,8 +79,9 @@ requirejs( [
 		'accessCfg',
 
 		//'routes',
-		'security/index',
-		'security/security.controllers', 'security/security.directives', 'security/security.service',
+		
+		//'security/index',
+		//'security/security.controllers', 'security/security.directives', 'security/security.service',
 		'poll/index',
 		'poll/poll.controller', 'poll/poll.service',
 	

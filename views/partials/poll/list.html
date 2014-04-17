@@ -3,7 +3,7 @@
 </div>
 <div class="row">
 	<div class="col-xs-5">
-		<a href="/new" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> New Poll</a>
+		<a href="/polls/new" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> New Poll</a>
 	</div>
 	<div class="col-xs-7">
 		<input type="text" class="form-control" ng-model="query" placeholder="Search for a poll">
@@ -18,7 +18,7 @@
 	</ul>
 	<ul ng-switch-default>
 		<li ng-repeat="poll in polls | filter:query">
-			<a href="/poll/{{poll._id}}">{{poll.question}}</a>
+			<a href="/polls/poll/{{poll._id}}">{{poll.question}}</a>
 		</li>
 	</ul>
 </div>

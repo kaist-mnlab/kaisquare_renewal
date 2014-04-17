@@ -1,17 +1,37 @@
 ul.breadcrumb
     li
-       a(href='/') Home
-       span.divider /
+        a(href='/courses') Courses
+        span.divider /
     li.active
-       != linkTo('/courses', path_to.posts())
+        a(href='#') Hehu
+ //      != linkTo('/courses', path_to.posts())
 
 .page-header
-  h1 Index of posts
-
+  h1 Courses
 
 .row
-  .span12
-     p
+    .col-xs-5
+        a.btn.btn-default(href='/courses/new') span.glyphicon.glyphicon-plus() New Poll
+    .col-xs-7
+        input.form-control(type='text', data-ng-model="query", placeholder="Search for a course")
+
+.row
+    .col-xs-12
+        hr
+
+.row(data-ng-switch, on="courses.length")
+    ul(data-ng-switch-when="0")
+        li
+            em
+                No Polls in databases. Would you like to craete one?
+    ul(data-ng-switch-default)
+        li(ng-repeat="course in courses | filter:course_query")
+            a(href="/courses/course/{{course._id}}"){{course.title}}
+
+
+//.row
+//  .span12
+//     p
 //        != linkTo('<i class="icon-plus icon-white"></i> New post', path_to.new_post(), {class: 'btn btn-primary'})
 
 //- if (posts.length) {

@@ -22,8 +22,8 @@ if (process.env.VCAP_SERVICES) {
 }
 exports.db = db;
 	
-
-var Auth = require('./routes/authentication.js');
+//Auth Routing
+//var Auth = require('./routes/authentication.js');
 
 
 var	secret = exports.secret = 'kaistmnlab';
@@ -67,12 +67,15 @@ app.configure(function() {
 	    store: sessionStore
   	}));
 
+	/*
     app.use(express.csrf());
     app.use(function(req, res, next) {
         res.cookie('XSRF-TOKEN', req.csrfToken());
         next();
     });
-
+*/
+    //passport 
+    /*
 	app.use(passport.initialize());
 	app.use(passport.session());
 	
@@ -84,6 +87,8 @@ app.configure(function() {
 	
 	passport.serializeUser(Auth.serializeUser);
 	passport.deserializeUser(Auth.deserializeUser);
+	*/
+	
 	
 	app.use(express.static(path.join(__dirname, 'public')));
 	app.use(app.router);
