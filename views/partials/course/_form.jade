@@ -1,0 +1,13 @@
+!= errorMessagesFor(post) 
+.control-group
+  != form.label("title", false, {class: "control-label"})
+  .controls
+    != form.input("title")
+.control-group
+  != form.label("content", false, {class: "control-label"})
+  .controls
+    != form.input("content")
+.control-group
+  != form.label("published", false, {class: "control-label"})
+  .controls
+    != form.checkbox("published")

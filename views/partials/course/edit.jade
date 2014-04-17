@@ -1,0 +1,22 @@
+ul.breadcrumb
+      li
+        a(href='/') Home
+        span.divider /
+      li
+        != linkTo('posts', pathTo.posts())
+        span.divider /
+      li.active
+        a(href='#') Edit post
+
+.page-header
+  h1 Edit post
+
+- var form = formFor(post, {action: pathTo.post(post), method: 'PUT', id: "post_form", class: 'form-horizontal'});
+
+!= form.begin()
+include _form
+.form-actions
+  != form.submit('<i class="icon-ok icon-white"></i> Update post', {class: 'btn btn-primary'})
+  span= ' or '
+  != linkTo('Cancel', pathTo.post(post), {class: 'btn'})
+!= form.end()

@@ -1,0 +1,34 @@
+ul.breadcrumb
+    li
+       a(href='/') Home
+       span.divider /
+    li
+       != link_to('posts', pathTo.posts)
+       span.divider /
+    li.active
+       a(href='#') Details of post
+
+.page-header
+  h1 Details of post
+
+div(about=path_to.post(post))
+  table.table.table-bordered
+    tbody
+      tr
+        td title
+        td
+          != post.title
+        tr
+        td content
+        td
+          != post.content
+        tr
+        td published
+        td
+          != post.published
+
+.well
+  != linkTo('<i class="icon-edit icon-white"></i> Edit', pathTo.edit_post(post), {class: 'btn btn-primary'}) + ' '
+  != linkTo('<i class="icon-remove icon-white"></i> Delete', pathTo.post(post), {class: 'btn btn-danger', method: 'delete', remote: true, jsonp: '(function (u) { location.href = u; })'})
+  span= ' or '
+  != linkTo('Back to index', pathTo.posts)

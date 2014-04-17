@@ -1,0 +1,39 @@
+ul.breadcrumb
+    li
+       a(href='/') Home
+       span.divider /
+    li.active
+       != linkTo('posts', path_to.posts())
+
+.page-header
+  h1 Index of posts
+
+
+.row
+  .span12
+     p
+        != linkTo('<i class="icon-plus icon-white"></i> New post', path_to.new_post(), {class: 'btn btn-primary'})
+
+- if (posts.length) {
+.row
+  .span12
+     table.table.table-striped
+       thead
+         tr
+           th ID
+           th.span3 Actions
+       tbody
+         - posts.forEach(function (post) {
+         tr
+           td
+             != linkTo('post #' + post.id, path_to.post(post))
+           td
+             != linkTo('<i class="icon-edit"></i> Edit', pathTo.edit_post(post), {class: 'btn btn-mini'}) + ' '
+             != linkTo('<i class="icon-remove icon-white"></i> Delete', pathTo.post(post), {class: 'btn btn-mini btn-danger', method: 'delete', remote: true, jsonp: '(function (u) {location.href = u;})'})
+         - });
+- } else{
+.row
+  .span12
+     p.alert.alert-block.alert-info
+        strong No posts were found.
+- }
