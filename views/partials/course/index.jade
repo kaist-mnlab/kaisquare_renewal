@@ -1,17 +1,16 @@
 ul.breadcrumb
-    li
+    li.active
         a(href='/courses') Courses
         span.divider /
-    li.active
-        a(href='#') Hehu
- //      != linkTo('/courses', path_to.posts())
-
+        
 .page-header
   h1 Courses
 
-.row
+.row(data-ng-controller='NavCtrl')
     .col-xs-5
-        a.btn.btn-default(href='/courses/new') span.glyphicon.glyphicon-plus() New Poll
+        a.btn.btn-default(href='/courses/new', act-nav, data-access-level='accessLevels.user')
+           span.glyphicon.glyphicon-plus() New Course
+             
     .col-xs-7
         input.form-control(type='text', data-ng-model="query", placeholder="Search for a course")
 
@@ -23,37 +22,7 @@ ul.breadcrumb
     ul(data-ng-switch-when="0")
         li
             em
-                No Polls in databases. Would you like to craete one?
+                No course in databases. Would you like to create one?
     ul(data-ng-switch-default)
-        li(ng-repeat="course in courses | filter:course_query")
-            a(href="/courses/course/{{course._id}}"){{course.title}}
-
-
-//.row
-//  .span12
-//     p
-//        != linkTo('<i class="icon-plus icon-white"></i> New post', path_to.new_post(), {class: 'btn btn-primary'})
-
-//- if (posts.length) {
-//.row
-//  .span12
-//     table.table.table-striped
-//       thead
-//         tr
-//           th ID
-//           th.span3 Actions
-//       tbody
-//         - posts.forEach(function (post) {
-//         tr
-//           td
-//             != linkTo('post #' + post.id, path_to.post(post))
-//           td
-//             != linkTo('<i class="icon-edit"></i> Edit', pathTo.edit_post(post), {class: 'btn btn-mini'}) + ' '
-//             != linkTo('<i class="icon-remove icon-white"></i> Delete', pathTo.post(post), {class: 'btn btn-mini btn-danger', method: 'delete', remote: true, jsonp: '(function (u) {location.href = u;})'})
-//         - });
-//- } else{
-//.row
-//  .span12
-//     p.alert.alert-block.alert-info
-//        strong No posts were found.
-//- }
+        li(ng-repeat="course in courses | filter:query")
+            a(href="/courses/course/{{course._id}}") {{course.title}}

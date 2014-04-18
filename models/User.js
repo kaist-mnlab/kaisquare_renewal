@@ -10,8 +10,6 @@ var userSchema = new mongoose.Schema(
 		created: {type:Date, default:Date.now},
 		provider: String,
 		role: {bitMask:Number, title:String} 
-		//role_bitMask: Number,
-		//role_title: String
 	}
 );
 

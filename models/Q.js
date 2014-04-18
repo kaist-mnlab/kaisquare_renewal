@@ -3,7 +3,7 @@ var userSchema = require('./User').userSchema;
 
 exports.QSchema = new mongoose.Schema(
 {
-	user: userSchema,
+	user: {type: mongoose.Schema.Types.ObjectId, ref:'user'},
 	date: Date,
 	time: Number,
 	msg: String

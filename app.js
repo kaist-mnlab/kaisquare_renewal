@@ -23,8 +23,8 @@ if (process.env.VCAP_SERVICES) {
 exports.db = db;
 	
 //Auth Routing
-//var Auth = require('./routes/authentication.js');
-
+var Auth = require('./routes/authentication.js'),
+	pollCtrl = require('./controllers/pollCtrl.js');
 
 var	secret = exports.secret = 'kaistmnlab';
 
@@ -67,15 +67,14 @@ app.configure(function() {
 	    store: sessionStore
   	}));
 
-	/*
+	
     app.use(express.csrf());
     app.use(function(req, res, next) {
         res.cookie('XSRF-TOKEN', req.csrfToken());
         next();
     });
-*/
+
     //passport 
-    /*
 	app.use(passport.initialize());
 	app.use(passport.session());
 	
@@ -87,7 +86,7 @@ app.configure(function() {
 	
 	passport.serializeUser(Auth.serializeUser);
 	passport.deserializeUser(Auth.deserializeUser);
-	*/
+	
 	
 	
 	app.use(express.static(path.join(__dirname, 'public')));
@@ -120,4 +119,4 @@ server = exports.server = http.createServer(app).listen(app.get('port'), functio
 });
 
 var sio = io.listen(server);
-sio.sockets.on('connection', routes.vote);
+sio.sockets.on('connection', pollCtrl.vote);

@@ -17,8 +17,7 @@ html(lang='en')
             }				        
 
     body(data-ng-cloak)
-          .navbar()
-    //    .navbar(data-ng-controller="NavCtrl")
+          .navbar(data-ng-controller="NavCtrl")
             .navbar-header
                 a.navbar-brand(href='/polls') KAISquare
             .navbar-inner
@@ -80,5 +79,13 @@ html(lang='en')
             include partials/poll/new.html
         script(type="text/ng-template", id="poll/item")
             include partials/poll/item.html
+        script(type="text/ng-template", id="course/layout")
+            include partials/course/layout
         script(type="text/ng-template", id="course/index")
             include partials/course/index
+        script(type="text/ng-template", id="course/new")
+            include partials/course/new
+        script(type="text/ng-template", id="course/show")
+            include partials/course/show
+        script(type="text/ng-template", id="course/edit")
+            include partials/course/edit    

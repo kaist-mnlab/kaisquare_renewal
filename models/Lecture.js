@@ -17,9 +17,9 @@ exports.LectureSchema = new mongoose.Schema({
 	//
 	status: Number,
 	
-	qs: [qSchema],
-	chats: [chatSchema],
-	quizs: [quizSchema],
+	qs: [{type: mongoose.Schema.Types.ObjectId, ref:'q'}],
+	chats: [{type: mongoose.Schema.Types.ObjectId, ref:'chat'}],
+	quizs: [{type: mongoose.Schema.Types.ObjectId, ref:'quiz'}],
 	
 	hidden: Boolean,
 	meta: {

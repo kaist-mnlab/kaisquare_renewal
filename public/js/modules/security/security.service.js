@@ -2,13 +2,13 @@
 
 define(['angular', 'accessCfg'], function(angular, accessCfg) {
 //'ui.bootstrap.dialog'
-angular.module('security.service', [])
+angular.module('security.service', ['ngResource'])
 //.factory('security', ['$http', '$dialog', '$cookieStore', function($http, $dialog, $cookieStore) {
 .factory('security', ['$http', '$cookieStore', function($http, $cookieStore) {
 
     var accessLevels = accessCfg.accessLevels
         , userRoles = accessCfg.userRoles
-        , currentUser = $cookieStore.get('user') || { username: '', role: userRoles.public };
+        , currentUser = $cookieStore.get('user') || { username: '', role: userRoles.public, _id: '' };
 
     $cookieStore.remove('user');
     
@@ -73,6 +73,7 @@ angular.module('security.service', [])
         },
         login: function(user, success, error) {
             $http.post('/login', user).success(function(user){
+            	console.log(user);
                 changeUser(user);
                 success(user);
             }).error(error);
@@ -82,7 +83,8 @@ angular.module('security.service', [])
             $http.post('/logout').success(function(){
                 changeUser({
                     username: '',
-                    role: userRoles.public
+                    role: userRoles.public,
+                    _id: ''
                 });
                 success();
             }).error(error);
@@ -98,12 +100,23 @@ angular.module('security.service', [])
 
 angular.module('security.service')
 //app
-.factory('Users', function($http) {
-    return {
-        getAll: function(success, error) {
-            $http.get('/users').success(success).error(error);
-        }
-    };
-});
+	.factory('Users', function($http) {
+	    return {
+	        getAll: function(success, error) {
+	            $http.get('/users').success(success).error(error);
+	        }
+	    };
+	});
+
+
+
+angular.module('security.service')
+//app
+	.factory('User', function($resource) {
+	    return $resource('/user/:userId', {}, {
+			// Use this method for getting a list of polls
+			query: { method: 'GET', params: { userId: 'users' }, isArray: true }
+		});
+	});
 
 });

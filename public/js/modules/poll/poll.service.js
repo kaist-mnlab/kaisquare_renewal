@@ -4,7 +4,7 @@ angular.module('poll.service', ['ngResource'])
 //app
 	.factory('Poll', function($resource) {
 
-		return $resource('/polls/:pollId', {}, {
+		return $resource('/polls/polls/:pollId', {}, {
 			// Use this method for getting a list of polls
 			query: { method: 'GET', params: { pollId: 'polls' }, isArray: true }
 		})

@@ -12,7 +12,7 @@ var choiceSchema = new mongoose.Schema({
 
 exports.QuizSchema = new mongoose.Schema(
 {
-	user: userSchema,
+	user: {type: mongoose.Schema.Types.ObjectId, ref:'user'},
 	date: Date,
 	time: Number,
 	msg: { type:String, required: true },

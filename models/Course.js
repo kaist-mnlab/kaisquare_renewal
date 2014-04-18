@@ -8,7 +8,7 @@ var assignmentSchema = new mongoose.Schema(
 		deadLine: Date,
 		
 		materialURL: String,
-		submitMaterial: [{user: userSchema, materialURL:String}]
+		submitMaterial: [{user: {type: mongoose.Schema.Types.ObjectId, ref:'user'}, materialURL:String}]
 	}
 );
 
@@ -31,8 +31,8 @@ exports.CourseSchema = new mongoose.Schema({
 	endTime: {type:Date, default: Date.now },
 	abstract: { type: String, required: true },
 	description: { type: String, required: true },
-	lectures: [lectureSchema],
-	users: [{user: userSchema,
+	lectures: [{type: mongoose.Schema.Types.ObjectId, ref:'lecture'}],
+	users: [{user: {type: mongoose.Schema.Types.ObjectId, ref:'user'},
 			role_bitMask: Number}],
 	assignments: [assignmentSchema],
 	hidden: Boolean,

@@ -1,34 +1,51 @@
 ul.breadcrumb
     li
-       a(href='/') Home
+       a(href='/') Courses
        span.divider /
     li
-       != link_to('posts', pathTo.posts)
+       a(href='/') {{course.title}}
        span.divider /
     li.active
-       a(href='#') Details of post
+       a(href='#') Details of course {{course.title}}
 
 .page-header
-  h1 Details of post
+  h1 Course {{course.title}}
 
-div(about=path_to.post(post))
+div()
   table.table.table-bordered
     tbody
       tr
         td title
         td
-          != post.title
+              {{course.title}}
         tr
-        td content
+        td abstract
         td
-          != post.content
+              {{course.abstract}}
         tr
-        td published
+        td description
         td
-          != post.published
+              {{course.description}}
+        tr
+        td Tutor
+        td(data-ng-switch, on="course.users.length")
+              ul(data-ng-switch-when="0")
+                  | There's no tutor!!!
+              ul(data-ng-switch-default)
+                  li(ng-repeat="user in course.usersData | adminFilter")
+                      {{user.user.username}} {{user.role_bitMask}}
+        tr
+        td Open
+        td
+              {{course.hidden}}
 
 .well
-  != linkTo('<i class="icon-edit icon-white"></i> Edit', pathTo.edit_post(post), {class: 'btn btn-primary'}) + ' '
-  != linkTo('<i class="icon-remove icon-white"></i> Delete', pathTo.post(post), {class: 'btn btn-danger', method: 'delete', remote: true, jsonp: '(function (u) { location.href = u; })'})
-  span= ' or '
-  != linkTo('Back to index', pathTo.posts)
+    a.btn.btn-primary(href="/courses/course/{{course._id}}/edit")
+        i.icon-edit.icon-white Edit
+    a.btn.btn-danger(type='submit', data-ng-click='deleteCourse()')
+        i.icon-remove.icon-white Delete
+//.well
+//  != linkTo('<i class="icon-edit icon-white"></i> Edit', pathTo.edit_post(post), {class: 'btn btn-primary'}) + ' '
+//  != linkTo('<i class="icon-remove icon-white"></i> Delete', pathTo.post(post), {class: 'btn btn-danger', method: 'delete', remote: true, jsonp: '(function (u) { location.href = u; })'})
+//  span= ' or '
+//  != linkTo('Back to index', pathTo.posts)

@@ -1,22 +1,37 @@
 ul.breadcrumb
     li
-       a(href='/') Home
-       span.divider /
-    li
-       != linkTo('posts', pathTo.posts())
+       a(href='/courses') Courses
        span.divider /
     li.active
-       a(href='#') New post
-
+       a(href='#') New course
 .page-header
-  h1 New post
+  h1 New course
 
-- var form = formFor(post, {action: pathTo.posts(), method: 'POST', id: "post_form", class: 'form-horizontal'})
+form(role="form", data-ng-submit="createCourse()")
+    .form-group
+        label(for="courseTitle") Title
+        input#courseTitle.form-control(type="text", data-ng-model="course.title", placeholder="Enter course title")
+    .form-group
+        label(for="courseAbstract") Abstract
+        input#courseAbstract.form-control(type="text", data-ng-model="course.abstract", placeholder="Enter course abstract")
+        .form-group
+        label(for="courseDescription") Description
+        input#courseDescription.form-control(type="text", data-ng-model="course.description", placeholder="Enter course description")
+    .form-group
+        label(for="courseTutor") Course Instructor :
+        label(for="courseTutor") {{user.username}}
+        input#courseTutor.form-control(type="hidden",  value ="{{user}}")
+        
+    .form-group
+        label(for="courseHidden") Open
+        input#courseHidden.form-control(type="checkbox", data-ng-model="course.hidden")
+ 
 
-!= form.begin()
-include _form
-.form-actions
-  != form.submit('<i class="icon-ok icon-white"></i>  Create post', {class: 'btn btn-primary'})
-  span= ' or '
-  != linkTo('Cancel', pathTo.posts(), {class: 'btn'})
-!= form.end()
+ 
+    .row
+        .col-xs-6
+            a.btn.btn-default(href="/courses", role="button")
+                span.glyphicon.glyphicon-arrow-left Back to Course List
+        .col-xs-6
+            button.btn.btn-primary.pull-right(type="submit") Create Course !
+             

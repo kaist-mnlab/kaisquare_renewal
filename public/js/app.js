@@ -1,7 +1,6 @@
 'use strict';
 define(['angular', 'accessCfg'], function(angular, accessCfg) {
-	//var app = angular.module('kaisquare', ['ngCookies', 'ui.router', 'ngResource', 'poll', 'security'])
-	var app = angular.module('kaisquare', ['ngCookies', 'ui.router', 'ngResource', 'poll'])
+	var app = angular.module('kaisquare', ['ngCookies', 'ui.router', 'ngResource', 'poll', 'security', 'course'])
 
     .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider', function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
 
@@ -26,7 +25,7 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
             controller: 'PollListCtrl'
         })
         .state('public.new', {
-            url: '/polls/new/',
+            url: '/polls/new',
             templateUrl: 'poll/new',
             controller: 'PollNewCtrl'
         })
@@ -36,18 +35,19 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
             controller: 'PollItemCtrl'
         })
         .state('public.courses', {
+        	abstract: true,
             url: '/courses/',
+            templateUrl: 'course/layout',
+            //controller: 'CourseListCtrl'
+        })
+        .state('public.courses.index', {
+            url: '',
             templateUrl: 'course/index',
             controller: 'CourseListCtrl'
         })
-        .state('public.course_new', {
-            url: '/courses/new/',
-            templateUrl: 'course/new',
-            controller: 'CourseNewCtrl'
-        })
-        .state('public.course', {
-            url: '/courses/course/:courseId',
-            templateUrl: 'course/item',
+        .state('public.courses.show', {
+            url: 'course/:courseId',
+            templateUrl: 'course/show',
             controller: 'CourseItemCtrl'
         })
         ;
@@ -105,7 +105,26 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
             data: {
                 access: access.admin
             }
-        });
+        })
+        .state('user.courses', {
+        	abstract: true,
+            url: '/courses/',
+            templateUrl: 'course/layout',
+            //controller: 'CourseListCtrl'
+        })
+        .state('public.courses.new', {
+            url: 'new/',
+            templateUrl: 'course/new',
+            controller: 'CourseNewCtrl'
+        })
+        .state('user.courses.edit', {
+            url: 'course/:courseId/edit',
+            templateUrl: 'course/edit',
+            controller: 'CourseNewCtrl'
+        })
+        
+        
+        ;
 
     // Admin routes
     $stateProvider
@@ -169,12 +188,11 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
 
 }])
 
-//.run(['$rootScope', '$state', 'security', function ($rootScope, $state, Auth) {
-.run(['$rootScope', '$state', function ($rootScope, $state) {
+.run(['$rootScope', '$state', 'security', function ($rootScope, $state, Auth) {
 
     $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
         
-    	/*
+    	
         if (!Auth.authorize(toState.data.access)) {
             $rootScope.error = "Seems like you tried accessing a route you don't have access to...";
             event.preventDefault();
@@ -188,7 +206,7 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
                 }
             }
         }
-        */
+        
     });
 
 }]);

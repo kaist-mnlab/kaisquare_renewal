@@ -10,8 +10,7 @@ var _ =               require('underscore')
     , User =			require('../models/User');
 
 var pkginfo 
-	= {};
-	//= require('../oauth.cfg');
+	= require('../oauth.cfg');
 
 var users = [
     {
@@ -30,6 +29,7 @@ var users = [
 
 module.exports = {
 	addUser: function(username, password, role, callback) {
+		console.log(username);
         if(this.findByUsername(username) !== undefined)  return callback("UserAlreadyExists");
 
         // Clean up when 500 users reached
@@ -127,15 +127,17 @@ module.exports = {
     },
 
     validate: function(user) {
-        check(user.username, 'Username must be 1-20 characters long').len(1, 20);
-        check(user.password, 'Password must be 5-60 characters long').len(5, 60);
-        check(user.username, 'Invalid username').not(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/);
-
+    
+		//Check is dead!!!
+        //check(user.username, 'Username must be 1-20 characters long').len(1, 20);
+        //check(user.password, 'Password must be 5-60 characters long').len(5, 60);
+        //check(user.username, 'Invalid username').not(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/);
+    
         // TODO: Seems node-validator's isIn function doesn't handle Number arrays very well...
         // Till this is rectified Number arrays must be converted to string arrays
         // https://github.com/chriso/node-validator/issues/185
         var stringArr = _.map(_.values(userRoles), function(val) { return val.toString() });
-        check(user.role, 'Invalid user role given').isIn(stringArr);
+        //check(user.role, 'Invalid user role given').isIn(stringArr);
     },
 
     localStrategy: new LocalStrategy(

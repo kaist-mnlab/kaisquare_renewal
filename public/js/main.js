@@ -16,6 +16,7 @@ requirejs.config({
 		'library': '../lib',
 		'poll': 'modules/poll',
 		'security': 'modules/security',
+		'course': 'modules/course',
 		'domReady': '../lib/require/domReady'
 
 	},
@@ -58,7 +59,10 @@ requirejs.config({
 			deps:['angular', 'poll/poll.controller', 'poll/poll.service']
 		},
 		'security/index':{
-			deps:['angular', 'security/security.controllers', 'security/security.directives', 'security/security.service']
+			deps:['angular', 'security/security.controller', 'security/security.directive', 'security/security.service']
+		},
+		'course/index':{
+			deps:['angular', 'course/course.controller', 'course/course.service','course/course.filter']
 		}
 	}
 });
@@ -80,10 +84,12 @@ requirejs( [
 
 		//'routes',
 		
-		//'security/index',
-		//'security/security.controllers', 'security/security.directives', 'security/security.service',
+		'security/index',
+		'security/security.controller', 'security/security.directive', 'security/security.service',
 		'poll/index',
 		'poll/poll.controller', 'poll/poll.service',
+		'course/index',
+		'course/course.controller', 'course/course.service','course/course.filter'
 	
 	],
 
