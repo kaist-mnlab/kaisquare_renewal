@@ -1,30 +1,32 @@
 var mongoose = require('mongoose');
-var CourseSchema = require('../models/Course.js').CourseSchema;
+var LectureSchema = require('../models/Lecture.js').LectureSchema;
 
-var Course = mongoose.model('courses', CourseSchema);
+var Lecture = mongoose.model('lectures', LectureSchema);
 
 module.exports = {
 
 	// JSON API for list of Courses
 	list : function(req, res) {
 		// Query Mongo for Courses, just get back the question text
-		Course.find({}, {},{}, function(error, courses) {
-
-			res.json(courses);
+		console.log("lecture list");
+		
+		Lecture.find({}, {},{}, function(error, lectures) {
+			
+			res.json(lectures);
 		});
 	},
 	
 	// JSON API for getting a single Course
-	course : function(req, res) {
+	lecture : function(req, res) {
 		// Course ID comes in the URL
-		var courseId = req.params.id;
-		console.log("course read");
+		var lectureId = req.params.id;
+		console.log("lecture read");
 		// Find the Course by its ID, use lean as we won't be changing it
-		Course.findById(courseId, '', { lean: true }, function(err, course) {
-			if(course) {
+		Lecture.findById(lectureId, '', { lean: true }, function(err, lecture) {
+			if(lecture) {
 				//save course content
 		
-				res.json(course);
+				res.json(lecture);
 			} else {
 				res.json({error:true});
 			}
@@ -38,20 +40,18 @@ module.exports = {
 				// Filter out choices with empty text
 				//choices = reqBody.choices.filter(function(v) { return v.text != ''; }),
 				// Build up Course object to save
-				courseObj = {title: reqBody.title, 
-							 abstract: reqBody.abstract,
+				lectureObj = {title: reqBody.title, 
 							 description: reqBody.description,
-							 hidden: reqBody.hidden,
-							 users: reqBody.users,
+							 status: reqBody.status,
 							 };
-		console.log(courseObj);
+
 		
 		// Create Course model from built up Course object
-		var course = new Course(courseObj);
+		var lecture = new Lecture(lectureObj);
 		
 		// Save Course to DB
 		if(reqBody._id === undefined){
-			course.save(function(err, doc) {
+			lecture.save(function(err, doc) {
 				if(err || !doc) {
 					throw 'Error';
 				} else {
@@ -59,7 +59,7 @@ module.exports = {
 				}		
 			});
 		} else {
-			Course.findByIdAndUpdate(reqBody._id , courseObj, function(err, doc) {
+			Lecture.findByIdAndUpdate(reqBody._id , lectureObj, function(err, doc) {
 				if(err || !doc) {
 					throw 'Error';
 				} else {
@@ -71,7 +71,7 @@ module.exports = {
 	},
 
 	delete : function(req, res) {
-		Course.findByIdAndRemove(req.query.id, function(err, doc) {
+		Lecture.findByIdAndRemove(req.query.id, function(err, doc) {
 				if(err || !doc) {
 					throw 'Error';
 				} else {

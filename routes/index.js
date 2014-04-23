@@ -11,6 +11,7 @@ var _ =           require('underscore')
 	
 var pollCtrl = require('../controllers/pollCtrl');
 var courseCtrl = require('../controllers/courseCtrl');
+var lectureCtrl = require('../controllers/lectureCtrl');
 
 // Main application view
 index = function(req, res) {
@@ -151,7 +152,7 @@ var routes = [
   
     },
     
-    // List
+    // Course List
     {
         path: '/courses/courses/courses',
         httpMethod: 'GET',
@@ -159,7 +160,7 @@ var routes = [
   
     },
     
-    // Poll
+    // Course
     {
         path: '/courses/courses/:id',
         httpMethod: 'GET',
@@ -167,18 +168,49 @@ var routes = [
   
     },
     
-    // create_poll
+    // create course
     {
         path: '/courses/courses',
         httpMethod: 'POST',
         middleware: [courseCtrl.create],
   
     },
-    // edit course
+    // delete course
     {
         path: '/courses/courses?:id',
         httpMethod: 'DELETE',
         middleware: [courseCtrl.delete],
+  
+    },
+
+    // Lecture List
+    {
+        path: '/lectures/lectures/lectures',
+        httpMethod: 'GET',
+        middleware: [lectureCtrl.list],
+  
+    },
+    
+    // Lecture
+    {
+        path: '/lectures/lectures/:id',
+        httpMethod: 'GET',
+        middleware: [lectureCtrl.lecture],
+  
+    },
+    
+    // create Lecture
+    {
+        path: '/lectures/lecture/',
+        httpMethod: 'POST',
+        middleware: [lectureCtrl.create],
+  
+    },
+    // delete Lecture
+    {
+        path: '/lecture/lectures?:id',
+        httpMethod: 'DELETE',
+        middleware: [lectureCtrl.delete],
   
     },
     

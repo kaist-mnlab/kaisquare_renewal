@@ -1,6 +1,6 @@
 'use strict';
 define(['angular', 'accessCfg'], function(angular, accessCfg) {
-	var app = angular.module('kaisquare', ['ngCookies', 'ui.router', 'ngResource', 'poll', 'security', 'course'])
+	var app = angular.module('kaisquare', ['ngCookies', 'ui.router', 'ngResource', 'poll', 'security', 'course', 'lecture'])
 
     .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider', function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
 
@@ -50,6 +50,23 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
             templateUrl: 'course/show',
             controller: 'CourseItemCtrl'
         })
+        .state('public.lectures', {
+        	abstract: true,
+            url: '/lectures/',
+            templateUrl: 'lecture/layout',
+            //controller: 'CourseListCtrl'
+        })
+        .state('public.lectures.index', {
+            url: '',
+            templateUrl: 'lecture/index',
+            controller: 'LectureListCtrl'
+        })
+        .state('public.lectures.show', {
+            url: '/lectures/lecture/:lectureId',
+            templateUrl: 'lecture/show',
+            controller: 'LectureItemCtrl'
+        })
+   
         ;
 
     // Anonymous routes
@@ -112,7 +129,7 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
             templateUrl: 'course/layout',
             //controller: 'CourseListCtrl'
         })
-        .state('public.courses.new', {
+        .state('user.courses.new', {
             url: 'new/',
             templateUrl: 'course/new',
             controller: 'CourseNewCtrl'
@@ -121,6 +138,23 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
             url: 'course/:courseId/edit',
             templateUrl: 'course/edit',
             controller: 'CourseNewCtrl'
+        })
+        .state('user.lectures', {
+        	abstract: true,
+            url: '/lectures/',
+            //url: '/lectures/new',
+            templateUrl: 'lecture/layout',
+            //controller: 'CourseListCtrl'
+        })
+        .state('user.lectures.new', {
+            url: 'new/',
+            templateUrl: 'lecture/new',
+            controller: 'LectureNewCtrl'
+        })
+        .state('user.lectures.edit', {
+            url: 'lecture/:lectureId/edit',
+            templateUrl: 'lecture/edit',
+            controller: 'LectureNewCtrl'
         })
         
         

@@ -2,7 +2,7 @@
 
 /* Controllers */
 define(['angular'], function(angular) {
-angular.module('course.controller', ['security'])
+angular.module('course.controller', ['security', 'lecture'])
 //app
 .controller('CourseListCtrl',
 ['$rootScope', '$scope', 'Course', function($rootScope, $scope, Course) {
@@ -14,20 +14,48 @@ angular.module('course.controller', ['security'])
 //app
 angular.module('course.controller')
 .controller('CourseItemCtrl',
-['$scope', '$q', '$location','$stateParams','Course','User', function($scope, $q, $location, $stateParams,Course,User) {
+['$scope', '$q', '$location','$stateParams','Course','User','$http','Lecture', function($scope, $q, $location, $stateParams,Course,User, $http, Lecture) {
 
 	$scope.course = Course.get({courseId: $stateParams.courseId});
 	//$scope.course = delayedValue($scope, deferred, Course.get({courseId: $stateParams.courseId}));
+	
+	$scope.lectureURL = $location.$$absUrl + '/lectures';
+	$scope.lectureContent;
+
+	$scope.courseId = $scope.course._id;
+	$scope.lectures = Lecture.query();
+	
 
 	
 	$scope.course.$promise.then(function() {
 			$scope.course.usersData = [];
-
+			
 			for(var u in $scope.course.users) {
 				$scope.course.usersData.push( { user: User.get({userId: $scope.course.users[u].user}) , role_bitMask: $scope.course.users[u].role_bitMask});					
 			};
+			
+			
 		}
 	);
+	
+	
+	
+	$scope.lectures.$promise.then(function() {
+	
+		//Load Lectures
+			/*
+			$http({
+				method: 'GET',
+				url: $location.$$absUrl + '/lectures'
+				}).success( function( data, status, headers, config){
+					$scope.lectureContent = data;
+					//console.log(data);
+				}).error(function(data, status, headers, config){	
+					
+			});
+		*/
+		
+	});
 
 
 	

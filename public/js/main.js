@@ -17,6 +17,7 @@ requirejs.config({
 		'poll': 'modules/poll',
 		'security': 'modules/security',
 		'course': 'modules/course',
+		'lecture': 'modules/lecture',
 		'domReady': '../lib/require/domReady'
 
 	},
@@ -46,7 +47,7 @@ requirejs.config({
 			exports:'accessCfg'
 		},
 		'app':{
-			deps:['angular', 'accessCfg', 'security/index', 'poll/index']
+			deps:['angular', 'accessCfg', 'security/index', 'poll/index', 'lecture/index']
 		},
 		'auth':{
 			deps:['angular']
@@ -62,7 +63,10 @@ requirejs.config({
 			deps:['angular', 'security/security.controller', 'security/security.directive', 'security/security.service']
 		},
 		'course/index':{
-			deps:['angular', 'course/course.controller', 'course/course.service','course/course.filter']
+			deps:['angular', 'course/course.controller', 'course/course.service','course/course.filter', 'lecture/index']
+		},
+		'lecture/index':{
+			deps:['angular', 'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter','lecture/lecture.directive']
 		}
 	}
 });
@@ -89,7 +93,9 @@ requirejs( [
 		'poll/index',
 		'poll/poll.controller', 'poll/poll.service',
 		'course/index',
-		'course/course.controller', 'course/course.service','course/course.filter'
+		'course/course.controller', 'course/course.service','course/course.filter',
+		'lecture/index',
+		'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter', 'lecture/lecture.directive'
 	
 	],
 
