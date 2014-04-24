@@ -7,12 +7,15 @@ var quizSchema = require('./Quiz').QuizSchema;
 // Document schema for polls
 exports.LectureSchema = new mongoose.Schema({
 	index: Number,
+	date: {type:Date, default: Date.now, required: true},
 	startTime: {type:Date, default: Date.now, required: true},
 	endTime: {type:Date, default: Date.now },
+	duration: Number,
 	title: { type: String, required: true },
 	description: { type: String, required: true },
 	//File?
 	materialURL:[{url: String}],
+	course: {type: mongoose.Schema.Types.ObjectId, ref:'course'},
 	
 	//
 	status: Number,

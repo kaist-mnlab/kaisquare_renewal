@@ -1,56 +1,51 @@
 ul.breadcrumb
-    li
-       a(href='/') Courses
-       span.divider /
-    li
-       a(href='/') {{course.title}}
-       span.divider /
-    li.active
-       a(href='#') Details of course {{course.title}}
+	li
+		a(href='/') Courses
+		span.divider /
+	li
+		a(href='/') {{course.title}}
+		span.divider /
+	li.active
+		a(href='#') Details of course {{course.title}}
 
 .page-header
-  h1 Course {{course.title}}
+	h1 Course {{course.title}}
 
-div()
-  table.table.table-bordered
-    tbody
-      tr
-        td title
-        td
-            {{course.title}} 
-        tr
-        td abstract
-        td
-            {{course.abstract}} 
-        tr
-        td description
-        td
-            {{course.description}}
-        tr
-        td Tutor
-        td(data-ng-switch, on="course.users.length")
-              ul(data-ng-switch-when="0")
-                  | There's no tutor!!!
-              ul(data-ng-switch-default)
-                  li(ng-repeat="user in course.usersData | adminFilter")
-                      {{user.user.username}} {{user.role_bitMask}}
-        tr
-        td Open
-        td
-              {{course.hidden}}
+accordion(close-others="false")
+	accordion-group(heading="Information", is-open="true")
+		div()
+			table.table.table-bordered
+				tbody
+					tr
+					td title
+					td
+						{{course.title}} 
+					tr
+					td abstract
+					td
+						{{course.abstract}} 
+					tr
+					td description
+					td
+						{{course.description}}
+					tr
+					td Tutor
+					td(data-ng-switch, on="course.users.length")
+						ul(data-ng-switch-when="0")
+							| There's no tutor!!!
+						ul(data-ng-switch-default)
+							li(ng-repeat="user in course.usersData | adminFilter")
+								{{user.user.username}} {{user.role_bitMask}}
+					tr
+					td Open
+					td
+						{{course.hidden}}
+	accordion-group(heading="Lectures", is-open="true")
+		#lectureContent.container(lecture-nav)
 
-//iframe.container(data-ng-src="{{lectureURL}}")
-#lectureContent.container(lecture-nav)
-
-
-
-.well
-    a.btn.btn-primary(href="/courses/course/{{course._id}}/edit")
-        i.icon-edit.icon-white Edit
-    a.btn.btn-danger(type='submit', data-ng-click='deleteCourse()')
-        i.icon-remove.icon-white Delete
-//.well
-//  != linkTo('<i class="icon-edit icon-white"></i> Edit', pathTo.edit_post(post), {class: 'btn btn-primary'}) + ' '
-//  != linkTo('<i class="icon-remove icon-white"></i> Delete', pathTo.post(post), {class: 'btn btn-danger', method: 'delete', remote: true, jsonp: '(function (u) { location.href = u; })'})
-//  span= ' or '
-//  != linkTo('Back to index', pathTo.posts)
+.well(data-access-level='accessLevels.user')
+	//a.btn.btn-primary(href="/courses/course/{{course._id}}/edit")
+	button.btn.btn-primary(data-ng-click="launch('editCourse')", act-nav)
+		i.icon-edit.icon-white Edit
+	a.btn.btn-danger(type='submit', data-ng-click='deleteCourse()', act-nav)
+		i.icon-remove.icon-white Delete

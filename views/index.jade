@@ -19,7 +19,7 @@ html(lang='en')
     body(data-ng-cloak)
           .navbar(data-ng-controller="NavCtrl")
             .navbar-header
-                a.navbar-brand(href='/polls') KAISquare
+                a.navbar-brand(href='/courses') KAISquare
             .navbar-inner
                 .container-fluid
                     ul.nav.nav-tabs
@@ -29,8 +29,6 @@ html(lang='en')
                             a(href='/register') Register
                         li(data-access-level='accessLevels.user', active-nav)
                             a(href='/') Home
-                        li(data-access-level='accessLevels.user', active-nav='nestedTop')
-                            a(href='/private') Private
                         li(data-access-level='accessLevels.admin', active-nav)
                             a(href='/admin') Admin
                         li(data-access-level='accessLevels.public', active-nav)
@@ -63,14 +61,6 @@ html(lang='en')
             include partials/home
         script(type="text/ng-template", id="login")
             include partials/login
-        script(type="text/ng-template", id="private/layout")
-            include partials/private/layout
-        script(type="text/ng-template", id="private/home")
-            include partials/private/home
-        script(type="text/ng-template", id="private/nested")
-            include partials/private/nested
-        script(type="text/ng-template", id="private/nestedAdmin")
-            include partials/private/nestedAdmin
         script(type="text/ng-template", id="register")
             include partials/register
         script(type="text/ng-template", id="poll/list")

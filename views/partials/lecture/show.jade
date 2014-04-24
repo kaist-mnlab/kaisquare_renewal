@@ -1,21 +1,32 @@
-div()
-  table.table.table-bordered
-    tbody
-      tr
-        td title
-        td
-              {{lecture.title}}
-        tr
-        td description
-        td
-              {{lecture.description}}
-        tr
-        td Live/VOD
-        td
-              {{lecture.status}}
+.modal-header
+    h1 Lecture {{lecture.title}}
 
-.well
-    a.btn.btn-primary(href="/courses/course/{{course._id}}/lectures/lecture/{{lecture._id}}/edit")
-        i.icon-edit.icon-white Edit
-    a.btn.btn-danger(type='submit', data-ng-click='deleteLecture()')
-        i.icon-remove.icon-white Delete
+.modal-body
+    div()
+        table.table.table-bordered
+            tbody
+                tr
+                td title
+                td
+                   {{lecture.title}}
+                tr
+                td description
+                td
+                   {{lecture.description}}
+                tr
+                td Date
+                td
+                   {{lecture.date}}
+                tr
+                td Live/VOD
+                td
+                   {{lecture.status}}
+.modal-footer
+    .well(data-ng-controller="NavCtrl")
+        a.btn.btn-warning(data-ng-click="launchEdit()", data-access-level='accessLevels.user')
+             i.icon-edit.icon-white Edit
+        a.btn.btn-danger(type='submit', data-ng-click='deleteLecture()', data-access-level='accessLevels.user')
+             i.icon-remove.icon-white Delete
+        a.btn.btn-success(data-ng-click="view()")
+             i.icon-edit.icon-white View
+             

@@ -43,6 +43,7 @@ module.exports = {
 				lectureObj = {title: reqBody.title, 
 							 description: reqBody.description,
 							 status: reqBody.status,
+							 course: reqBody.course,
 							 };
 
 		

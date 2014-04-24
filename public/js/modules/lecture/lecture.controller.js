@@ -2,7 +2,7 @@
 
 /* Controllers */
 define(['angular'], function(angular) {
-angular.module('lecture.controller', ['security'])
+angular.module('lecture.controller', ['security', 'ui.bootstrap' ])
 //app
 .controller('LectureListCtrl',
 ['$rootScope', '$scope', 'Lecture','$stateParams', function($rootScope, $scope, Lecture,$stateParams) {
@@ -10,29 +10,54 @@ angular.module('lecture.controller', ['security'])
 	
 	$scope.course = { _id: $stateParams.courseId }; 
 	$scope.lectures = Lecture.query({courseId: $stateParams.courseId});
+
+	$scope.open = function($event) {
+		console.log("adsfdsfsadfasdfasdfa");
+  	    $event.preventDefault();
+    	$event.stopPropagation();
+
+    	$scope.opened = true;
+    };
+	
 }]);
 
 
 //app
 angular.module('lecture.controller')
 .controller('LectureItemCtrl',
-['$scope', '$q', '$location','$stateParams','Lecture','User', function($scope, $q, $location, $stateParams,Lecture,User) {
+['$scope', '$q', '$location','$stateParams','Lecture','User','lectureId', '$modalInstance', '$modal', function($scope, $q, $location, $stateParams,Lecture,User,lectureId, $modalInstance, $modal) {
 
-	$scope.lecture = Lecture.get({lectureId: $stateParams.lectureId});
-	//$scope.course = delayedValue($scope, deferred, Course.get({courseId: $stateParams.courseId}));
-
+	$scope.lecture = Lecture.get({lectureId: lectureId});
 	
+	//console.log($scope.lecture);
 	$scope.lecture.$promise.then(function() {
-			//$scope.course.usersData = [];
-			/*
-			for(var u in $scope.course.users) {
-				$scope.course.usersData.push( { user: User.get({userId: $scope.course.users[u].user}) , role_bitMask: $scope.course.users[u].role_bitMask});					
-			};
-			*/
+
 		}
 	);
 
-
+	$scope.launchEdit = function() {
+		//$modalInstance.close();
+		
+		var dlg = null;
+		dlg = $modal.open({
+				templateUrl: 'lecture/edit',
+				controller: 'LectureEditCtrl',
+				resolve: {
+					lecture: function() {
+						return $scope.lecture;
+					}
+				}
+			});
+			
+		dlg.result.then(function () {
+			$scope.lectures = Lecture.query({course: $scope.courseId});
+			
+		}, function() {
+			console.log("Dismissed");
+		});
+		
+	
+	};
 	
 	$scope.deleteLecture = function() {
 		$scope.lecture.$delete( {id: $scope.lecture._id} , function(p,resp){
@@ -40,7 +65,8 @@ angular.module('lecture.controller')
 			if(!p.error) {
 				// If there is no error, redirect to the main view
 				console.log("delete Success!");
-				$location.path('/lectures/');
+				//$location.path('/lectures/');
+				$modalInstance.close();
 			} else {
 				alert('Could not delete lecture');
 			}
@@ -52,32 +78,31 @@ angular.module('lecture.controller')
 //app
 angular.module('lecture.controller')
 .controller('LectureNewCtrl',
-['$scope', '$location','$stateParams','Lecture', function($scope, $location, $stateParams,Lecture) {
-	var user = $scope.user; 
-	$scope.lecture = {
-			title: '',
-			description: '',
-			status: number,
+['$scope', '$modalInstance', '$location','$stateParams','Lecture', 'course', function($scope, $modalInstance, $location, $stateParams,Lecture, course) {
+	//var user = $scope.user;
 
-		};
+	$scope.course = course;
+	$scope.lecture = {
+		title: '',
+		description: '',
+		status: 0,
+		course: course._id
+	};
 	
-	//In case of UPDATE
-	if($stateParams.lectureId !== undefined) {
-		$scope.lecture = Lecture.get({lectureId: $stateParams.lectureId});
-	}
-	// Define an empty poll model object
-	// Validate and save the new poll to the database
+	console.log($scope.lecture);
+	
+
 	$scope.createLecture = function() {
 		var lecture = $scope.lecture;
 		
 		if(lecture.title.length > 0) {
 		
 			var newLecture = new Lecture(lecture);
-			//console.log(newCourse);
+			console.log("heh");
 			newLecture.$save(function(p, resp) {
 				if(!p.error) {
 					// If there is no error, redirect to the main view
-					$location.path('/lectures/');
+					$modalInstance.close();
 				} else {
 					alert('Could not create course');
 				}
@@ -87,6 +112,25 @@ angular.module('lecture.controller')
 		}
 
 	};
+
+	
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
+	
+}]);
+
+
+angular.module('lecture.controller')
+.controller('LectureEditCtrl',
+['$scope', '$modalInstance', '$location','$stateParams','Lecture', 'Course', 'lecture', function($scope, $modalInstance, $location, $stateParams,Lecture, Course, lecture) {
+	//var user = $scope.user;
+
+	$scope.lecture = lecture;
+	//console.log(lecture);	
+	$scope.course = Course.get({courseId: lecture.course});
+	
+	//console.log($scope.course);
 	
 	$scope.updateLecture = function() {
 
@@ -97,7 +141,7 @@ angular.module('lecture.controller')
 			lecture.$save(function(p, resp) {
 				if(!p.error) {
 					// If there is no error, redirect to the main view
-					$location.path('/courses/');
+					$modalInstance.close();
 				} else {
 					alert('Could not update course');
 				}
@@ -108,7 +152,10 @@ angular.module('lecture.controller')
 
 	};
 	
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
+	
 }]);
-
 
 });

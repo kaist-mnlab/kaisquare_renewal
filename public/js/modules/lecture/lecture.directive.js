@@ -12,9 +12,7 @@ angular.module('lecture.directives', [])
         templateUrl: 'lecture/index',
         link: function(scope, element, attrs) {
             scope.location = $location;
-            scope.$watch(attrs.ngModel, function(newValue) {
-				console.log( newValue );
-            });
+
         },
 
     };

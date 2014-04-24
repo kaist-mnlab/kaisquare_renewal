@@ -5,6 +5,8 @@ var _ =           require('underscore')
 
 module.exports = {
     index: function(req, res) {
+    
+    /*
         var users = User.findAll();
         _.each(users, function(user) {
             delete user.password;
@@ -14,6 +16,7 @@ module.exports = {
             delete user.linkedin;
         });
         res.json(users);
+        */
     },
     user : function(req, res) {
 		// Course ID comes in the URL

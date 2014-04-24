@@ -1,18 +1,41 @@
+.modal-header
+    h1 New Lecture for {{course.title}}
+
 form(role="form", data-ng-submit="createLecture()")
-    .form-group
-        label(for="lectureTitle") Title
-        input#lectureTitle.form-control(type="text", data-ng-model="lecture.title")
-    .form-group
-        label(for="lectureDescription") Description
-        input#lectureDescription.form-control(type="text", data-ng-model="lecture.description")
-    
-    .form-group
-        label(for="lectureStatus") Live/VOD
-        input#lectureStatus.form-control(type="checkbox", data-ng-model="lecture.status")
-    .row
-        .col-xs-6
-            a.btn.btn-default(href="/courses/course/{{course._id}}", role="button")
-                span.glyphicon.glyphicon-arrow-left Back to Course
-        .col-xs-6
-            button.btn.btn-primary.pull-right(type="submit") Create Course !
+    .modal-body    
+        .form-group
+            label(for="course") Course  : 
+            label(for="course") {{course.title}}
+        .form-group
+            label(for="lectureTitle") Title
+            input#lectureTitle.form-control(type="text", data-ng-model="lecture.title")
+        .form-group
+            label(for="lectureDescription") Description
+            input#lectureDescription.form-control(type="text", data-ng-model="lecture.description")
+        .form-group
+            label(for="lectureDate") Date
+            p.input-group
+                input#lectureDate.form-control.ng-valid-date(type="text", data-ng-model="lecture.date", datepicker-popup="dd-MMMM-yyyy", data-ng-required="true", close-text="Close")
+                span.input-group-btn
+                    button.btn.btn-default(type="button", data-ng-click="open($event)")
+                        i.glyphicon.glyphicon-calendar
+        
+        .form-group
+            label(for="lectureStatus") Live/VOD
+            //input#lectureStatus.form-control(type="checkbox", data-ng-model="lecture.status")
+            button.btn.btn-primary(type="button", data-ng-model="lecture.status", btn-radio="1")
+               | LIVE
+            button.btn.btn-primary(type="button", data-ng-model="lecture.status", btn-radio="0")
+               | VOD
+            
+    .modal-footer   
+        button.btn.btn-primary.pull-right(type="submit") Create Lecture !
+        button.btn.btn-danger(type="button", data-ng-click="cancel()")
+            | Cancel
+        //.row
+        //    .col-xs-6
+        //         button.btn.btn-primary.pull-right(type="submit") Create Lecture !
+        //    .col-xs-6
+        //         button.btn.btn-danger(type="button", data-ng-click="cancel()")
+        //             | Cancel
              

@@ -4,7 +4,7 @@ requirejs.config({
 	baseUrl:'/js',
 	paths:{
 
-		//뒤에 js 확장자는 생략한다.
+
 		'text': '../lib/require/text', //HTML 데이터를 가져올때 text! 프리픽스를 붙여준다.
 		'jquery': '../lib/jquery/jquery',
 		'jquery-ui': '../lib/jquery/jquery-ui-1.10.2.min',
@@ -13,6 +13,7 @@ requirejs.config({
 		'angular-route': '../lib/angular/angular-route',
 		'angular-cookies':'../lib/angular/angular-cookies',
 		'angular-ui-router':'../lib/angular/angular-ui-router.min',
+		'angular-ui-bootstrap':'../lib/angular/ui-bootstrap-tpls-0.10.0.min',
 		'library': '../lib',
 		'poll': 'modules/poll',
 		'security': 'modules/security',
@@ -42,6 +43,9 @@ requirejs.config({
 		'angular-ui-router':{
 			deps:['angular']
 		},
+		'angular-ui-bootstrap':{
+			deps:['angular']
+		},
 		'accessCfg':{
 			deps:['jquery'],
 			exports:'accessCfg'
@@ -63,7 +67,7 @@ requirejs.config({
 			deps:['angular', 'security/security.controller', 'security/security.directive', 'security/security.service']
 		},
 		'course/index':{
-			deps:['angular', 'course/course.controller', 'course/course.service','course/course.filter', 'lecture/index']
+			deps:['angular', 'angular-ui-bootstrap', 'course/course.controller', 'course/course.service','course/course.filter', 'lecture/index']
 		},
 		'lecture/index':{
 			deps:['angular', 'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter','lecture/lecture.directive']
@@ -83,6 +87,7 @@ requirejs( [
 		'angular-route',
 		'angular-cookies',
 		'angular-ui-router',
+		'angular-ui-bootstrap',
 		'app',
 		'accessCfg',
 

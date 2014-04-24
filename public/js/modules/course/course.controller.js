@@ -2,19 +2,47 @@
 
 /* Controllers */
 define(['angular'], function(angular) {
-angular.module('course.controller', ['security', 'lecture'])
+angular.module('course.controller', ['security', 'lecture','ui.bootstrap'])
 //app
 .controller('CourseListCtrl',
-['$rootScope', '$scope', 'Course', function($rootScope, $scope, Course) {
+[ '$scope', 'Course', '$modal', function( $scope, Course, $modal) {
 
 	$scope.courses = Course.query();
+	$scope.launch = function(which){
+		
+		var dlg = null;
+		
+		switch(which){
+		case 'newCourse':
+			dlg = $modal.open({
+				templateUrl: 'course/new',
+				controller: 'CourseNewCtrl',
+				resolve: {
+					user: function() {
+						return $scope.user;
+					}
+				}
+			});
+			
+			dlg.result.then(function () {
+				$scope.courses = Course.query();
+			}, function() {
+				console.log("Dismissed");
+			});
+			
+			break;
+		};
+	
+	};
+		
+	
 }]);
 
 
 //app
 angular.module('course.controller')
 .controller('CourseItemCtrl',
-['$scope', '$q', '$location','$stateParams','Course','User','$http','Lecture', function($scope, $q, $location, $stateParams,Course,User, $http, Lecture) {
+['$scope', '$q', '$location','$stateParams','Course','User','$http','Lecture','$modal', function($scope, $q, $location, $stateParams,Course,User, $http, Lecture, $modal) {
 
 	$scope.course = Course.get({courseId: $stateParams.courseId});
 	//$scope.course = delayedValue($scope, deferred, Course.get({courseId: $stateParams.courseId}));
@@ -23,9 +51,90 @@ angular.module('course.controller')
 	$scope.lectureContent;
 
 	$scope.courseId = $scope.course._id;
-	$scope.lectures = Lecture.query();
+	//$scope.lectures = Lecture.query();
+	$scope.lectures = Lecture.query({course: $scope.courseId});
 	
+	$scope.lectures.$promise.then(function() {
+		$scope.launchLecture = function(id){
+				var dlg = null;
+				dlg = $modal.open({
+						templateUrl: 'lecture/show',
+						controller: 'LectureItemCtrl',
+						resolve: {
+							lectureId: function() {
+								
+								return id;
+							}
+						}
+					});
+					
+				dlg.result.then(function () {
+					$scope.lectures = Lecture.query({course: $scope.courseId});
+					
+				}, function() {
+					console.log("Dismissed");
+				});
+			}
+	});
+	$scope.open = function($event) {
+		console.log("sddfa");
+  	    $event.preventDefault();
+    	$event.stopPropagation();
 
+    	$scope.opened = true;
+    };
+	
+	$scope.launch = function(which){
+		
+		var dlg = null;
+		
+		switch(which){
+		case 'newLecture':
+			
+			dlg = $modal.open({
+				templateUrl: 'lecture/new',
+				controller: 'LectureNewCtrl',
+				resolve: {
+					user: function() {
+						return $scope.user;
+					},
+					course: function() {
+						return $scope.course;
+					}
+				}
+			});
+			
+			dlg.result.then(function () {
+				$scope.lectures = Lecture.query({courseId: $stateParams.courseId});
+			}, function() {
+				console.log("Dismissed");
+			});
+			
+			break;
+		case 'editCourse':
+				dlg = $modal.open({
+					templateUrl: 'course/edit',
+					controller: 'CourseNewCtrl',
+					resolve: {
+						user: function() {
+							return $scope.user;
+						},
+						course: function() {
+							return $scope.course;					
+						}
+					}
+				});
+				
+				dlg.result.then(function () {
+					console.log("success");
+					$scope.course = Course.get({courseId: $stateParams.courseId});
+				}, function() {
+					console.log("Dismissed");
+				});
+				
+				break;
+			};
+		};
 	
 	$scope.course.$promise.then(function() {
 			$scope.course.usersData = [];
@@ -38,26 +147,6 @@ angular.module('course.controller')
 		}
 	);
 	
-	
-	
-	$scope.lectures.$promise.then(function() {
-	
-		//Load Lectures
-			/*
-			$http({
-				method: 'GET',
-				url: $location.$$absUrl + '/lectures'
-				}).success( function( data, status, headers, config){
-					$scope.lectureContent = data;
-					//console.log(data);
-				}).error(function(data, status, headers, config){	
-					
-			});
-		*/
-		
-	});
-
-
 	
 	$scope.deleteCourse = function() {
 		$scope.course.$delete( {id: $scope.course._id} , function(p,resp){
@@ -73,22 +162,15 @@ angular.module('course.controller')
 	};
 	
 	
-	
-/*
-	socket.on('myvote', function(data) {
-		
-		if(data._id === $stateParams.courseId) {
-			$scope.course = data;
-		}
-	});
-	*/
 }]);
 
 //app
 angular.module('course.controller')
 .controller('CourseNewCtrl',
-['$scope', '$location','$stateParams','Course', function($scope, $location, $stateParams,Course) {
-	var user = $scope.user; 
+['$scope', '$modalInstance','$location','$stateParams','Course', 'user', function($scope, $modalInstance, $location, $stateParams,Course, user) {
+
+	$scope.user = user;
+	
 	$scope.course = {
 			title: '',
 			abstract: '',
@@ -103,6 +185,7 @@ angular.module('course.controller')
 	}
 	// Define an empty poll model object
 	// Validate and save the new poll to the database
+	
 	$scope.createCourse = function() {
 		var course = $scope.course;
 		// Check that a question was provided
@@ -112,29 +195,28 @@ angular.module('course.controller')
 			//console.log(newCourse);
 			newCourse.$save(function(p, resp) {
 				if(!p.error) {
-					// If there is no error, redirect to the main view
-					$location.path('/courses/');
+					$modalInstance.close();
 				} else {
 					alert('Could not create course');
 				}
 			});
 		} else {
+			
 			alert('You must enter a title');
 		}
 
 	};
 	
 	$scope.updateCourse = function() {
-
 		var course = $scope.course;
-
+		
 		// Check that a question was provided
 		if(course.title.length > 0) {
 		
 			course.$save(function(p, resp) {
 				if(!p.error) {
 					// If there is no error, redirect to the main view
-					$location.path('/courses/');
+					$modalInstance.close();
 				} else {
 					alert('Could not update course');
 				}
@@ -173,6 +255,10 @@ angular.module('course.controller')
 			alert('You must enter a question');
 		}
 */
+	};
+	
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
 	};
 	
 }]);

@@ -201,14 +201,14 @@ var routes = [
     
     // create Lecture
     {
-        path: '/lectures/lecture/',
+        path: '/lectures/lectures',
         httpMethod: 'POST',
         middleware: [lectureCtrl.create],
   
     },
     // delete Lecture
     {
-        path: '/lecture/lectures?:id',
+        path: '/lectures/lectures?:id',
         httpMethod: 'DELETE',
         middleware: [lectureCtrl.delete],
   

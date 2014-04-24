@@ -29,31 +29,41 @@ var users = [
 
 module.exports = {
 	addUser: function(username, password, role, callback) {
-		console.log(username);
-        if(this.findByUsername(username) !== undefined)  return callback("UserAlreadyExists");
+		//console.log(username);
 
-        // Clean up when 500 users reached
-        if(users.length > 500) {
-            users = users.slice(0, 2);
-        }
-
-        var user = new User({
-            //id:         _.max(users, function(user) { return user.id; }).id + 1,
-            username:   username,
-            password:   password,
-            role:       role,
-            created: Date.now()
+        //if(this.findByUsername(username) !== undefined)  return callback("UserAlreadyExists");
+        User.findOne( username, function(err, user){
+        	console.log(user);
+        
+        	if(user !== null) return callback("UserAlreadyExists");
+        	else {
+				// Clean up when 500 users reached
+		        if(users.length > 500) {
+		            users = users.slice(0, 2);
+		        }
+		
+		        var user = new User({
+		            //id:         _.max(users, function(user) { return user.id; }).id + 1,
+		            username:   username,
+		            password:   password,
+		            role:       role,
+		            created: Date.now()
+		        });
+		        users.push(user);
+		        
+		        user.save(function(err) {
+		            	if(err) {
+		            		console.log(err);
+		            	} else {
+		            		console.log("Saving user ..");
+		            		callback(null, user);
+		            	}
+		            });	   			 
+        	}
         });
-        users.push(user);
-        user.save(function(err) {
-            	if(err) {
-            		console.log(err);
-            	} else {
-            		console.log("Saving user ..");
-            		callback(null, user);
-            	}
-            });	   
+        
 
+        
     },
 
 	findOrCreateOauthUser: function(profile, done) {
@@ -117,6 +127,7 @@ module.exports = {
 
     findByUsername: function(username) {
     //    return _.clone(_.find(users, function(user) { return user.username === username; }));
+
     	return User.findOne({ username: username });
     },
 
@@ -143,17 +154,19 @@ module.exports = {
     localStrategy: new LocalStrategy(
         function(username, password, done) {
 
-            var user = module.exports.findByUsername(username);
-
-            if(!user) {
-                done(null, false, { message: 'Incorrect username.' });
-            }
-            else if(user.password != password) {
-                done(null, false, { message: 'Incorrect username.' });
-            }
-            else {
-                return done(null, user);
-            }
+            User.findOne({username: username, password: password}, function(err, user) {
+				console.log(user);
+				console.log(err);
+	            if(user === null) {
+	                done(null, false, { message: 'Login failed' });
+	            }
+	            else if(err) {
+	                done(null, false, { message: 'Error' });
+	            }
+	            else {
+	                return done(null, user);
+	            }
+            });
 
         }
     ),

@@ -1,9 +1,9 @@
 .row(data-ng-controller='NavCtrl')
     .col-xs-5
-        a.btn.btn-default(href='/lectures/new/&courseId={{course._id}}', act-nav, data-access-level='accessLevels.user')
+        //a.btn.btn-default(href='/lectures/new/&courseId={{course._id}}', act-nav, data-access-level='accessLevels.user')
+        button.btn.btn-default(data-ng-click="launch('newLecture')", act-nav, data-access-level='accessLevels.user')
            span.glyphicon.glyphicon-plus() New Lecture
-        a.btn.btn-default(href='/lectures', act-nav, data-access-level='accessLevels.user')
-           span.glyphicon.glyphicon-plus() Index
+
              
     .col-xs-7
         input.form-control(type='text', data-ng-model="query", placeholder="Search for a lecture")
@@ -19,4 +19,5 @@
                 No lecture in databases. Would you like to create one?
     ul(data-ng-switch-default)
         li(ng-repeat="lecture in lectures | filter:query")
-            a(href="/courses/course/{{course._id}}/lectures/lecture/{{lecture._id}}") {{lecture.title}}
+            //a(href="/courses/course/{{course._id}}/lectures/lecture/{{lecture._id}}") {{lecture.title}}
+            a(data-ng-click="launchLecture(lecture._id)") {{lecture.title}}

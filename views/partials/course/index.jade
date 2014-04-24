@@ -8,7 +8,7 @@ ul.breadcrumb
 
 .row(data-ng-controller='NavCtrl')
     .col-xs-5
-        a.btn.btn-default(href='/courses/new', act-nav, data-access-level='accessLevels.user')
+        button.btn.btn-default(data-ng-click="launch('newCourse')", act-nav, data-access-level='accessLevels.user')
            span.glyphicon.glyphicon-plus() New Course
              
     .col-xs-7
