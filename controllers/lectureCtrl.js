@@ -44,6 +44,7 @@ module.exports = {
 							 description: reqBody.description,
 							 status: reqBody.status,
 							 course: reqBody.course,
+							 vod_url: reqBody.vod_url,
 							 };
 
 		

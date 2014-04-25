@@ -13,6 +13,7 @@ exports.LectureSchema = new mongoose.Schema({
 	duration: Number,
 	title: { type: String, required: true },
 	description: { type: String, required: true },
+	vod_url: String,
 	//File?
 	materialURL:[{url: String}],
 	course: {type: mongoose.Schema.Types.ObjectId, ref:'course'},

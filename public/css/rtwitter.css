@@ -1,0 +1,96 @@
+.connect_button{
+
+	float:right;
+	width:236px;
+	height:38px;
+	cursor:auto;
+	background: url('../images/connect_236px.png');
+
+}
+
+.connect_button:hover{
+	background-position: left -38px;
+}
+.connect_button:active{
+	background-position: left -76px;
+}
+
+.connected_button{
+
+	float:right;
+	width:258px;
+	height:38px;
+	cursor:auto;
+	background: url('../images/connected_236px.png');
+
+}
+button{
+	-webkit-appearance: button;
+-webkit-appearance: none;
+-webkit-box-align: center;
+-webkit-box-sizing: border-box;
+text-shadow: white 1px 1px 0px;
+color: #333;
+border: none;
+display: inline-block;
+font: -webkit-small-control;
+background: transparent;
+margin: 0px;
+overflow: visible;
+padding: 0px;
+cursor: pointer;
+	
+}
+.btn{
+background: #DDD url(http://platform2.twitter.com/1.1.2/images/bg-btn.gif) repeat-x scroll 0px 0px;
+border-color: #DDD #DDD #CCC;
+border-bottom-left-radius: 4px 4px;
+border-bottom-left-radius: 4px 4px;
+border-bottom-right-radius: 4px 4px;
+border-bottom-right-radius: 4px 4px;
+border-style: solid;
+border-width: 1px;
+border-top-left-radius: 4px 4px;
+border-top-left-radius: 4px 4px;
+border-top-right-radius: 4px 4px;
+border-top-right-radius: 4px 4px;
+cursor: pointer;
+display: inline-block;
+padding: 0px 8px;
+	
+}
+
+.btn-m{
+background-position: 0px -200px;
+border-bottom-left-radius: 5px 5px;
+border-bottom-left-radius: 5px 5px;
+border-bottom-right-radius: 5px 5px;
+border-bottom-right-radius: 5px 5px;
+border-top-left-radius: 5px 5px;
+border-top-left-radius: 5px 5px;
+border-top-right-radius: 5px 5px;
+border-top-right-radius: 5px 5px;
+padding: 2px 15px 3px;
+	
+}
+#tweet-box-header
+{
+	margin:20px;
+}
+.doing{
+	float:left;
+}
+#counter{
+	float:right;
+}
+#tweeting-controls{
+	height:30px;
+
+}
+#tweeting-controls span{
+	position:relative;
+	right:20px;
+}
+.fright{
+	float:right;
+}

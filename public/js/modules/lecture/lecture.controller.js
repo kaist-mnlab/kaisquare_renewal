@@ -12,7 +12,6 @@ angular.module('lecture.controller', ['security', 'ui.bootstrap' ])
 	$scope.lectures = Lecture.query({courseId: $stateParams.courseId});
 
 	$scope.open = function($event) {
-		console.log("adsfdsfsadfasdfasdfa");
   	    $event.preventDefault();
     	$event.stopPropagation();
 
@@ -29,7 +28,6 @@ angular.module('lecture.controller')
 
 	$scope.lecture = Lecture.get({lectureId: lectureId});
 	
-	//console.log($scope.lecture);
 	$scope.lecture.$promise.then(function() {
 
 		}
@@ -58,6 +56,14 @@ angular.module('lecture.controller')
 		
 	
 	};
+	
+	$scope.view = function() {
+
+		$modalInstance.close();
+		$location.path("/lapp/"+$scope.lecture._id);
+   		//$scope.$apply();
+	
+	}
 	
 	$scope.deleteLecture = function() {
 		$scope.lecture.$delete( {id: $scope.lecture._id} , function(p,resp){
@@ -88,9 +94,6 @@ angular.module('lecture.controller')
 		status: 0,
 		course: course._id
 	};
-	
-	console.log($scope.lecture);
-	
 
 	$scope.createLecture = function() {
 		var lecture = $scope.lecture;

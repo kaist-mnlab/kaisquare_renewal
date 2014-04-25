@@ -22,20 +22,22 @@ form(role="form", data-ng-submit="createLecture()")
         
         .form-group
             label(for="lectureStatus") Live/VOD
-            //input#lectureStatus.form-control(type="checkbox", data-ng-model="lecture.status")
             button.btn.btn-primary(type="button", data-ng-model="lecture.status", btn-radio="1")
                | LIVE
             button.btn.btn-primary(type="button", data-ng-model="lecture.status", btn-radio="0")
                | VOD
-            
+        div(data-ng-switch on="lecture.status")
+            div(data-ng-switch-when="0")
+                .form-group
+                    label(for="lectureVoDURL") VOD URL
+                    input#lectureVoDURL.form-control(type="text", data-ng-model="lecture.vod_url")
+                .form-group
+                    label(for="lectureVoDFile") File Upload
+                    input#lectureVoDFile.form-control(type="file")                
+            div(data-ng-switch-when="1")
+                | Live
+ 
     .modal-footer   
         button.btn.btn-primary.pull-right(type="submit") Create Lecture !
         button.btn.btn-danger(type="button", data-ng-click="cancel()")
             | Cancel
-        //.row
-        //    .col-xs-6
-        //         button.btn.btn-primary.pull-right(type="submit") Create Lecture !
-        //    .col-xs-6
-        //         button.btn.btn-danger(type="button", data-ng-click="cancel()")
-        //             | Cancel
-             

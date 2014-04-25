@@ -20,6 +20,16 @@ form(role="form", data-ng-submit="updateLecture()")
                | LIVE
             button.btn.btn-primary(type="button", data-ng-model="lecture.status", btn-radio="0")
                | VOD
+        div(data-ng-switch on="lecture.status")
+            div(data-ng-switch-when="0")
+                .form-group
+                    label(for="lectureVoDURL") VOD URL
+                    input#lectureVoDURL.form-control(type="text", data-ng-model="lecture.vod_url")
+                .form-group
+                    label(for="lectureVoDFile") File Upload
+                    input#lectureVoDFile.form-control(type="file")                
+            div(data-ng-switch-when="1")
+                | Live
     .modal-footer   
         .row
             .col-xs-6

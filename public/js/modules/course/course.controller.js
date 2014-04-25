@@ -77,7 +77,6 @@ angular.module('course.controller')
 			}
 	});
 	$scope.open = function($event) {
-		console.log("sddfa");
   	    $event.preventDefault();
     	$event.stopPropagation();
 

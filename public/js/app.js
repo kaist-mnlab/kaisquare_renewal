@@ -1,6 +1,6 @@
 'use strict';
 define(['angular', 'accessCfg'], function(angular, accessCfg) {
-	var app = angular.module('kaisquare', ['ngCookies', 'ui.router', 'ngResource', 'poll', 'security', 'course', 'lecture'])
+	var app = angular.module('kaisquare', ['ngCookies', 'ui.router', 'ngResource', 'poll', 'security', 'course', 'lecture','lapp.controller'])
 
     .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider', function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
 
@@ -18,6 +18,11 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
         .state('public.404', {
             url: '/404/',
             templateUrl: '404'
+        })
+        .state('public.lapp', {
+            url: '/lapp/:lectureId',
+            templateUrl: 'lapp',
+            controller: 'LectureAppCtrl'
         })
         .state('public.polls', {
             url: '/polls/',
@@ -225,8 +230,7 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
 .run(['$rootScope', '$state', 'security', function ($rootScope, $state, Auth) {
 
     $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
-        
-    	
+
         if (!Auth.authorize(toState.data.access)) {
             $rootScope.error = "Seems like you tried accessing a route you don't have access to...";
             event.preventDefault();

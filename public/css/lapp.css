@@ -1,0 +1,167 @@
+html{
+ background-color:#1b3447;
+}
+body			{ height:100%; font-size:12px; color:#BABABA; font-family:Malgun Gothic,Dotum,Gulim,Helvetica,AppleGothic,Sans-serif; margin:0px auto;  position:relative; text-align:center; min-width:1000px; width:1000px; background:url(./img/bg_top.gif) repeat-x; background-color:#1b3447; }
+table			{ border:0; border-collapse:collapse; }
+a:link			{ color:#0AF; text-decoration:none; }
+a:visited		{ color:#0AF; text-decoration:none; }
+a:active		{ color:#069; text-decoration:none; }
+a:hover			{ color:#091; text-decoration:none; }
+img				{ border:0px; }
+input			{ font-size:11px; color:#000; vertical-align:middle; }
+select			{ font-size:11px; color:#BABABA; vertical-align:middle; }
+textarea		{ font-size:20px; color:#000; }
+ul				{ list-style:none outside; }
+
+article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary{
+	display:block;
+}
+header{
+	margin:10px 0;
+	height:100px;
+}
+hgroup{
+	float:left;
+	text-align:left;	
+}
+h1.logo{
+	font-size: 4.0em;
+}
+
+
+div#content{
+	height:535px;
+}
+
+div#left_video{
+	float:left;
+	width:600px;
+	height:535px;
+	background-color:#3F7AA7;
+	margin-right:5px;
+}
+div#right_twit{
+		float:left;
+	width:380px;
+	height:535px;
+	background-color:#3F7AA7;
+}
+
+footer{
+	margin-top:20px;
+	height:30px;
+}
+
+div#video{
+	position:relative;
+	float:none;
+	top:20px;
+	left:20px;
+	width:560px;
+	height:370px;
+	background-color:#7EABCE;
+	color:#111;
+}
+
+.box_shadow{
+	box-shadow:2px 2px 5px silver; 
+	-moz-box-shadow:2px 2px 5px silver; 
+	-webkit-box-shadow:2px 2px 5px silver; 
+	filter:progid:DXImageTransform.Microsoft.Shadow(color=silver,direction=135, strength=5);
+}
+
+#twitterlive { 
+	margin : 0 auto;
+	width: 340px;
+	height: 340px; 
+	color: #000;
+	text-align:left;
+}
+.twitterSearchContainter{
+	height:335px;
+}
+
+
+.q_button{
+	position:relative;
+	float:left;
+	background-color: #7EABCE;
+	left:20px;
+	top:40px;
+	width:100px;
+	height:80px;
+	vertical-align:bottom;
+	margin:10px 10px 10px 10px;
+}
+
+#question_container{
+	position:relative;
+}
+.big_font
+{
+	font-weight:bolder;
+		font-size:6em;
+
+}
+.middle_font
+{
+	font-weight:bolder;
+		font-size:3em;
+
+}
+
+.q_button{
+	position:relative;
+	float:left;
+	background-color: #7EABCE;
+	left:20px;
+	top:40px;
+	width:100px;
+	height:80px;
+	vertical-align:bottom;
+	margin:10px 10px 10px 10px;
+}
+.a_button{
+	position:relative;
+	float:left;
+	background-color: #7EABCE;
+	left:20px;
+	width:40px;
+	height:30px;
+	vertical-align:bottom;
+	margin:1dd0px;
+}
+
+#live_question
+{
+	position:relative;
+	float:left;
+
+	left:40px;
+	top:45px;
+	background-color:#EEE;
+	width:380px;
+	height:100px;
+}
+#question_msg{
+	width:400px;
+	height:40px;
+	font-weight:bolder;
+		font-size:2em;
+		color:black;
+}
+.doing
+{
+	font-weight:bold;
+	font-size:1.5em;
+	color:white;
+}
+
+div.growlUI { background: url('http://jquery.malsup.com/block/check48.png') no-repeat 10px 10px ;
+
+}
+div.growlUI h1, div.growlUI h2 {
+		font-size:4em;
+	color: white; padding: 5px 5px 5px 75px; text-align: left;
+}
+

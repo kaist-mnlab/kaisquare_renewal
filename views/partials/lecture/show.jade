@@ -4,7 +4,7 @@
 .modal-body
     div()
         table.table.table-bordered
-            tbody
+            tbody(data-ng-switch on="lecture.status")
                 tr
                 td title
                 td
@@ -20,13 +20,21 @@
                 tr
                 td Live/VOD
                 td
-                   {{lecture.status}}
+                   p(data-ng-switch-when="1")
+                       | Live
+                   p(data-ng-switch-when="0")
+                       | VoD
+                tr(data-ng-switch-when="0")
+                   td VOD URL
+                   td {{lecture.vod_url}}    
 .modal-footer
-    .well(data-ng-controller="NavCtrl")
+    .well(data-ng-controller="NavCtrl", data-ng-switch on="lecture.status")
         a.btn.btn-warning(data-ng-click="launchEdit()", data-access-level='accessLevels.user')
              i.icon-edit.icon-white Edit
         a.btn.btn-danger(type='submit', data-ng-click='deleteLecture()', data-access-level='accessLevels.user')
              i.icon-remove.icon-white Delete
+        a.btn.btn-primary(data-ng-click="startLecture()", data-access-level='accessLevels.user', data-ng-switch-when="1")
+             i.icon-edit.icon-white Start Lecture
         a.btn.btn-success(data-ng-click="view()")
              i.icon-edit.icon-white View
              

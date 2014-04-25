@@ -1,0 +1,30 @@
+link(href="/css/lapp.css", rel="stylesheet", type="text/css")
+link(href="/css/rtwitter.css", rel="stylesheet", type="text/css")
+
+
+div#content()
+	#left_video()
+		#video()
+			div(data-ng-switch on="lecture.status")
+				div(data-ng-switch-when="1")
+					iframe(src="http://acloud01.kaist.ac.kr:55555/student.html?ltid=1&width=640&height=480", frameborder="0", marginwidth="0", marginheight="0", style="width:640px; height:480px;")
+				div(data-ng-switch-when="0")
+					video(width='500',height='370',autoplay,preload,controls,src="{{trustSrc(lecture.vod_url)}}")
+
+				
+				
+		span.q_button.btn.btn-m
+			button#q_button.big_font(type="button", data-ng-click="send_q()")
+				| Q
+		div#live_question.shadow_box
+			<div id="question_msg"></div>
+			<div id='question_container'></div>
+		div#q_log
+		
+		
+	#right_twit()
+		<a class="twitter-timeline" href="https://twitter.com/search?q=%23KAIST" data-widget-id="445301685708009472">Tweets about "#KAIST"</a>
+		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+		
+		
+

@@ -19,6 +19,7 @@ requirejs.config({
 		'security': 'modules/security',
 		'course': 'modules/course',
 		'lecture': 'modules/lecture',
+		'lapp':	'modules/lapp',
 		'domReady': '../lib/require/domReady'
 
 	},
@@ -71,7 +72,8 @@ requirejs.config({
 		},
 		'lecture/index':{
 			deps:['angular', 'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter','lecture/lecture.directive']
-		}
+		},
+		
 	}
 });
 
@@ -100,7 +102,8 @@ requirejs( [
 		'course/index',
 		'course/course.controller', 'course/course.service','course/course.filter',
 		'lecture/index',
-		'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter', 'lecture/lecture.directive'
+		'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter', 'lecture/lecture.directive',
+		'lapp/lapp.controller'
 	
 	],
 
