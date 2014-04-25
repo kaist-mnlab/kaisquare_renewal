@@ -4,8 +4,7 @@
 form(role="form", data-ng-submit="createLecture()")
     .modal-body    
         .form-group
-            label(for="course") Course  : 
-            label(for="course") {{course.title}}
+            label(for="course") Course  : {{course.title}}
         .form-group
             label(for="lectureTitle") Title
             input#lectureTitle.form-control(type="text", data-ng-model="lecture.title")
@@ -22,20 +21,21 @@ form(role="form", data-ng-submit="createLecture()")
         
         .form-group
             label(for="lectureStatus") Live/VOD
-            button.btn.btn-primary(type="button", data-ng-model="lecture.status", btn-radio="1")
-               | LIVE
-            button.btn.btn-primary(type="button", data-ng-model="lecture.status", btn-radio="0")
-               | VOD
+            div#lectureStatus
+                button.btn.btn-primary(type="button", data-ng-model="lecture.status", btn-radio="1")
+                    | LIVE
+                button.btn.btn-primary(type="button", data-ng-model="lecture.status", btn-radio="0")
+                    | VOD
         div(data-ng-switch on="lecture.status")
             div(data-ng-switch-when="0")
                 .form-group
                     label(for="lectureVoDURL") VOD URL
                     input#lectureVoDURL.form-control(type="text", data-ng-model="lecture.vod_url")
-                .form-group
-                    label(for="lectureVoDFile") File Upload
-                    input#lectureVoDFile.form-control(type="file")                
-            div(data-ng-switch-when="1")
-                | Live
+                //.form-group
+                //    label(for="lectureVoDFile") Video File Upload
+                //    input#lectureVoDFile.form-control(type="file")                
+            //div(data-ng-switch-when="1")
+            //    | Live
  
     .modal-footer   
         button.btn.btn-primary.pull-right(type="submit") Create Lecture !

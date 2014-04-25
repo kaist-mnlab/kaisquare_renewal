@@ -9,14 +9,14 @@ div#content()
 				div(data-ng-switch-when="1")
 					iframe(src="http://acloud01.kaist.ac.kr:55555/student.html?ltid=1&width=640&height=480", frameborder="0", marginwidth="0", marginheight="0", style="width:640px; height:480px;")
 				div(data-ng-switch-when="0")
-					video(width='500',height='370',autoplay,preload,controls,src="{{trustSrc(lecture.vod_url)}}")
+					video(width="640px",height="480px",autoplay,preload,controls,src="{{trustSrc(lecture.vod_url)}}")
 
 				
 				
 		span.q_button.btn.btn-m
 			button#q_button.big_font(type="button", data-ng-click="send_q()")
 				| Q
-		div#live_question.shadow_box
+		div#live_question.btn-m
 			<div id="question_msg"></div>
 			<div id='question_container'></div>
 		div#q_log

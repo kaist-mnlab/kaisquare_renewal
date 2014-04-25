@@ -1,28 +1,39 @@
 ul.breadcrumb
-    li.active
-        a(href='/courses') Courses
-        span.divider /
-        
+	li.active
+		a(href='/courses') Courses
+		span.divider /        
 .page-header
-  h1 Courses
-
+	h1 Courses
 .row(data-ng-controller='NavCtrl')
-    .col-xs-5
-        button.btn.btn-default(data-ng-click="launch('newCourse')", act-nav, data-access-level='accessLevels.user')
-           span.glyphicon.glyphicon-plus() New Course
-             
-    .col-xs-7
-        input.form-control(type='text', data-ng-model="query", placeholder="Search for a course")
-
+	.col-xs-5
+		button.btn.btn-default(data-ng-click="launch('newCourse')", act-nav, data-access-level='accessLevels.user')
+			span.glyphicon.glyphicon-plus() New Course         
+	.col-xs-7
+		input.form-control(type='text', data-ng-model="query", placeholder="Search for a course")
 .row
-    .col-xs-12
-        hr
+	.col-xs-12
+		hr
+		
+table.table
+	thead
+		tr
+			th() Course Title
+			th() Abstract
+			th Course Manager
+	tbody(data-ng-switch, on="courses.length")
+		tr(data-ng-switch-when="0")
+			td
+				| No course in databases. Would you like to create one?
+			td
+			td
+		tr(data-ng-repeat="course in courses | filter:query")
+			td
+				a(href="/courses/course/{{course._id}}")
+					{{course.title}}
+			td
+				{{course.abstract}}
+			td
+				ul
+					li(data-ng-repeat="user in course.usersData")
+						{{user.user.username}}
 
-.row(data-ng-switch, on="courses.length")
-    ul(data-ng-switch-when="0")
-        li
-            em
-                No course in databases. Would you like to create one?
-    ul(data-ng-switch-default)
-        li(ng-repeat="course in courses | filter:query")
-            a(href="/courses/course/{{course._id}}") {{course.title}}

@@ -35,15 +35,15 @@ div#content{
 
 div#left_video{
 	float:left;
-	width:600px;
-	height:535px;
+	width:700px;
+	height:625px;
 	background-color:#3F7AA7;
 	margin-right:5px;
 }
 div#right_twit{
 		float:left;
 	width:380px;
-	height:535px;
+	height:625px;
 	background-color:#3F7AA7;
 }
 
@@ -57,8 +57,8 @@ div#video{
 	float:none;
 	top:20px;
 	left:20px;
-	width:560px;
-	height:370px;
+	width:640px;
+	height:480px;
 	background-color:#7EABCE;
 	color:#111;
 }
@@ -100,7 +100,7 @@ div#video{
 .big_font
 {
 	font-weight:bolder;
-		font-size:6em;
+		font-size:5em;
 
 }
 .middle_font
@@ -140,8 +140,8 @@ div#video{
 	left:40px;
 	top:45px;
 	background-color:#EEE;
-	width:380px;
-	height:100px;
+	width:500px;
+	height:80px;
 }
 #question_msg{
 	width:400px;
