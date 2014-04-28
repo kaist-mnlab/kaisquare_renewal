@@ -2,7 +2,7 @@
 
 /* Controllers */
 define(['angular'], function(angular) {
-angular.module('lecture.controller', ['security', 'ui.bootstrap','angularFileUpload' ])
+angular.module('lecture.controller', ['security', 'ui.bootstrap' ])
 //app
 .controller('LectureListCtrl',
 ['$rootScope', '$scope', 'Lecture','$stateParams', function($rootScope, $scope, Lecture,$stateParams) {
@@ -24,7 +24,7 @@ angular.module('lecture.controller', ['security', 'ui.bootstrap','angularFileUpl
 //app
 angular.module('lecture.controller')
 .controller('LectureItemCtrl',
-['$scope', '$q', '$location','$stateParams','Lecture','User','lectureId', '$modalInstance', '$modal','$fileUploader', function($scope, $q, $location, $stateParams,Lecture,User,lectureId, $modalInstance, $modal,$fileUploader) {
+['$scope', '$q', '$location','$stateParams','Lecture','User','lectureId', '$modalInstance', '$modal', function($scope, $q, $location, $stateParams,Lecture,User,lectureId, $modalInstance, $modal) {
 
 	$scope.lecture = Lecture.get({lectureId: lectureId});
 	
@@ -33,20 +33,7 @@ angular.module('lecture.controller')
 		}
 	);
 	
-	var uploader = $scope.uploader = $fileUploader.create({
-		scope: $scope,
-		url: '',
-		formData: [
-			{ key: 'value' }
-		],
-		filter: [
-			function(item) {
-				console.info('filter1');
-				return true;
-			}
-		]
-	
-	});
+
 
 	$scope.launchEdit = function() {
 		//$modalInstance.close();
