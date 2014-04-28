@@ -78,8 +78,13 @@ app.configure(function() {
 	app.use(passport.session());
 	
 	passport.use(Auth.localStrategy);
-	passport.use(Auth.twitterStrategy());  // Comment out this line if you don't want to enable login via Twitter
-	passport.use(Auth.facebookStrategy()); // Comment out this line if you don't want to enable login via Facebook
+	
+	var twitterStrategy = Auth.twitterStrategy();
+	if(twitterStrategy !== null)
+		passport.use(twitterStrategy);  // Comment out this line if you don't want to enable login via Twitter
+	var facebookStrategy = Auth.facebookStrategy();
+	if(facebookStrategy !== null)
+		passport.use(facebookStrategy); // Comment out this line if you don't want to enable login via Facebook
 	//passport.use(Auth.googleStrategy());   // Comment out this line if you don't want to enable login via Google
 	//passport.use(Auth.linkedInStrategy()); // Comment out this line if you don't want to enable login via LinkedIn
 	
