@@ -6,6 +6,7 @@ var express = require('express.io'),
 	fs = require('fs'),
 	redis = require('redis'),
 	session = require('express-session'),
+	cookieParser = require('cookie-parser'),
 	RedisStore = require('connect-redis')(session),
 	
 	passport = require('passport');
@@ -57,7 +58,8 @@ app.configure(function() {
 	app.set('view engine', 'jade');
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
-	app.use(express.cookieParser());
+	//app.use(express.cookieParser());
+	app.use(cookieParser());
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
 	app.use(express.session({

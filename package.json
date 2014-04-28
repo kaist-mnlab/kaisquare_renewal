@@ -25,7 +25,8 @@
     "validator": "~3.8.0",
     "passport-local": "~1.0.0",
     "path": "~0.4.9",
-    "mongoose-file": "0.0.2"
+    "mongoose-file": "0.0.2",
+    "cookie-parser": "~1.0.1"
   },
   "repository": "",
   "keywords": [
