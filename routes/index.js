@@ -276,7 +276,7 @@ function ensureAuthorized(req, res, next) {
     
 
     var accessLevel = _.findWhere(routes, { path: req.route.path }).accessLevel || accessLevels.public;
-	console.log(role);
+	
     if(!(accessLevel.bitMask & role.bitMask)) return res.send(403);
     return next();
 }

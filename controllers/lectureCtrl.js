@@ -8,8 +8,7 @@ module.exports = {
 	// JSON API for list of Courses
 	list : function(req, res) {
 		// Query Mongo for Courses, just get back the question text
-		console.log("lecture list");
-		
+				
 		Lecture.find({}, {},{}, function(error, lectures) {
 			
 			res.json(lectures);
@@ -20,7 +19,7 @@ module.exports = {
 	lecture : function(req, res) {
 		// Course ID comes in the URL
 		var lectureId = req.params.id;
-		console.log("lecture read");
+	
 		// Find the Course by its ID, use lean as we won't be changing it
 		Lecture.findById(lectureId, '', { lean: true }, function(err, lecture) {
 			if(lecture) {
@@ -35,7 +34,7 @@ module.exports = {
 	
 	// JSON API for creating a new poll
 	create : function(req, res) {
-		console.log("save");
+
 		var reqBody = req.body,
 				// Filter out choices with empty text
 				// Build up Course object to save

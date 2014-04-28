@@ -25,9 +25,9 @@ table.table
 		tr(data-ng-repeat="lecture in lectures | filter:query")
 			td
 				a(data-ng-click="launchLecture(lecture._id)")
-					{{lecture.title}}
+					| {{lecture.title}}
 			td
-				{{lecture.description}}
+				| {{lecture.description}}
 			td
 				div(data-ng-switch, on="lecture.status")
 					div(data-ng-switch-when="1")

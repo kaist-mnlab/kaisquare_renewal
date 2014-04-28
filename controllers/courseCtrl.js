@@ -18,7 +18,7 @@ module.exports = {
 	course : function(req, res) {
 		// Course ID comes in the URL
 		var courseId = req.params.id;
-		console.log("course read");
+		
 		// Find the Course by its ID, use lean as we won't be changing it
 		Course.findById(courseId, '', { lean: true }, function(err, course) {
 			if(course) {
@@ -33,7 +33,7 @@ module.exports = {
 	
 	// JSON API for creating a new poll
 	create : function(req, res) {
-		console.log("save");
+		
 		var reqBody = req.body,
 				// Filter out choices with empty text
 				//choices = reqBody.choices.filter(function(v) { return v.text != ''; }),
@@ -44,7 +44,7 @@ module.exports = {
 							 hidden: reqBody.hidden,
 							 users: reqBody.users,
 							 };
-		console.log(courseObj);
+
 		
 		// Create Course model from built up Course object
 		var course = new Course(courseObj);

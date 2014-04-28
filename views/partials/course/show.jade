@@ -17,15 +17,15 @@ accordion(close-others="false")
 					tr
 					td Course Title
 					td
-						{{course.title}} 
+						| {{course.title}} 
 					tr
 					td Abstract
 					td
-						{{course.abstract}} 
+						| {{course.abstract}} 
 					tr
 					td Description
 					td
-						{{course.description}}
+						| {{course.description}}
 					tr
 					td Tutor
 					td(data-ng-switch, on="course.users.length")
@@ -33,11 +33,11 @@ accordion(close-others="false")
 							| There's no tutor!!!
 						ul(data-ng-switch-default)
 							li(ng-repeat="user in course.usersData | adminFilter")
-								{{user.user.username}}
+								| {{user.user.username}}
 					tr
 					td Open
 					td
-						{{course.hidden}}
+						| {{course.hidden}}
 	accordion-group(heading="Lectures", is-open="true")
 		#lectureContent.container(lecture-nav)
 

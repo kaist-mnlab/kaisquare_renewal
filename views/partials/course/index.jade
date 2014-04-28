@@ -29,11 +29,11 @@ table.table
 		tr(data-ng-repeat="course in courses | filter:query")
 			td
 				a(href="/courses/course/{{course._id}}")
-					{{course.title}}
+					| {{course.title}}
 			td
-				{{course.abstract}}
+				| {{course.abstract}}
 			td
 				ul
 					li(data-ng-repeat="user in course.usersData")
-						{{user.user.username}}
+						| {{user.user.username}}
 
