@@ -158,7 +158,7 @@ module.exports = {
     ),
 
     twitterStrategy: function() {
-    	if(!pkginfo.twitter)    throw new Error('A Twitter Consumer Key is required if you want to enable login via Twitter.');
+    	if(!pkginfo.twitter)   return null;
         if(!pkginfo.twitter.TWITTER_CONSUMER_KEY)    throw new Error('A Twitter Consumer Key is required if you want to enable login via Twitter.');
         if(!pkginfo.twitter.TWITTER_CONSUMER_SECRET) throw new Error('A Twitter Consumer Secret is required if you want to enable login via Twitter.');
 	
@@ -174,7 +174,7 @@ module.exports = {
     },
 
     facebookStrategy: function() {
-    	if(!pkginfo.facebook)     throw new Error('A Facebook App ID is required if you want to enable login via Facebook.');
+    	if(!pkginfo.facebook)  return null;
         if(!pkginfo.facebook.FACEBOOK_APP_ID)     throw new Error('A Facebook App ID is required if you want to enable login via Facebook.');
         if(!pkginfo.facebook.FACEBOOK_APP_SECRET) throw new Error('A Facebook App Secret is required if you want to enable login via Facebook.');
 
