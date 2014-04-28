@@ -73,7 +73,6 @@ angular.module('security.service', ['ngResource'])
         },
         login: function(user, success, error) {
             $http.post('/login', user).success(function(user){
-            	console.log(user);
                 changeUser(user);
                 success(user);
             }).error(error);

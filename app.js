@@ -58,7 +58,6 @@ app.configure(function() {
 	app.set('view engine', 'jade');
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
-	//app.use(express.cookieParser());
 	app.use(cookieParser());
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());

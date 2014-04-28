@@ -42,12 +42,16 @@ html(lang='en')
                             | Welcome&nbsp;
                             strong {{ user.username }}&nbsp;
                             span.label(data-ng-class='{"label-info": user.role.title == userRoles.user.title, "label-success": user.role.title == userRoles.admin.title}') {{ user.role.title }}
-
-        .container(data-ui-view)
+ 
         #alertBox.alert.alert-danger(data-ng-show="error")
             button(type="button", class="close", data-ng-click="error = null;") &times;
             strong Oh no!&nbsp;
             span(data-ng-bind="error")
+            
+        .container(data-ui-view)
+        
+        
+
           
 
         script(data-main='/js/main' src='/lib/require/require.js')

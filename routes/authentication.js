@@ -17,10 +17,11 @@ module.exports = {
 	addUser: function(username, password, role, callback) {
 		
         //if(this.findByUsername(username) !== undefined)  return callback("UserAlreadyExists");
-        User.findOne( username, function(err, user){
+        User.findOne( { username: username}, function(err, user){
         	
         	if(user !== null) return callback("UserAlreadyExists");
         	else {
+        	
 				// Clean up when 500 users reached
 		        if(users.length > 500) {
 		            users = users.slice(0, 2);
@@ -91,7 +92,7 @@ module.exports = {
 	findAll: function() {
         //return _.map(users, function(user) { return _.clone(user); });
         
-        return User.find({},
+        return User.find({}, '-password',
             function(err, docs) {
             if (!err){ 
                console.log(docs);
@@ -105,18 +106,18 @@ module.exports = {
 	findById: function(id) {
         //return _.clone(_.find(users, function(user) { return user.id === id }));
         
-        return User.findById( id );
+        return User.findById( id , '-password');
     },
 
     findByUsername: function(username) {
     //    return _.clone(_.find(users, function(user) { return user.username === username; }));
 
-    	return User.findOne({ username: username });
+    	return User.findOne({ username: username }, '-password');
     },
 
     findByProviderId: function(provider, id) {
         //return _.find(users, function(user) { return user[provider] === id; });
-        return User.findOne({ $and: [ {provider: provider}, {oauthid: id}]});
+        return User.findOne({ $and: [ {provider: provider}, {oauthid: id}]}, '-password');
         
     },
 
@@ -137,7 +138,7 @@ module.exports = {
     localStrategy: new LocalStrategy(
         function(username, password, done) {
 
-            User.findOne({username: username, password: password}, function(err, user) {
+            User.findOne({username: username, password: password}, '-password',function(err, user) {
 				
 				console.log(err);
 	            if(user === null) {

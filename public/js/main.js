@@ -76,6 +76,9 @@ requirejs.config({
 		'course/index':{
 			deps:['angular', 'angular-ui-bootstrap', 'course/course.controller', 'course/course.service','course/course.filter', 'lecture/index']
 		},
+		'course/directive':{
+			deps:['angular', 'security/index']
+		},
 		'lecture/index':{
 			deps:['angular', 'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter','lecture/lecture.directive']
 		},
@@ -107,7 +110,7 @@ requirejs( [
 		'poll/index',
 		'poll/poll.controller', 'poll/poll.service',
 		'course/index',
-		'course/course.controller', 'course/course.service','course/course.filter',
+		'course/course.controller', 'course/course.service','course/course.filter','course/course.directive',
 		'lecture/index',
 		'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter', 'lecture/lecture.directive',
 		'lapp/lapp.controller'

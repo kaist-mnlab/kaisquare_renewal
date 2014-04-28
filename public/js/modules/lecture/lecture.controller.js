@@ -20,7 +20,6 @@ angular.module('lecture.controller', ['security', 'ui.bootstrap' ])
 	
 }]);
 
-
 //app
 angular.module('lecture.controller')
 .controller('LectureItemCtrl',

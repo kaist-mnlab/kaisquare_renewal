@@ -14,7 +14,7 @@ form(role="form", data-ng-submit="createLecture()", data-ng-file-drop)
         .form-group
             label(for="lectureDate") Date
             p.input-group
-                input#lectureDate.form-control.ng-valid-date(type="text", data-ng-model="lecture.date", datepicker-popup="dd-MMMM-yyyy", data-ng-required="true", close-text="Close")
+                input#lectureDate.form-control.ng-valid-date(type="text", data-ng-model="lecture.date", datepicker-popup="yyyy-MM-dd", data-ng-required="true", close-text="Close")
                 span.input-group-btn
                     button.btn.btn-default(type="button", data-ng-click="open($event)")
                         i.glyphicon.glyphicon-calendar

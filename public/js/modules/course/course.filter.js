@@ -8,11 +8,16 @@ angular.module('course.filter', [])
 
 	return function(input) {
 		if(input !== undefined ) {
-			if(input[0].role_bitMask == 7) {
-				return input;
-			} else {
-				return;
-			}
+			var returns = [];
+			
+			for(var i = input.length; i--;) {
+	        	if(input[i].role_bitMask == accessCfg.courseUserRoles.tutor.bitMask) {
+	        		returns.push(input[i]);
+	          	}
+	      	}
+	      	
+	      	return returns;
+				
 		}
 	}
 });

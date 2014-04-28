@@ -24,13 +24,28 @@
             'anon': ['public'],
             'user' : ['user', 'admin'],
             'admin': ['admin']
-        }
+        },
+        courseRoles :[
+        	'unsubscribed',
+        	'subscribed',
+        	'assistant',
+        	'tutor'
+        ],
+        courseAccessLevels : {
+            'public' : "*",
+            'anon': ['unsubscribed'],
+            'user' : ['subscribed', 'assistant', 'tutor'],
+            'tutor': ['assistant','tutor'],
+            'admin': ['tutor']
+        },
+        
 
     }
 
     exports.userRoles = buildRoles(config.roles);
     exports.accessLevels = buildAccessLevels(config.accessLevels, exports.userRoles);
-
+	exports.courseUserRoles = buildRoles(config.courseRoles);
+    exports.courseAccessLevels = buildAccessLevels(config.courseAccessLevels, exports.courseUserRoles);
     /*
         Method to build a distinct bit mask for each role
         It starts off with "1" and shifts the bit to the left for each element in the

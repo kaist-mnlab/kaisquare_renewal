@@ -5,7 +5,7 @@ define(['angular'], function(angular) {
 angular.module('course.controller', ['security', 'lecture','ui.bootstrap'])
 //app
 .controller('CourseListCtrl',
-[ '$scope', 'Course', '$modal', function( $scope, Course, $modal) {
+[ '$scope', 'Course', '$modal','User', function( $scope, Course, $modal,User) {
 
 	$scope.courses = Course.query();
 	$scope.launch = function(which){
@@ -34,7 +34,24 @@ angular.module('course.controller', ['security', 'lecture','ui.bootstrap'])
 		};
 	
 	};
+
+	$scope.refreshCourse = function(course) {
+	
+		course.usersData = [];
+		for(var u in course.users) {
+			course.usersData.push( { user: User.get({userId: course.users[u].user}) , role_bitMask: course.users[u].role_bitMask});
+		};
 		
+
+	}
+	
+	$scope.courses.$promise.then(function() {
+
+		for(var c = $scope.courses.length; c--;) {
+			$scope.refreshCourse($scope.courses[c]);
+		}
+	});
+	
 	
 }]);
 
@@ -42,19 +59,33 @@ angular.module('course.controller', ['security', 'lecture','ui.bootstrap'])
 //app
 angular.module('course.controller')
 .controller('CourseItemCtrl',
-['$scope', '$q', '$location','$stateParams','Course','User','$http','Lecture','$modal', function($scope, $q, $location, $stateParams,Course,User, $http, Lecture, $modal) {
-
+['$rootScope', '$scope','$state', '$q', '$location','$stateParams','Course','User','$http','Lecture','$modal','security', function($rootScope,$scope, $state,$q, $location, $stateParams,Course,User, $http, Lecture, $modal, security) {
+	$scope.courseAccessLevels = accessCfg.courseAccessLevels;
 	$scope.course = Course.get({courseId: $stateParams.courseId});
-
+	$scope.course.usersData = [];
+	$scope.user = security.user;
+	$scope.user.courseUserRole = accessCfg.courseUserRoles.unsubscribed;
 	$scope.lectureURL = $location.$$absUrl + '/lectures';
-	$scope.lectureContent;
-
 	$scope.courseId = $scope.course._id;
-
-	$scope.lectures = Lecture.query({course: $scope.courseId});
+	$scope.lectures = {};
+	$scope.alerts = [];
 	
-	$scope.lectures.$promise.then(function() {
-		$scope.launchLecture = function(id){
+	$scope.addAlert = function(msg, type) {
+		$scope.alerts.push({msg: msg, type: type});
+	};
+	$scope.closeAlert = function(index) {
+		$scope.alerts.splice(index, 1);
+	}	
+	
+	$scope.course.$promise.then(function() {
+		$scope.refreshCourse();
+		$scope.courseId = $scope.course._id;
+		console.log( $scope.courseId);
+		$scope.lectures = Lecture.query({course: $scope.courseId});
+		//$scope.lectures = Lecture.get({lectureId:'lectures', course:$scope.courseId});
+		$scope.lectures.$promise.then(function() {
+			console.log($scope.lectures);
+			$scope.launchLecture = function(id){
 				var dlg = null;
 				dlg = $modal.open({
 						templateUrl: 'lecture/show',
@@ -75,10 +106,76 @@ angular.module('course.controller')
 				});
 			}
 			
+		});
 	});
 	
 	
 	
+	
+	
+	$scope.enroll = function() {
+		if($scope.user.role.bitMask == 1) {
+			//alert("You need to Log in to enroll");
+			
+			$rootScope.error = "You need to log-in to enroll!";
+            event.preventDefault();
+            
+            $rootScope.error = null;
+            $state.go('anon.login');
+        }
+		else {
+			$scope.user.courseUserRole = {
+				bitMask: accessCfg.courseUserRoles.subscribed.bitMask
+			};
+			
+			$scope.course.usersData.push( { user: User.get({userId: $scope.user._id }), role_bitMask: $scope.user.courseUserRole.bitMask});
+			$scope.course.users.push( {user: $scope.user._id , role_bitMask: $scope.user.courseUserRole.bitMask} );
+			
+			$scope.updateCourse($scope.course, "Enrollment Complete!", "success");
+			
+		
+		}
+	}
+	
+	
+	
+	$scope.quit = function(index) {
+		if (index === undefined) {
+		
+			for(var i = $scope.course.users.length; i--;) {
+	        	if($scope.course.users[i].user === $scope.user._id) {
+	        		$scope.course.users.splice(i, 1);
+	          	}
+	      	}
+	      	for(var i = $scope.course.usersData.length; i--;) {
+	        	if($scope.course.usersData[i].user._id === $scope.user._id) {
+	        		$scope.course.usersData.splice(i, 1);
+	          	}
+	      	}
+			$scope.user.courseUserRole = accessCfg.courseUserRoles.unsubscribed;
+			$scope.updateCourse($scope.course, "Quit Complete!", "success");
+			
+		} else {
+			var username = $scope.course.usersData[index].user.username;
+			$scope.course.usersData.splice(index, 1);
+			$scope.course.users.splice(index, 1);
+			
+			$scope.updateCourse($scope.course, "Quit Complete!", "success");
+		}
+	}
+	
+	$scope.updateCourse = function(course, msg, type) {		
+		course.$save(function(p, resp) {
+			if(!p.error) {
+				// If there is no error, redirect to the main view
+				$scope.addAlert(msg, type);	
+				$scope.refreshCourse();
+				
+			} else {
+				alert('Could not update course');
+			}
+		});
+	}
 	
 	$scope.open = function($event) {
   	    $event.preventDefault();
@@ -107,9 +204,6 @@ angular.module('course.controller')
 				}
 				
 			});
-			
-			
-			
 			
 			dlg.result.then(function () {
 				$scope.lectures = Lecture.query({courseId: $stateParams.courseId});
@@ -143,16 +237,24 @@ angular.module('course.controller')
 			};
 		};
 	
-	$scope.course.$promise.then(function() {
-			$scope.course.usersData = [];
-			
-			for(var u in $scope.course.users) {
-				$scope.course.usersData.push( { user: User.get({userId: $scope.course.users[u].user}) , role_bitMask: $scope.course.users[u].role_bitMask});					
-			};
-			
-			
-		}
-	);
+	$scope.refreshCourse = function() {
+	
+
+		$scope.course.usersData = [];
+						
+		for(var u in $scope.course.users) {
+			$scope.course.usersData.push( { user: User.get({userId: $scope.course.users[u].user}) , role_bitMask: $scope.course.users[u].role_bitMask});
+			if( $scope.course.users[u].user === $scope.user._id) {
+				$scope.user.courseUserRole = {
+				 	bitMask: $scope.course.users[u].role_bitMask
+				};
+				
+			}
+		};
+		
+
+	}
+	
 	
 	
 	$scope.deleteCourse = function() {
@@ -183,7 +285,7 @@ angular.module('course.controller')
 			abstract: '',
 			description: '',
 			hidden: false,
-			users: [ {user: user._id , role_bitMask: 7}],
+			users: [ {user: user._id , role_bitMask: 8}],
 
 		};
 	

@@ -19,11 +19,12 @@ module.exports = {
         */
     },
     user : function(req, res) {
-		// Course ID comes in the URL
+		// user ID comes in the URL
 		var userId = req.params.userId;
 
-		// Find the Course by its ID, use lean as we won't be changing it
-		UserModel.findById(userId, '', { lean: true }, function(err, user) {
+		// Find the user by its ID, use lean as we won't be changing it
+		// Get without password field
+		UserModel.findById(userId, '-password', { lean: true }, function(err, user) {
 			if(user) {
 				//save course content
 				res.json(user);

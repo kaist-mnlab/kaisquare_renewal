@@ -8,9 +8,13 @@ module.exports = {
 	// JSON API for list of Courses
 	list : function(req, res) {
 		// Query Mongo for Courses, just get back the question text
-				
-		Lecture.find({}, {},{}, function(error, lectures) {
-			
+		console.log(req.query);
+		var query = {};
+		if(req.query !== undefined && req.query)
+			query = req.query;
+		console.log(query);
+		Lecture.find(query, {},{}, function(error, lectures) {
+			console.log(lectures);
 			res.json(lectures);
 		});
 	},
@@ -41,6 +45,7 @@ module.exports = {
 				lectureObj = {title: reqBody.title, 
 							 description: reqBody.description,
 							 status: reqBody.status,
+							 date: reqBody.date,
 							 course: reqBody.course,
 							 vod_url: reqBody.vod_url,
 							
@@ -51,7 +56,8 @@ module.exports = {
 		
 		// Create Course model from built up Course object
 		var lecture = new Lecture(lectureObj);
-		lecture.set('video.file', req.files.video);
+		if(req.files !== undefined)
+			lecture.set('video.file', req.files.video);
 		// Save Course to DB
 		if(reqBody._id === undefined){
 			lecture.save(function(err, doc) {

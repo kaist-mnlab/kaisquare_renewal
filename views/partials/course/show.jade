@@ -9,6 +9,14 @@ ul.breadcrumb
 .page-header
 	h1 Course {{course.title}}
 
+alert(data-ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)") 
+	| {{alert.msg}}
+
+button.btn.btn-success(data-ng-click="enroll()",  data-course-access-level='courseAccessLevels.anon')
+	span.glyphicon.glyphicon-plus() Enroll
+button.btn.btn-danger(data-ng-click="quit()",  data-course-access-level='courseAccessLevels.user')
+	| Quit
+
 accordion(close-others="false")
 	accordion-group(heading="Information", is-open="true")
 		div()
@@ -28,7 +36,7 @@ accordion(close-others="false")
 						| {{course.description}}
 					tr
 					td Tutor
-					td(data-ng-switch, on="course.users.length")
+					td(data-ng-switch, on="course.users.length", data-course-user-list)
 						ul(data-ng-switch-when="0")
 							| There's no tutor!!!
 						ul(data-ng-switch-default)
@@ -38,12 +46,33 @@ accordion(close-others="false")
 					td Open
 					td
 						| {{course.hidden}}
+
 	accordion-group(heading="Lectures", is-open="true")
 		#lectureContent.container(lecture-nav)
+	div( data-course-access-level='courseAccessLevels.tutor')
+		accordion-group(heading="Students", is-open="true")
+			div()
+				table.table.table-bordered
+					thead
+						tr
+							th 
+								| User Name
+							th 
+								| Role
+					tbody
+						tr(data-ng-repeat="u in course.usersData")
+							td
+								| {{u.user.username}}
+							td
+								button.btn.btn-success(type="button", data-ng-click="acceptStudent($index)", data-course-access-level='courseAccessLevels.anon') 
+									| Accept
+								button.btn.btn-danger(type="button", data-ng-click="quit($index)", data-course-access-level='courseAccessLevels.tutor') 
+									| Quit
 
-.well(data-access-level='accessLevels.user')
+.well(data-course-access-level='courseAccessLevels.tutor')
 	//a.btn.btn-primary(href="/courses/course/{{course._id}}/edit")
 	button.btn.btn-primary(data-ng-click="launch('editCourse')", act-nav)
 		i.icon-edit.icon-white Edit
 	a.btn.btn-danger(type='submit', data-ng-click='deleteCourse()', act-nav)
 		i.icon-remove.icon-white Delete
+		

@@ -34,6 +34,7 @@ table.table
 				| {{course.abstract}}
 			td
 				ul
-					li(data-ng-repeat="user in course.usersData")
+					li(data-ng-repeat="user in course.usersData | adminFilter")
 						| {{user.user.username}}
+
 

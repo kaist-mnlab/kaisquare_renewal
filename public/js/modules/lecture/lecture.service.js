@@ -7,7 +7,7 @@ angular.module('lecture.service', ['ngResource', 'security'])
 		var resource = 
 			$resource('/lectures/lectures/:lectureId', { lectureID:'@lectureId'}, {
 				// Use this method for getting a list of polls
-				query: { method: 'GET', params: { lectureId: 'lectures' }, isArray: true },
+				query: { method: 'GET', params: { lectureId: 'lectures', courseId:'@courseId' }, isArray: true },
 				update: { method: 'PUT' }
 			});
 				
