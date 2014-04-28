@@ -65,7 +65,8 @@ app.configure(function() {
 	app.use(express.session({
 	    key: sessionKey,
 	    secret: secret,
-	    store: sessionStore
+	    store: sessionStore,
+	    cookie: { secure: true }
   	}));
 
 	
