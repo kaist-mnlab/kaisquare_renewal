@@ -15,12 +15,10 @@ var users = [];
 
 module.exports = {
 	addUser: function(username, password, role, callback) {
-		//console.log(username);
-
+		
         //if(this.findByUsername(username) !== undefined)  return callback("UserAlreadyExists");
         User.findOne( username, function(err, user){
-        	console.log(user);
-        
+        	
         	if(user !== null) return callback("UserAlreadyExists");
         	else {
 				// Clean up when 500 users reached
@@ -62,8 +60,7 @@ module.exports = {
 
         		done(null, user);
         	} else {
-				console.log(userRoles);
-	            var user = new User({
+				var user = new User({
 	                //id: _.max(users, function(user) { return user.id; }).id + 1,
 	                oauthID: profile.id,
 	                username: profile.displayName, 
@@ -141,7 +138,7 @@ module.exports = {
         function(username, password, done) {
 
             User.findOne({username: username, password: password}, function(err, user) {
-				console.log(user);
+				
 				console.log(err);
 	            if(user === null) {
 	                done(null, false, { message: 'Login failed' });
@@ -220,8 +217,7 @@ module.exports = {
     
 */    
     serializeUser: function(user, done) {
-    	console.log('serializeUser: ' + user._id)
-        done(null, user._id);
+    	done(null, user._id);
     },
 
     deserializeUser: function(id, done) {
