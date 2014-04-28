@@ -45,7 +45,6 @@ module.exports = {
 							 users: reqBody.users,
 							 };
 
-		console.log(courseObj.users);
 		
 		// Create Course model from built up Course object
 		var course = new Course(courseObj);

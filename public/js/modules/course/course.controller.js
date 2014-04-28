@@ -80,11 +80,8 @@ angular.module('course.controller')
 	$scope.course.$promise.then(function() {
 		$scope.refreshCourse();
 		$scope.courseId = $scope.course._id;
-		console.log( $scope.courseId);
 		$scope.lectures = Lecture.query({course: $scope.courseId});
-		//$scope.lectures = Lecture.get({lectureId:'lectures', course:$scope.courseId});
 		$scope.lectures.$promise.then(function() {
-			console.log($scope.lectures);
 			$scope.launchLecture = function(id){
 				var dlg = null;
 				dlg = $modal.open({

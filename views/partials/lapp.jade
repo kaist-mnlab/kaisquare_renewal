@@ -1,7 +1,6 @@
 link(href="/css/lapp.css", rel="stylesheet", type="text/css")
 link(href="/css/rtwitter.css", rel="stylesheet", type="text/css")
 
-
 div#content()
 	#left_video()
 		#video()
@@ -10,9 +9,7 @@ div#content()
 					iframe(src="http://acloud01.kaist.ac.kr:55555/student.html?ltid=1&width=640&height=480", frameborder="0", marginwidth="0", marginheight="0", style="width:640px; height:480px;")
 				div(data-ng-switch-when="0")
 					video(width="640px",height="480px",autoplay,preload,controls,src="{{trustSrc(lecture.vod_url)}}")
-
-				
-				
+	
 		span.q_button.btn.btn-m
 			button#q_button.big_font(type="button", data-ng-click="send_q()")
 				| Q
@@ -21,10 +18,15 @@ div#content()
 			<div id='question_container'></div>
 		div#q_log
 		
-		
 	#right_twit()
+		div#chatArea(data-ng-model="chat_log")
+			ul
+				li(data-ng-repeat="chat in chat_log")
+					| {{chat.src_name}} :
+					| {{chat.message}}
+		div#inputArea
+			input#inputMessage(type="text", data-ng-model="chat_message")
+			button#btnChat.btn.btn-default(type="button", data-ng-click="send_chat()")
+				| Send 
 		<a class="twitter-timeline" href="https://twitter.com/search?q=%23KAIST" data-widget-id="445301685708009472">Tweets about "#KAIST"</a>
 		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-		
-		
-

@@ -27,13 +27,14 @@ exports.db = db;
 var Auth = require('./routes/authentication.js'),
 	pollCtrl = require('./controllers/pollCtrl.js');
 
+
 var	secret = exports.secret = 'kaistmnlab';
 
 var app = exports.app = express();
 var port = exports.port = +process.argv[2] || process.env.PORT || 6789; 
 var server = http.createServer(app);
 var io = require('socket.io');
-
+var lapp = require('./controllers/lapp');
 
 if (process.env.REDISTOGO_URL) {
   var rtg   = require('url').parse(process.env.REDISTOGO_URL);
@@ -124,5 +125,8 @@ server = exports.server = http.createServer(app).listen(app.get('port'), functio
   console.log('KAISquare started on port %d', app.get('port'));
 });
 
-var sio = io.listen(server);
+var sio = module.exports.io = io.listen(server);
+
+lapp.index(sio);
+sio.sockets.on('connection', lapp.lecture);
 sio.sockets.on('connection', pollCtrl.vote);
