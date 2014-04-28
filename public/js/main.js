@@ -14,6 +14,7 @@ requirejs.config({
 		'angular-cookies':'../lib/angular/angular-cookies',
 		'angular-ui-router':'../lib/angular/angular-ui-router.min',
 		'angular-ui-bootstrap':'../lib/angular/ui-bootstrap-tpls-0.10.0.min',
+		//'angular-file-upload':'../lib/angular/angular-file-upload.min',
 		'library': '../lib',
 		'poll': 'modules/poll',
 		'security': 'modules/security',
@@ -47,6 +48,11 @@ requirejs.config({
 		'angular-ui-bootstrap':{
 			deps:['angular']
 		},
+		/*
+		'angular-file-upload':{
+			deps:['angular']
+		},
+		*/
 		'accessCfg':{
 			deps:['jquery'],
 			exports:'accessCfg'
@@ -90,6 +96,7 @@ requirejs( [
 		'angular-cookies',
 		'angular-ui-router',
 		'angular-ui-bootstrap',
+		//'angular-file-upload',
 		'app',
 		'accessCfg',
 

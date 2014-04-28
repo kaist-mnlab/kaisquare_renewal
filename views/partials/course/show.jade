@@ -1,12 +1,10 @@
 ul.breadcrumb
 	li
 		a(href='/') Courses
-		span.divider /
-	li
-		a(href='/') {{course.title}}
-		span.divider /
+		span.divider 
 	li.active
-		a(href='#') Details of course {{course.title}}
+		a(href='#') {{course.title}}
+		
 
 .page-header
 	h1 Course {{course.title}}

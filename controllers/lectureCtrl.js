@@ -38,19 +38,21 @@ module.exports = {
 		console.log("save");
 		var reqBody = req.body,
 				// Filter out choices with empty text
-				//choices = reqBody.choices.filter(function(v) { return v.text != ''; }),
 				// Build up Course object to save
 				lectureObj = {title: reqBody.title, 
 							 description: reqBody.description,
 							 status: reqBody.status,
 							 course: reqBody.course,
 							 vod_url: reqBody.vod_url,
+							
 							 };
 
+		console.log(req.files);
+		
 		
 		// Create Course model from built up Course object
 		var lecture = new Lecture(lectureObj);
-		
+		lecture.set('video.file', req.files.video);
 		// Save Course to DB
 		if(reqBody._id === undefined){
 			lecture.save(function(err, doc) {

@@ -9,23 +9,9 @@ var _ =               require('underscore')
     , userRoles =       require('../models/accessCfg').userRoles
     , User =			require('../models/User');
 
-var pkginfo 
-	= require('../oauth.cfg');
+var pkginfo = require('../oauth.cfg') || {};
 
-var users = [
-    {
-        id:         1,
-        username:   "user",
-        password:   "123",
-        role:   userRoles.user
-    },
-    {
-        id:         2,
-        username:   "admin",
-        password:   "123",
-        role:   userRoles.admin
-    }
-];
+var users = [];
 
 module.exports = {
 	addUser: function(username, password, role, callback) {

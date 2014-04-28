@@ -45,13 +45,12 @@ angular.module('course.controller')
 ['$scope', '$q', '$location','$stateParams','Course','User','$http','Lecture','$modal', function($scope, $q, $location, $stateParams,Course,User, $http, Lecture, $modal) {
 
 	$scope.course = Course.get({courseId: $stateParams.courseId});
-	//$scope.course = delayedValue($scope, deferred, Course.get({courseId: $stateParams.courseId}));
-	
+
 	$scope.lectureURL = $location.$$absUrl + '/lectures';
 	$scope.lectureContent;
 
 	$scope.courseId = $scope.course._id;
-	//$scope.lectures = Lecture.query();
+
 	$scope.lectures = Lecture.query({course: $scope.courseId});
 	
 	$scope.lectures.$promise.then(function() {
@@ -67,7 +66,7 @@ angular.module('course.controller')
 							}
 						}
 					});
-					
+
 				dlg.result.then(function () {
 					$scope.lectures = Lecture.query({course: $scope.courseId});
 					
@@ -75,7 +74,12 @@ angular.module('course.controller')
 					console.log("Dismissed");
 				});
 			}
+			
 	});
+	
+	
+	
+	
 	$scope.open = function($event) {
   	    $event.preventDefault();
     	$event.stopPropagation();
@@ -101,7 +105,11 @@ angular.module('course.controller')
 						return $scope.course;
 					}
 				}
+				
 			});
+			
+			
+			
 			
 			dlg.result.then(function () {
 				$scope.lectures = Lecture.query({courseId: $stateParams.courseId});

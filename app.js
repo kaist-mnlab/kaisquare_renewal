@@ -31,7 +31,6 @@ var	secret = exports.secret = 'kaistmnlab';
 var app = exports.app = express();
 var port = exports.port = +process.argv[2] || process.env.PORT || 6789; 
 var server = http.createServer(app);
-//var io = require('socket.io').listen(server);
 var io = require('socket.io');
 
 

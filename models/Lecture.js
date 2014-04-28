@@ -1,11 +1,17 @@
 var mongoose = require('mongoose');
+var filePluginLib = require('mongoose-file');
+var path = require('path');
+var filePlugin = filePluginLib.filePlugin;
+var make_upload_to_model = filePluginLib.make_upload_to_model;
 var qSchema = require('./Q').QSchema;
 var chatSchema = require('./Chat').ChatSchema;
 var quizSchema = require('./Quiz').QuizSchema;
 
+var uploads_base = path.join(__dirname, "uploads");
+var uploads = path.join(uploads_base, "u");
 
 // Document schema for polls
-exports.LectureSchema = new mongoose.Schema({
+var LectureSchema = exports.LectureSchema = new mongoose.Schema({
 	index: Number,
 	date: {type:Date, default: Date.now, required: true},
 	startTime: {type:Date, default: Date.now, required: true},
@@ -30,4 +36,10 @@ exports.LectureSchema = new mongoose.Schema({
 		votes: Number,
 		favs:  Number
 		}
+});
+
+LectureSchema.plugin( filePlugin, {
+	name: "video",
+	upload_to: make_upload_to_model(uploads, "videos"),
+	relative_to: uploads_base
 });
