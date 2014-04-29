@@ -12,9 +12,9 @@ module.exports = {
 		var query = {};
 		if(req.query !== undefined && req.query)
 			query = req.query;
-		console.log(query);
+		
 		Lecture.find(query, {},{}, function(error, lectures) {
-			console.log(lectures);
+			
 			res.json(lectures);
 		});
 	},

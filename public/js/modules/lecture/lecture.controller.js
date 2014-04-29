@@ -2,7 +2,7 @@
 
 /* Controllers */
 define(['angular'], function(angular) {
-angular.module('lecture.controller', ['security', 'ui.bootstrap' ])
+angular.module('lecture.controller', ['security', 'ui.bootstrap' , 'angularFileUpload'])
 //app
 .controller('LectureListCtrl',
 ['$rootScope', '$scope', 'Lecture','$stateParams', function($rootScope, $scope, Lecture,$stateParams) {
@@ -85,7 +85,7 @@ angular.module('lecture.controller')
 //app
 angular.module('lecture.controller')
 .controller('LectureNewCtrl',
-['$scope', '$modalInstance', '$location','$stateParams','Lecture', 'course', function($scope, $modalInstance, $location, $stateParams,Lecture, course) {
+['$scope', '$modalInstance', '$location','$stateParams','Lecture', 'course', '$fileUploader','XSRF_TOKEN',  function($scope, $modalInstance, $location, $stateParams, Lecture, course, $fileUploader, csrf_token) {
 	//var user = $scope.user;
 
 	$scope.course = course;
@@ -95,6 +95,71 @@ angular.module('lecture.controller')
 		status: 0,
 		course: course._id
 	};
+	
+
+	var uploader = $scope.uploader = $fileUploader.create({
+        scope: $scope,                          // to automatically update the html. Default: $rootScope
+        url: '/fileUpload',
+        formData: [
+            { key: 'value' }
+        ],
+        headers: 
+                  {'X-CSRF-TOKEN': csrf_token
+        },
+       
+        filters: [
+            function (item) {                    // first user filter
+                console.info('filter1');
+                return true;
+            }
+        ]
+    });
+	
+	uploader.bind('afteraddingfile', function (event, item) {
+        console.info('After adding a file', item);
+    });
+
+    uploader.bind('whenaddingfilefailed', function (event, item) {
+        console.info('When adding a file failed', item);
+    });
+
+    uploader.bind('afteraddingall', function (event, items) {
+        console.info('After adding all files', items);
+    });
+
+    uploader.bind('beforeupload', function (event, item) {
+        console.info('Before upload', item);
+    });
+
+    uploader.bind('progress', function (event, item, progress) {
+        console.info('Progress: ' + progress, item);
+    });
+
+    uploader.bind('success', function (event, xhr, item, response) {
+        console.info('Success', xhr, item, response);
+    });
+
+    uploader.bind('cancel', function (event, xhr, item) {
+        console.info('Cancel', xhr, item);
+    });
+
+    uploader.bind('error', function (event, xhr, item, response) {
+        console.info('Error', xhr, item, response);
+    });
+
+    uploader.bind('complete', function (event, xhr, item, response) {
+        console.info('Complete', xhr, item, response);
+        console.log(item.file.name);
+        console.log($location);
+        $scope.lecture.vod_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/" + item.file.name;
+        console.log($scope.lecture.vod_url);
+    });
+
+    uploader.bind('progressall', function (event, progress) {
+        console.info('Total progress: ' + progress);
+    });
+
+    
 
 	$scope.createLecture = function() {
 		var lecture = $scope.lecture;

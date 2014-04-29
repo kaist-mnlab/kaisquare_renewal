@@ -12,6 +12,7 @@ var _ =           require('underscore')
 var pollCtrl = require('../controllers/pollCtrl');
 var courseCtrl = require('../controllers/courseCtrl');
 var lectureCtrl = require('../controllers/lectureCtrl');
+var fs = require('fs');
 
 // Main application view
 index = function(req, res) {
@@ -213,6 +214,21 @@ var routes = [
         middleware: [lectureCtrl.delete],
   
     },
+ 
+   
+ 
+    {
+    	path: '/fileUpload',
+    	httpMethod: 'POST',
+    	middleware: [function( req, res) {
+    		console.log("File Upload");
+    		console.log(req.files.file);
+    		var url = move_uploaded_file(req.files.file);
+    		
+    		res.json({success:true, url: url});
+    	}],
+    	
+    },
     
 
     // All other get requests should be handled by AngularJS's client-side routing system
@@ -235,6 +251,25 @@ var routes = [
         }]
     }
 ];
+
+function move_uploaded_file(file) {
+	var tmp_path = file.path;
+    var target_path = __dirname + '/../public/uploads/' + file.name;
+    console.log('->> tmp_path: ' + tmp_path );
+    console.log('->> target_path: ' + target_path );
+      
+    fs.rename(tmp_path, target_path, function(err){
+        if(err) throw err;
+        /* 어떤 예제에서 아래와 같이 TMP_PATH를 다시 UNLINK해주지만 이미 RENAME으로 이동시켰기 때문에 TMP_PATH가 없다는 오류가 나게 됩니다.
+        FS.UNLINK(TMP_PATH, FUNCTION() {
+            IF (ERR) THROW ERR;
+            RES.SEND('FILE UPLOADED TO: ' + TARGET_PATH + ' - ' + REQ.FILES.THUMBNAIL.SIZE + ' BYTES');
+        });*/
+        console.log('->> upload done');
+        return file.name;
+    });
+	
+}
 
 module.exports.main = 
 

@@ -249,6 +249,9 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
 
 }]);
 
+	app.constant("XSRF_TOKEN", $('meta[name="csrf-token"]').attr('content') );
+	
+	
 return app; 
 
 });

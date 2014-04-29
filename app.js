@@ -60,7 +60,7 @@ app.configure(function() {
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
 	app.use(cookieParser());
-	app.use(express.bodyParser());
+	app.use(express.bodyParser({uploadDir: __dirname + '/tmp'}));
 	app.use(express.methodOverride());
 	app.use(express.session({
 	    key: sessionKey,
@@ -73,6 +73,8 @@ app.configure(function() {
     app.use(express.csrf());
     app.use(function(req, res, next) {
         res.cookie('XSRF-TOKEN', req.csrfToken());
+        res.locals.csrftoken = req.csrfToken();
+        
         next();
     });
 

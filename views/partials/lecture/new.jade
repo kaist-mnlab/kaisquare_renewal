@@ -31,10 +31,45 @@ form(role="form", data-ng-submit="createLecture()", data-ng-file-drop)
                 .form-group
                     label(for="lectureVoDURL") VOD URL
                     input#lectureVoDURL.form-control(type="text", data-ng-model="lecture.vod_url")
-                //.form-group
-                //    label(for="lectureVoDFile") Video File Upload
-                //    input#lectureVoDFile.form-control(type="file", data-ng-file-select, data-ng-model="lecture.video")
-
+                .form-group
+                    label(for="lectureVoDFile") Video File Upload
+                    input#lectureVoDFile.form-control(type="file", data-ng-file-select)
+                table
+                    thead
+                        tr
+                            th Name
+                            th(data-ng-show="uploader.isHTML5") Size
+                            th(data-ng-show="uploader.isHTML5") Progress
+                            th Status
+                            th Actions
+                    tbody
+                        tr(data-ng-repeat="item in uploader.queue")
+                            td
+                                strong
+                                     | {{item.file.name}}
+                            td(data-ng-show="uploader.isHTML5", nowrap)
+                                | {{ item.file.size/1024/1024|number:2 }} MB
+                            td(data-ng-show="uploader.isHTML5")
+                                div.progress(style="margin-bottom: 0;")
+                                    div.progress-bar(role="progressbar", data-ng-style="{ 'width': item.progress + '%' }")
+                            td
+                                span(data-ng-show="item.isSuccess")
+                                    i.glyphicon.glyphicon-ok
+                                span(data-ng-show="item.isCancel")
+                                    i.glyphicon.glyphicon-ban-circle
+                                span(data-ng-show="item.isError")
+                                    i.glyphicon.glyphicon-remove
+                            td
+                                button.btn.btn-success.btn-xs(type="button", data-ng-click="item.upload()", data-ng-disabled="item.isReady || item.isUploading || item.isSuccess")
+                                    span.glyphicon.glyphicon-upload
+                                    | Upload
+                                button.btn.btn-warning.btn-xs(type="button", data-ng-click="item.cancel()", data-ng-disabled="!item.isUploading")
+                                    span.glyphicon.glyphicon-ban-circle
+                                    | Cancel
+                                button.btn.btn-danger.btn-xs(type="button", data-ng-click="item.remove()")
+                                    span.glyphicon.glyphicon-trash
+                                    | Remove
+                    
             //div(data-ng-switch-when="1")
             //    | Live
  
