@@ -14,7 +14,7 @@ module.exports = {
 	lecture : function (socket) {
 		var socketRoom = {};
 		var lectureObj;
-		
+		var qs = [];
 		socket.emit('connected');
 		
 		socket.on('requestLecture', function(lectureId) {
@@ -56,7 +56,7 @@ module.exports = {
 				});
 				console.log(q);
 				//lecture 연동 필요
-				lectureObj.qs.push(q._id);
+				qs.push(q._id);
 			}
     	});
     	
@@ -66,24 +66,21 @@ module.exports = {
 						          {data: [1,2,3,4,5,6]}
 						          ]
 					   };
-			
 			io.sockets.in(socketRoom[socket.id]).emit('qData', data);
 		});
 		
 		socket.on('disconnect', function(data) {
 			console.log('disconnected');
-			
-			// lecture가 끝나기 전에 지금까지의 q 기록을 DB에 보관
-			var lecture = new Lecture(lectureObj);
-			lecture.save(function(err, doc){
+			lectureObj.qs = lectureObj.qs.concat(qs);
+			Lecture.findByIdAndUpdate(lectureObj._id, lectureObj, function(err, doc){
 				if(err || !doc){
 					throw 'Error';
 				}
-			});
-			
-			var key = socketRoom[socket.id];
-			socket.leave(socketRoom[key]);
-			io.sockets.in(key).emit('disconnect');
+				var key = socketRoom[socket.id];
+				socket.leave(socketRoom[key]);
+				io.sockets.in(key).emit('disconnect');
+			});	
+				
 			/*
 			var clients = io.sockets.clients(key);
 			for (var i = 0; i < clients.length; i++){
