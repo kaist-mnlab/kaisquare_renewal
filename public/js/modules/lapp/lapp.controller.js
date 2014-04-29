@@ -5,7 +5,7 @@ define(['angular'], function(angular) {
 angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 //app
 .controller('LectureAppCtrl',
-['$rootScope', '$scope', 'Lecture','$stateParams','$sce','socket','security', 'Q', function($rootScope, $scope, Lecture,$stateParams, $sce, socket, security, Q) {
+['$rootScope', '$scope', 'Lecture','$stateParams','$sce','socket','security', function($rootScope, $scope, Lecture,$stateParams, $sce, socket, security) {
 	$scope.user = security.user;
 	if($scope.user._id == "")
 		$scope.user.username = "No Name";
@@ -33,11 +33,13 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 			});
 		}
 	});
-
+	
+	
     $scope.lecture.$promise.then( function() {
 		$scope.send_q = function() {
     		var message = "Q";
     	   	socket.emit('sendMessage', {message: message, type: 'q', src: $scope.user._id});
+    	   	socket.emit('qData');
 	    }
 	    $scope.send_chat = function() {
     		var message = $scope.chat_message;
@@ -61,6 +63,15 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 			if(data.type == 'q')
 				$scope.q_log += 1;
 	    });
+		
+		// graph initialization
+		var ctx = $("#chart").get(0).getContext("2d");
+		var chart = new Chart(ctx);
+		
+		socket.on('qData', function(data){
+			chart.Line(data);
+		});
+		
     });
 
 }]);

@@ -5,7 +5,7 @@ requirejs.config({
 	paths:{
 
 
-		'text': '../lib/require/text', //HTML 데이터를 가져올때 text! 프리픽스를 붙여준다.
+		'text': '../lib/require/text', //HTML �곗씠�곕� 媛�졇�щ븣 text! �꾨━�쎌뒪瑜�遺숈뿬以�떎.
 		'jquery': '../lib/jquery/jquery',
 		'jquery-ui': '../lib/jquery/jquery-ui-1.10.2.min',
 		'angular': '../lib/angular/angular',
@@ -21,8 +21,8 @@ requirejs.config({
 		'course': 'modules/course',
 		'lecture': 'modules/lecture',
 		'lapp':	'modules/lapp',
-		'domReady': '../lib/require/domReady'
-
+		'domReady': '../lib/require/domReady',
+		'chart': '../lib/chart/chart'
 	},
 
 	shim:{
@@ -87,11 +87,11 @@ requirejs.config({
 });
 
 
-//requireJS를 활용하여 모듈 로드
+//requireJS瑜��쒖슜�섏뿬 紐⑤뱢 濡쒕뱶
 requirejs( [
-		'text', //미리 선언해둔 path, css나 html을 로드하기 위한 requireJS 플러그인
-		'jquery', //미리 선언해둔 path, jQuery는 AMD를 지원하기 때문에 이렇게 로드해도 jQuery 또는 $로 호출할 수 있다.
-		'angular', //미리 선언해둔 path
+		'text', //誘몃━ �좎뼵�대몦 path, css��html��濡쒕뱶�섍린 �꾪븳 requireJS �뚮윭洹몄씤
+		'jquery', //誘몃━ �좎뼵�대몦 path, jQuery��AMD瑜�吏�썝�섍린 �뚮Ц���대젃寃�濡쒕뱶�대룄 jQuery �먮뒗 $濡��몄텧�����덈떎.
+		'angular', //誘몃━ �좎뼵�대몦 path
 		'jquery-ui',
 		'/socket.io/socket.io.js',
 		'angular-resource',
@@ -102,7 +102,7 @@ requirejs( [
 		'angular-file-upload',
 		'app',
 		'accessCfg',
-
+		'chart',
 		//'routes',
 		
 		'security/index',
@@ -114,10 +114,10 @@ requirejs( [
 		'lecture/index',
 		'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter', 'lecture/lecture.directive',
 		'lapp/lapp.controller'
-	
+		
 	],
 
-	//디펜던시 로드뒤 콜백함수
+	//�뷀렂�섏떆 濡쒕뱶��肄쒕갚�⑥닔
 	function (text, $, angular) {
 
 		'use strict';

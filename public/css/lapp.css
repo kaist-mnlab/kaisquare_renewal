@@ -165,3 +165,8 @@ div.growlUI h1, div.growlUI h2 {
 	color: white; padding: 5px 5px 5px 75px; text-align: left;
 }
 
+#q_log
+{
+    height: 200px;
+    background-color: white;
+}
