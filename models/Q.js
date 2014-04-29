@@ -4,11 +4,11 @@ var userSchema = require('./User').userSchema;
 exports.QSchema = new mongoose.Schema(
 {
 	user: {type: mongoose.Schema.Types.ObjectId, ref:'user'},
-	date: Date,
+	//date: Date,
 	time: Number,
 	msg: String
 	
 	//is Mutual Relation required?
 	//Lecture
-}
-);
+	//lecture: {type: mongoose.Schema.Types.ObjectId, ref: 'lecture'}
+});

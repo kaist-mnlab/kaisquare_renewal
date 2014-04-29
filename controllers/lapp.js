@@ -1,4 +1,11 @@
 var io;
+var mongoose = require('mongoose');
+
+var LectureSchema = require('../models/Lecture.js').LectureSchema;
+var qSchema = require('../models/Q.js').QSchema;
+
+var Lecture = mongoose.model('lectures', LectureSchema);
+var Q = mongoose.model('qs', qSchema);
 
 module.exports = {
 	index : function(sio) {
@@ -27,6 +34,8 @@ module.exports = {
 		socket.on('sendMessage', function(data){
 			console.log('sendMessage!');
 			io.sockets.in(socketRoom[socket.id]).emit('receiveMessage', data);
+			
+			
     	});
     	
 		socket.on('disconnect', function(data) {

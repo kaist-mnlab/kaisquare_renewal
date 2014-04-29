@@ -5,16 +5,20 @@ define(['angular'], function(angular) {
 angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 //app
 .controller('LectureAppCtrl',
-['$rootScope', '$scope', 'Lecture','$stateParams','$sce','socket','security', function($rootScope, $scope, Lecture,$stateParams, $sce, socket, security) {
+['$rootScope', '$scope', 'Lecture','$stateParams','$sce','socket','security', 'Q', function($rootScope, $scope, Lecture,$stateParams, $sce, socket, security, Q) {
 	$scope.user = security.user;
 	if($scope.user._id == "")
 		$scope.user.username = "No Name";
 	$scope.lecture = Lecture.get( {lectureId: $stateParams.lectureId } );
 	$scope.chat_log = [];
 	$scope.chat_message = "";
+	
+	// Q variable
+	$scope.q_log = 0;
+	
 	$scope.trustSrc = function(src) {
 	    return $sce.trustAsResourceUrl(src);
-	  }
+	}
 	$scope.open = function($event) {
   	    $event.preventDefault();
     	$event.stopPropagation();
@@ -54,6 +58,8 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 			console.log(data.message);
 			if(data.type == 'chat')
 				$scope.chat_log.push({src_name:data.src_name, message:data.message});
+			if(data.type == 'q')
+				$scope.q_log += 1;
 	    });
     });
 
