@@ -89,13 +89,13 @@ angular.module('course.controller')
 						controller: 'LectureItemCtrl',
 						resolve: {
 							lectureId: function() {
-								
 								return id;
 							}
 						}
 					});
 
 				dlg.result.then(function () {
+					//console.log($scope.courseId);
 					$scope.lectures = Lecture.query({course: $scope.courseId});
 					
 				}, function() {
@@ -203,7 +203,7 @@ angular.module('course.controller')
 			});
 			
 			dlg.result.then(function () {
-				$scope.lectures = Lecture.query({courseId: $stateParams.courseId});
+				$scope.lectures = Lecture.query({course: $scope.courseId});
 			}, function() {
 				console.log("Dismissed");
 			});

@@ -49,7 +49,8 @@ angular.module('lecture.controller')
 			});
 			
 		dlg.result.then(function () {
-			$scope.lectures = Lecture.query({course: $scope.courseId});
+			console.log($scope.courseId);
+			$scope.lectures = Lecture.query({course: $scope.course._id});
 			
 		}, function() {
 			console.log("Dismissed");
@@ -164,15 +165,10 @@ angular.module('lecture.controller')
 	$scope.createLecture = function() {
 		var lecture = $scope.lecture;
 		
-		console.log($scope.lecture.video);
-		console.log($scope.lecture.vod_url);
-		
 		if(lecture.title.length > 0) {
 		
 			var newLecture = new Lecture(lecture);
-			
-			console.log(newLecture.video);
-			
+				
 			newLecture.$save(function(p, resp) {
 				if(!p.error) {
 					// If there is no error, redirect to the main view
