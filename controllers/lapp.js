@@ -13,8 +13,8 @@ module.exports = {
 	},
 	lecture : function (socket) {
 		var socketRoom = {};
-		var lectureObj;
 		var qs = [];
+		var lectureObj;
 		socket.emit('connected');
 		
 		socket.on('requestLecture', function(lectureId) {
@@ -25,12 +25,13 @@ module.exports = {
 			
 			socket.emit('joinLecture', lectureId);
 			
-			Lecture.findById(lectureId, '', {lean:true}, function(err, lecture){
-				if(lecture){
+			Lecture.findById(lectureId, '', {lean:true}, function(error, lecture){
+				if(lecture)
 					lectureObj = lecture;
-					
-					console.log(lectureObj);
-				}
+			}); 
+			
+			Q.find({lecture: lectureId}, {}, {}, function(error, q){
+				qs = qs.concat(q);
 			});
 		});
 	
@@ -45,8 +46,10 @@ module.exports = {
 			io.sockets.in(socketRoom[socket.id]).emit('receiveMessage', data);
 			if(data.type == "q"){
 				var qObj = { user: data.src,
-							 time: 1,
-							 msg: "Q" 
+						     lecture: data.lecture,
+							 time: data.time,
+							 timestamp: data.timestamp,
+							 msg: data.message 
 						   };
 				var q = new Q(qObj);
 				q.save(function(err, doc){
@@ -54,33 +57,21 @@ module.exports = {
 						throw 'Error';
 					}
 				});
-				console.log(q);
-				//lecture 연동 필요
-				qs.push(q._id);
+				qs.push(q);
 			}
     	});
     	
 		socket.on('qData', function(){
-			var data = {labels: ["1","2","3","4","5","6"],
-						datasets:[
-						          {data: [1,2,3,4,5,6]}
-						          ]
-					   };
+			var data = qStat(20, qs);
 			io.sockets.in(socketRoom[socket.id]).emit('qData', data);
 		});
 		
 		socket.on('disconnect', function(data) {
 			console.log('disconnected');
-			lectureObj.qs = lectureObj.qs.concat(qs);
-			Lecture.findByIdAndUpdate(lectureObj._id, lectureObj, function(err, doc){
-				if(err || !doc){
-					throw 'Error';
-				}
-				var key = socketRoom[socket.id];
-				socket.leave(socketRoom[key]);
-				io.sockets.in(key).emit('disconnect');
-			});	
-				
+
+			var key = socketRoom[socket.id];
+			socket.leave(socketRoom[key]);
+			io.sockets.in(key).emit('disconnect');				
 			/*
 			var clients = io.sockets.clients(key);
 			for (var i = 0; i < clients.length; i++){
@@ -91,4 +82,29 @@ module.exports = {
 		
 	} 
 
+}
+
+function qStat(lDuration, qs){
+	/*
+	 * { labels: []
+	 *   datasets: [{data:[]}]
+	 * }
+	 */
+	 var i = 0;
+	 var labels = [];
+	 var data = [];
+	 for (i = 0; i<=lDuration; i++){
+		 labels.push(i.toString());
+		 data[i] = 0;
+	 }
+	 for (i in qs){
+		 data[qs[i].time]++;
+	 }
+	 var graph = { labels: labels,
+			       datasets: [
+			                  {data: data}
+			                 ]
+	 			 };
+
+	 return graph;
 }

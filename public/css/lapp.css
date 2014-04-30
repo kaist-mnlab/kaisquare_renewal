@@ -168,5 +168,10 @@ div.growlUI h1, div.growlUI h2 {
 #q_log
 {
     height: 200px;
+    left: 40px;
     background-color: white;
+}
+#chart
+{
+    left: 40px;
 }
