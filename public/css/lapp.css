@@ -51,7 +51,7 @@ div#q{
 	width:700px;
 	height: 150px;
 	margin-top:5px; 
-	background-color:#3F7AA7;
+	background-color:white;
 }
 footer{
 	margin-top:20px;
@@ -175,7 +175,6 @@ div.growlUI h1, div.growlUI h2 {
 {
 	float:left;
 	width:700px;
-	background-color:#3F7AA7;
 	
     height: 150px;
 }

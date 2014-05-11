@@ -39,10 +39,10 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
     $scope.lecture.$promise.then( function() {
     	var data = { src: $scope.user._id,
     			     lecture: $scope.lecture._id,
+    			     time: $scope.time,
+					 timestamp: Date.now()
     			   };
 		$scope.send_q = function() {
-			data.time = $scope.time;
-			data.timestamp = Date.now();
     		data.type = 'q';
     		data.message = 'Q';
     	   	
@@ -51,8 +51,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 	    }
 		
 	    $scope.send_chat = function() {
-	    	data.time = $scope.time;
-			data.timestamp = Date.now();
 	    	data.type = 'chat';
 	    	data.message = $scope.chat_message;
 	    	data.src_name = $scope.user.username;
