@@ -48,7 +48,7 @@ div#right_twit{
 }
 div#q{
 	float:left;
-	width:700px;
+	width:1080px;
 	height: 150px;
 	margin-top:5px; 
 	background-color:white;
@@ -68,7 +68,14 @@ div#video{
 	background-color:#7EABCE;
 	color:#111;
 }
-
+div#chatArea{
+	height: 480px;
+	overflow: scroll;
+    overflow-x: hidden;
+}
+ul#chatList li {
+	text-align:left;
+}
 .box_shadow{
 	box-shadow:2px 2px 5px silver; 
 	-moz-box-shadow:2px 2px 5px silver; 
@@ -169,12 +176,4 @@ div.growlUI { background: url('http://jquery.malsup.com/block/check48.png') no-r
 div.growlUI h1, div.growlUI h2 {
 		font-size:4em;
 	color: white; padding: 5px 5px 5px 75px; text-align: left;
-}
-
-#q_log
-{
-	float:left;
-	width:700px;
-	
-    height: 150px;
 }

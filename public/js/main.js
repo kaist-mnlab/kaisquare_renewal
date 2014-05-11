@@ -82,7 +82,9 @@ requirejs.config({
 		'lecture/index':{
 			deps:['angular', 'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter','lecture/lecture.directive']
 		},
-		
+		'lapp/index':{
+			deps: ['angular', 'lapp/lapp.controller', 'lapp/lapp.directive']
+		},
 	}
 });
 
@@ -113,8 +115,8 @@ requirejs( [
 		'course/course.controller', 'course/course.service','course/course.filter','course/course.directive',
 		'lecture/index',
 		'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter', 'lecture/lecture.directive',
-		'lapp/lapp.controller'
-		
+		'lapp/index',
+		'lapp/lapp.controller', 'lapp/lapp.directive'
 	],
 
 	//�뷀렂�섏떆 濡쒕뱶��肄쒕갚�⑥닔

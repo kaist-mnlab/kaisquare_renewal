@@ -1,6 +1,6 @@
 'use strict';
 define(['angular', 'accessCfg'], function(angular, accessCfg) {
-	var app = angular.module('kaisquare', ['ngCookies', 'ui.router', 'ngResource', 'poll', 'security', 'course', 'lecture','lapp.controller'])
+	var app = angular.module('kaisquare', ['ngCookies', 'ui.router', 'ngResource', 'poll', 'security', 'course', 'lecture','lapp'])
 
     .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider', function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
 

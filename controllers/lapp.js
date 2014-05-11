@@ -18,6 +18,7 @@ module.exports = {
 		var qs = [];
 		var cs = [];
 		var lectureObj;
+		var duration = 60;
 		socket.emit('connected');
 		
 		socket.on('requestLecture', function(lectureId) {
@@ -37,8 +38,8 @@ module.exports = {
 				qs = qs.concat(q);
 				Chat.find({lecture: lectureId}, {}, {}, function(error, c){
 					cs = cs.concat(c);
-					console.log(cs);
-					socket.emit('initQnChat', qStat(20, qs), cs);
+					//console.log(cs);
+					socket.emit('initQnChat', qStat(duration, qs), cs);
 				});
 			});
 		});
@@ -68,7 +69,7 @@ module.exports = {
 				qs.push(q);
 			}
 			else if (data.type == "chat"){
-				console.log("chat ");
+				//console.log("chat ");
 				object.user_name = data.src_name;
 				var chat = new Chat(object);
 				chat.save(function(err,doc){
@@ -77,12 +78,11 @@ module.exports = {
 					}
 				});
 				cs.push(chat);
-				console.log(cs);
 			}
     	});
     	
 		socket.on('qData', function(){
-			var data = qStat(20, qs);
+			var data = qStat(duration, qs);
 			io.sockets.in(socketRoom[socket.id]).emit('qData', data);
 		});
 		
@@ -118,7 +118,8 @@ function qStat(lDuration, qs){
 		 data[i] = 0;
 	 }
 	 for (i in qs){
-		 data[qs[i].time]++;
+		 console.log(qs[i].time);
+		 data[Math.floor(qs[i].time)]++;
 	 }
 	 var graph = { labels: labels,
 			       datasets: [

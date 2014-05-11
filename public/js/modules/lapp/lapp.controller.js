@@ -12,11 +12,13 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 	$scope.lecture = Lecture.get( {lectureId: $stateParams.lectureId } );
 	$scope.chat_log = [];
 	$scope.chat_message = "";
-	$scope.time = 1;
+	
+	$scope.currentTime = 0;
+	$scope.duration = 0;
 	
 	// Q variable
 	$scope.q_log = 0;
-	
+
 	$scope.trustSrc = function(src) {
 	    return $sce.trustAsResourceUrl(src);
 	}
@@ -37,15 +39,15 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 	
 	
     $scope.lecture.$promise.then( function() {
+    	
     	var data = { src: $scope.user._id,
     			     lecture: $scope.lecture._id,
-    			     time: $scope.time,
-					 timestamp: Date.now()
     			   };
 		$scope.send_q = function() {
     		data.type = 'q';
     		data.message = 'Q';
-    	   	
+    		data.time = $scope.currentTime;
+			data.timestamp = Date.now();
     		socket.emit('sendMessage', data);
     	   	socket.emit('qData');
 	    }
@@ -54,11 +56,13 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 	    	data.type = 'chat';
 	    	data.message = $scope.chat_message;
 	    	data.src_name = $scope.user.username;
-	    	
+    		data.time = $scope.currentTime;
+			data.timestamp = Date.now();
+			
     	   	socket.emit('sendMessage', data);
     	   	$scope.chat_message = "";
 	    }
-	    
+
 	    socket.emit('requestLecture', $scope.lecture._id);
 		    
 	    socket.on('connected',function(){
@@ -70,18 +74,15 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 		socket.on('receiveMessage', function(data){
 			//console.log(data.message);
 			if(data.type == 'chat')
-				$scope.chat_log.push({src_name:data.src_name, message:data.message});
+				$scope.chat_log.push({time: data.time, src_name:data.src_name, message:data.message});
 			if(data.type == 'q')
 				$scope.q_log += 1;
 	    });
 		
 		socket.on('initQnChat', function(qs, cs){
-			//console.log(cs);
 			for (var i in cs){
-				$scope.chat_log.push({src_name:cs[i].user_name, message: cs[i].msg});
+				$scope.chat_log.push({time:cs[i].time, src_name:cs[i].user_name, message: cs[i].msg});
 			}
-			//$scope.chat_log = $scope.chat_log.concat(cs);
-			
 			chart.Bar(qs, barOption);
 		});
 		
@@ -91,7 +92,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 		var barOption = {
 				
 				//Boolean - If we show the scale above the chart data			
-				scaleOverlay : false,
+				scaleOverlay : true,
 				
 				//Boolean - If we want to override with a hard coded scale
 				scaleOverride : false,
@@ -108,7 +109,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 				scaleLineColor : "rgba(0,0,0,.1)",
 				
 				//Number - Pixel width of the scale line	
-				scaleLineWidth : 1,
+				scaleLineWidth : 0.5,
 
 				//Boolean - Whether to show labels on the scale	
 				scaleShowLabels : false,
@@ -120,7 +121,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 				scaleFontFamily : "'Arial'",
 				
 				//Number - Scale label font size in pixels	
-				scaleFontSize : 12,
+				scaleFontSize : 8,
 				
 				//String - Scale label font weight style	
 				scaleFontStyle : "normal",
@@ -135,19 +136,19 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 				scaleGridLineColor : "rgba(0,0,0,.05)",
 				
 				//Number - Width of the grid lines
-				scaleGridLineWidth : 1,	
+				scaleGridLineWidth : 0.5,	
 
 				//Boolean - If there is a stroke on each bar	
 				barShowStroke : true,
 				
 				//Number - Pixel width of the bar stroke	
-				barStrokeWidth : 2,
+				barStrokeWidth : 0.5,
 				
 				//Number - Spacing between each of the X value sets
-				barValueSpacing : 5,
+				barValueSpacing : 0.5,
 				
 				//Number - Spacing between data sets within X values
-				barDatasetSpacing : 1,
+				barDatasetSpacing : 0.5,
 				
 				//Boolean - Whether to animate the chart
 				animation : true,
@@ -160,7 +161,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 
 				//Function - Fires when the animation is complete
 				onAnimationComplete : null
-				
 			}
 		socket.on('qData', function(data){
  			
@@ -169,7 +169,22 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 		
     });
 
-}]);
-
-
+}])
+.directive('lappVideo', function(){
+	// http://stackoverflow.com/questions/22164969/angularjs-two-way-binding-videos-currenttime-with-directive
+	// currentTime of Video 
+	return {
+		controller: function($scope, $element){
+			$scope.$parent.duration = $element[0].duration;
+			$scope.onTimeUpdate = function(){
+				// using $parent to access $scope in controller
+				$scope.$parent.currentTime = $element[0].currentTime;
+				$scope.$apply();
+			}
+		},
+		link: function(scope, element, attrs){
+				element.bind('timeupdate', scope.onTimeUpdate);
+			}
+		}
+});
 });
