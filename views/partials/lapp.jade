@@ -14,9 +14,7 @@ div#content()
 			button#q_button.big_font(type="button", data-ng-click="send_q()")
 				| Q
 		div#live_question.btn-m
-			<div id="question_msg"></div>
-		div#q_log
-			<canvas id="chart" ></canvas> 
+			<div id="question_msg"></div> 
 	#right_twit()
 		div#chatArea(data-ng-model="chat_log")
 			ul
@@ -29,3 +27,6 @@ div#content()
 				| Send 
 		<a class="twitter-timeline" href="https://twitter.com/search?q=%23KAIST" data-widget-id="445301685708009472">Tweets about "#KAIST"</a>
 		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+	#q()
+		#q_log()
+			canvas(id="chart", style="width:650px;height:150px")

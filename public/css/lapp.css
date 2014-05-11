@@ -41,12 +41,18 @@ div#left_video{
 	margin-right:5px;
 }
 div#right_twit{
-		float:left;
+	float:left;
 	width:380px;
 	height:625px;
 	background-color:#3F7AA7;
 }
-
+div#q{
+	float:left;
+	width:700px;
+	height: 150px;
+	margin-top:5px; 
+	background-color:#3F7AA7;
+}
 footer{
 	margin-top:20px;
 	height:30px;
@@ -167,11 +173,9 @@ div.growlUI h1, div.growlUI h2 {
 
 #q_log
 {
-    height: 200px;
-    left: 40px;
-    background-color: white;
-}
-#chart
-{
-    left: 40px;
+	float:left;
+	width:700px;
+	background-color:#3F7AA7;
+	
+    height: 150px;
 }

@@ -3,9 +3,11 @@ var mongoose = require('mongoose');
 
 var LectureSchema = require('../models/Lecture.js').LectureSchema;
 var qSchema = require('../models/Q.js').QSchema;
+var chatSchema = require('../models/Chat.js').ChatSchema;
 
 var Lecture = mongoose.model('lectures', LectureSchema);
 var Q = mongoose.model('qs', qSchema);
+var Chat = mongoose.model('chats', chatSchema);
 
 module.exports = {
 	index : function(sio) {
@@ -14,6 +16,7 @@ module.exports = {
 	lecture : function (socket) {
 		var socketRoom = {};
 		var qs = [];
+		var cs = [];
 		var lectureObj;
 		socket.emit('connected');
 		
@@ -32,6 +35,11 @@ module.exports = {
 			
 			Q.find({lecture: lectureId}, {}, {}, function(error, q){
 				qs = qs.concat(q);
+				Chat.find({lecture: lectureId}, {}, {}, function(error, c){
+					cs = cs.concat(c);
+					console.log(cs);
+					socket.emit('initQnChat', qStat(20, qs), cs);
+				});
 			});
 		});
 	
@@ -44,20 +52,32 @@ module.exports = {
 		socket.on('sendMessage', function(data){
 			console.log('sendMessage!');
 			io.sockets.in(socketRoom[socket.id]).emit('receiveMessage', data);
+			var object = { user: data.src,
+				     	   lecture: data.lecture,
+					       time: data.time,
+					       timestamp: data.timestamp,
+					       msg: data.message 
+				         };
 			if(data.type == "q"){
-				var qObj = { user: data.src,
-						     lecture: data.lecture,
-							 time: data.time,
-							 timestamp: data.timestamp,
-							 msg: data.message 
-						   };
-				var q = new Q(qObj);
+				var q = new Q(object);
 				q.save(function(err, doc){
 					if(err || !doc){
 						throw 'Error';
 					}
 				});
 				qs.push(q);
+			}
+			else if (data.type == "chat"){
+				console.log("chat ");
+				object.user_name = data.src_name;
+				var chat = new Chat(object);
+				chat.save(function(err,doc){
+					if (err || !doc){
+						throw 'Error';
+					}
+				});
+				cs.push(chat);
+				console.log(cs);
 			}
     	});
     	
