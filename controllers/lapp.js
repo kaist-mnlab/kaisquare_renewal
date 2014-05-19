@@ -52,6 +52,11 @@ module.exports = {
 		
 		socket.on('sendMessage', function(data){
 			console.log('sendMessage!');
+			
+			if( data.src === '') {
+//				console.log("Ketyeo");
+				return;
+			}
 			io.sockets.in(socketRoom[socket.id]).emit('receiveMessage', data);
 			var object = { user: data.src,
 				     	   lecture: data.lecture,
@@ -63,7 +68,7 @@ module.exports = {
 				var q = new Q(object);
 				q.save(function(err, doc){
 					if(err || !doc){
-						throw 'Error';
+						throw err;
 					}
 				});
 				qs.push(q);
@@ -118,7 +123,6 @@ function qStat(lDuration, qs){
 		 data[i] = 0;
 	 }
 	 for (i in qs){
-		 console.log(qs[i].time);
 		 data[Math.floor(qs[i].time)]++;
 	 }
 	 var graph = { labels: labels,
