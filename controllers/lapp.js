@@ -86,6 +86,17 @@ module.exports = {
 			}
     	});
     	
+		socket.on('sendQuiz', function(data){
+			console.log('sendQuiz!');
+			io.sockets.in(socketRoom[socket.id]).emit('receiveQuiz', data);
+			
+			//quiz DB
+		});
+		
+		socket.on('sendQuizAns', function(data){
+			
+		});
+		
 		socket.on('qData', function(){
 			var data = qStat(duration, qs);
 			io.sockets.in(socketRoom[socket.id]).emit('qData', data);

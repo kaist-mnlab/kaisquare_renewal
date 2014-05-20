@@ -161,6 +161,11 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
             templateUrl: 'lecture/edit',
             controller: 'LectureNewCtrl'
         })
+        .state('user.lapp.quiz', {
+        	url: 'lapp/:lectureId',
+        	templateUrl: 'lapp/quiz',
+        	controller: 'QuizQuestionCtrl'
+        })
         
         
         ;

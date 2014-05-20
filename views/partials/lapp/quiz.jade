@@ -1,0 +1,32 @@
+.modal-header
+    h1 Quiz for {{lecture.title}}
+
+form(role="form", data-ng-submit="sendQuiz()")
+    .modal-body    
+        .form-group
+            label() Question
+            input#quizQuestion.form-control(type="text", data-ng-model="quiz.question", value="quizQuestion")
+        .form-group
+            label() Type
+            div()
+                label O/X
+                input(type="radio", data-ng-model="quiz.type", name="q", value="ox")
+                label Multiple
+                input(type="radio", data-ng-model="quiz.type", name="q", value="multiple")
+                label Short Answer
+                input(type="radio", data-ng-model="quiz.type", name="q", value="short")
+        .form-group
+            div(data-ng-switch on="quiz.type")
+                div(data-ng-switch-when="multiple")
+                    label() Choice
+                    div(ng-repeat="c in quizChoice")
+                        label() {{c.number}}
+                        input(type="text", ng-model="c.text")
+                        button.btn(type="button", data-ng-click="delChoice(c.number)")
+                            | -                        
+                    button.btn(type="button", data-ng-click="addChoice()")
+                        | +
+    .modal-footer   
+        button.btn.btn-primary.pull-right(type="submit") Make Quiz!
+        button.btn.btn-danger(type="button", data-ng-click="cancel()")
+            | Cancel

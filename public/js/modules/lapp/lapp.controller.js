@@ -141,9 +141,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 				}
 			if($scope.thisUserCtrl != "8")			
 				$("#q").hide();
-			
-			
-		
 		});
 		 
 		socket.on('initQnChat', function(qs, cs){
@@ -152,7 +149,11 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 			}
 			chart.Bar(qs, barOption);
 		});
-	
+		
+		socket.on('receiveQuiz', function(data){
+			console.log(data);
+			$scope.quiz = data;
+		});
 	
 		socket.on('qData', function(data){		
 			chart.Bar(data, barOption);
@@ -162,15 +163,22 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 			//modal
 			var dlg = null;
 			dlg = $modal.open({
-					templateUrl: 'lecture/edit',
-					//controller: 'LectureEditCtrl',
-					/*
+					templateUrl: 'lapp/quiz',
+					controller: 'QuizQuestionCtrl',
 					resolve: {
 						lecture: function() {
 							return $scope.lecture;
+						},
+						course: function() {
+							return $scope.course;
+						},
+						thisUserCtrl: function(){
+							return $scope.thisUserCtrl;
+						},
+						user: function(){
+							return $scope.user;
 						}
 					}
-					*/
 				});
 				
 			dlg.result.then(function () {
@@ -180,6 +188,10 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 			}, function() {
 				console.log("Dismissed");
 			});
+		}
+		$scope.quiz_ans_send = function(answer){
+			var quiz = $scope.quiz;
+			
 		}
 		
 		$scope.send_q = function() {
@@ -240,4 +252,49 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 			}
 		}
 });
+
+angular.module('lapp.controller')
+.controller('QuizQuestionCtrl',
+['$rootScope', '$scope', '$location', '$modal', 'Course', 'Lecture','$stateParams','$sce','socket', 'security','user', 'lecture', 'course', 'thisUserCtrl', function($rootScope, $scope, $location, $modal, Course, Lecture,$stateParams, $sce, socket, security, user, lecture,course, thisUserCtrl) {
+	$scope.quizChoice = [{number:'1', text: ''}, {number:'2', text: ''}];
+	$scope.quizType = [{type:'O/X', value:'ox'},
+	                   {type:'Multiple', value:'multiple'},
+	                   {type:'Short Answer', value:'short'}];
+	$scope.quiz = { question: '',
+			        type: ''
+				  }
+	$scope.sendQuiz = function(){
+		//if (thisUserCtrl != "8") return;
+		
+		var data = $scope.quiz;
+		
+		if (data.type == "ox")
+			data.choice = [{number: '1', text: 'O'}, {number: '2', text: 'X'}];
+		else if (data.type == "short")
+			data.choice = [{number: '1', text: ''}];
+		else if (data.type == "multiple")
+			data.choice = $scope.quizChoice;
+		console.log($scope);
+		data.src = user._id;
+		data.lecture = lecture._id;
+		data.course = course._id;
+
+		socket.emit('sendQuiz', data);
+	}
+	$scope.addChoice = function(){
+		var quizChoice = $scope.quizChoice;
+		if (quizChoice.length > 3) return;
+		var l = quizChoice.length + 1;
+		quizChoice.push({number: l, text: ''});
+	}
+	$scope.delChoice = function(number){
+		var quizChoice = $scope.quizChoice;
+		if (quizChoice.length < 3) return;
+		for(var i = number; i < quizChoice.length; i++){
+			quizChoice[i].number--;
+		}
+		quizChoice.splice(number-1, 1);
+	}
+}]);
+		
 });

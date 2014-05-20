@@ -16,10 +16,14 @@ exports.QuizSchema = new mongoose.Schema(
 	date: Date,
 	time: Number,
 	msg: { type:String, required: true },
-	answer: String,
-	choices: [choiceSchema]	
-	
+		
 	//is Mutual Relation required?
 	//Lecture
+}
+);
+
+exports.AnswerSchema = new mongoose.Schema(
+{
+	
 }
 );
