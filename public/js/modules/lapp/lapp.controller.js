@@ -1,5 +1,73 @@
 'use strict';
 
+var Stopwatch = {
+		//var text;
+		text: null,
+		// Private vars
+		startAt: 0,	// Time of last start / resume. (0 if not running)
+		lapTime: 0,	// Time on the clock when last stopped in milliseconds
+		timer: null,
+ 		now	: function() {
+				return (new Date()).getTime(); 
+		},
+
+		// Public methods
+		// Start or resume
+		start : function() {
+			this.startAt = this.startAt ? this.startAt : this.now();
+			this.timer = setInterval(redirect, 100, this);
+	        function redirect(w) {
+	            w.update();
+	        }
+		},
+		// Stop or pause
+
+		stop : function() {
+			// If running, update elapsed time otherwise keep it
+			this.lapTime	= this.startAt ? this.lapTime + this.now() - this.startAt : this.lapTime;
+			this.startAt	= 0; // Paused
+			clearInterval(this.timer);
+		},
+ 
+		// Reset
+		reset : function() {
+			this.lapTime = this.startAt = 0;
+		},
+
+		// Duration
+		time : function() {
+			return this.lapTime + (this.startAt ? this.now() - this.startAt : 0); 
+		},
+		
+		pad : function(num, size) {
+	        var s = "0000" + num;
+	        return s.substr(s.length - size);
+	    },
+	    
+	    formattedTime : function(newTime){
+	        var h = 0;
+	        var m = 0;
+	        var s = 0;
+	        var ms = 0;
+	        //var newTime = this.time();
+	        
+			h = Math.floor( newTime / (60 * 60 * 1000) );
+ 	       newTime = newTime % (60 * 60 * 1000);
+ 	       m = Math.floor( newTime / (60 * 1000) );
+ 	       newTime = newTime % (60 * 1000);
+	       s = Math.floor( newTime / 1000 );
+
+    	   ms = newTime % 1000;
+	        return this.pad(h, 2) + ':' + this.pad(m, 2) + ':' + this.pad(s, 2) + ':' + this.pad(ms, 3);
+
+  		},
+
+	    update:  function(){
+	        this.text.html(this.formattedTime(this.time()));
+	    },
+	};
+
+
 /* Controllers */
 define(['angular'], function(angular) {
 angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
@@ -44,7 +112,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 			});
 		}
 	});
-	
+		
 	// graph initialization
 	var ctx = $("#chart").get(0).getContext("2d");
 	var chart = new Chart(ctx);
@@ -124,6 +192,8 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 		}
 	
     $scope.lecture.$promise.then( function() {
+    	Stopwatch.text = ($('#timer'));
+    	$scope.stopwatch = Stopwatch;
     	
     	var data = { src: $scope.user._id,
     			     lecture: $scope.lecture._id,
@@ -148,7 +218,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 		 
 		socket.on('initQnChat', function(qs, cs){
 			for (var i in cs){
-				$scope.chat_log.push({time:cs[i].time, src_name:cs[i].user_name, message: cs[i].msg});
+				$scope.chat_log.push({time:Stopwatch.formattedTime(cs[i].time), src_name:cs[i].user_name, message: cs[i].msg});
 			}
 			chart.Bar(qs, barOption);
 		});
@@ -158,6 +228,25 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 			chart.Bar(data, barOption);
 		});		   
 		
+		$scope.start_lecture = function() {
+			//start timer
+			$scope.stopwatch.start();
+			//set lecture "LIVE"
+			
+			
+			//broadcast to "lecture start"
+			//with recording logic
+			
+		};
+		
+		$scope.stop_lecture = function() {
+			//stop timer
+			$scope.stopwatch.stop();
+			//set lecture "VOD"
+			
+			//broadcast to "lecture stop"
+			//with stopping recording logic and storing
+		};
 		$scope.make_quiz = function() {
 			//modal
 			var dlg = null;
@@ -185,7 +274,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 		$scope.send_q = function() {
     		data.type = 'q';
     		data.message = 'Q';
-    		data.time = $scope.currentTime;
+    		data.time = $scope.currentTime = $scope.stopwatch.time();
 			data.timestamp = Date.now();
     		socket.emit('sendMessage', data);
     	   	socket.emit('qData');
@@ -195,7 +284,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 	    	data.type = 'chat';
 	    	data.message = $scope.chat_message;
 	    	data.src_name = $scope.user.username;
-    		data.time = $scope.currentTime;
+    		data.time = $scope.currentTime = $scope.stopwatch.time();
 			data.timestamp = Date.now();
 			
     	   	socket.emit('sendMessage', data);
@@ -213,7 +302,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 		socket.on('receiveMessage', function(data){
 			//console.log(data.message);
 			if(data.type == 'chat')
-				$scope.chat_log.push({time: data.time, src_name:data.src_name, message:data.message});
+				$scope.chat_log.push({time: Stopwatch.formattedTime(data.time), src_name:data.src_name, message:data.message});
 			if(data.type == 'q')
 				$scope.q_log += 1;
 	    });

@@ -2,6 +2,7 @@ link(href="/css/lapp.css", rel="stylesheet", type="text/css")
 link(href="/css/rtwitter.css", rel="stylesheet", type="text/css")
 
 div#content()
+	#timer
 	#left_video()
 		#video()
 			div(data-ng-switch on="lecture.status")
@@ -16,10 +17,10 @@ div#content()
 			div(data-ng-switch-when="8", data-ng-switch on="lecture.status")
 				div#lecture_ctrl(data-ng-switch-when="1")
 					span.q_button.btn.btn-m
-						button#lecture_start.big_font(type="button")
+						button#lecture_start.big_font(type="button", data-ng-click="start_lecture()")
 							| Start
 					span.q_button.btn.btn-m
-						button#lecture_stop.big_font(type="button")
+						button#lecture_stop.big_font(type="button", data-ng-click="stop_lecture()")
 							| Stop
 					span.q_button.btn.btn-m
 						button#quiz.big_font(type="button", data-ng-click="make_quiz()")
