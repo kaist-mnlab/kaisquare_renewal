@@ -49,6 +49,9 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 	var ctx = $("#chart").get(0).getContext("2d");
 	var chart = new Chart(ctx);
 	
+	// quiz answer statistics graph
+	var ctx2 = $("#quizChart").get(0).getContext("2d");
+	var quizStatChart = new Chart(ctx2);
 	var barOption = {
 			
 			//Boolean - If we show the scale above the chart data			
@@ -122,6 +125,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 			//Function - Fires when the animation is complete
 			onAnimationComplete : null
 		}
+
 	
     $scope.lecture.$promise.then( function() {
     	
@@ -139,8 +143,12 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 					$scope.thisUserCtrl = $scope.course.users[u].role_bitMask;
 					break;
 				}
-			if($scope.thisUserCtrl != "8")			
+			if($scope.thisUserCtrl != "8"){			
 				$("#q").hide();
+				$("#quizStatArea").hide();
+			}else {
+				$("#chatArea").css('height', '200px');
+			}
 		});
 		 
 		socket.on('initQnChat', function(qs, cs){
@@ -149,15 +157,10 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 			}
 			chart.Bar(qs, barOption);
 		});
-		
-		socket.on('receiveQuiz', function(data){
-			console.log(data);
-			$scope.quiz = data;
-		});
-	
+
 		socket.on('qData', function(data){		
 			chart.Bar(data, barOption);
-		});		   
+		});
 		
 		$scope.make_quiz = function() {
 			//modal
@@ -182,16 +185,65 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 				});
 				
 			dlg.result.then(function () {
-				//console.log($scope.courseId);
-				//$scope.lectures = Lecture.query({course: $scope.course._id});
-				
+				var stat = [];
+				stat[0] = {value: 0, color: "#F38630"};
+				stat[1] = {value: 0, color: "#E0E4CC"};
+				stat[2] = {value: 0, color: "#69D2E7"};
+				stat[3] = {value: 0, color: "#4D5360"};
+				$scope.quizStat = stat; 
 			}, function() {
 				console.log("Dismissed");
 			});
 		}
-		$scope.quiz_ans_send = function(answer){
-			var quiz = $scope.quiz;
+		
+		socket.on('receiveQuiz', function(data){
+			console.log(data);
+			$scope.quiz = data;
+		});
+		socket.on('receiveAns', function(data){
+			console.log('receiveAns');
 			
+			var quizStat = $scope.quizStat;
+			quizStat[data.answer-1].value = quizStat[data.answer-1].value + 1;
+			var pieOption = {
+					//Boolean - Whether we should show a stroke on each segment
+					segmentShowStroke : true,
+					
+					//String - The colour of each segment stroke
+					segmentStrokeColor : "#fff",
+					
+					//Number - The width of each segment stroke
+					segmentStrokeWidth : 2,
+					
+					//Boolean - Whether we should animate the chart	
+					animation : true,
+					
+					//Number - Amount of animation steps
+					animationSteps : 100,
+					
+					//String - Animation easing effect
+					animationEasing : "easeOutBounce",
+					
+					//Boolean - Whether we animate the rotation of the Pie
+					animateRotate : true,
+
+					//Boolean - Whether we animate scaling the Pie from the centre
+					animateScale : false,
+					
+					//Function - Will fire on animation completion.
+					onAnimationComplete : null
+				}
+			quizStatChart.Pie(quizStat, pieOption);
+		});
+		
+		$scope.quiz_ans_send = function(answer){
+			var data = $scope.quiz;
+			var target = data.src;
+			console.log(target);
+			data.answer = answer;
+			data.src = $scope.user._id;
+			socket.emit('sendQuizAns', {target: target, data: data});
+			$scope.quiz = {};
 		}
 		
 		$scope.send_q = function() {
@@ -213,8 +265,8 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
     	   	socket.emit('sendMessage', data);
     	   	$scope.chat_message = "";
 	    }
-
-	    socket.emit('requestLecture', $scope.lecture._id);
+	    
+	    socket.emit('requestLecture', {lectureId: $scope.lecture._id, userId: $scope.user._id});
 		    
 	    socket.on('connected',function(){
 			console.log('KAISquare Lecture connected');
@@ -229,11 +281,9 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 			if(data.type == 'q')
 				$scope.q_log += 1;
 	    });
-		
 
-		
     });
-
+	
 }])
 .directive('lappVideo', function(){
 	// http://stackoverflow.com/questions/22164969/angularjs-two-way-binding-videos-currenttime-with-directive
@@ -253,9 +303,10 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 		}
 });
 
+
 angular.module('lapp.controller')
 .controller('QuizQuestionCtrl',
-['$rootScope', '$scope', '$location', '$modal', 'Course', 'Lecture','$stateParams','$sce','socket', 'security','user', 'lecture', 'course', 'thisUserCtrl', function($rootScope, $scope, $location, $modal, Course, Lecture,$stateParams, $sce, socket, security, user, lecture,course, thisUserCtrl) {
+['$rootScope', '$scope', '$location', '$modal', '$modalInstance', 'Course', 'Lecture','$stateParams','$sce','socket', 'security','user', 'lecture', 'course', 'thisUserCtrl', function($rootScope, $scope, $location, $modal, $modalInstance, Course, Lecture,$stateParams, $sce, socket, security, user, lecture,course, thisUserCtrl) {
 	$scope.quizChoice = [{number:'1', text: ''}, {number:'2', text: ''}];
 	$scope.quizType = [{type:'O/X', value:'ox'},
 	                   {type:'Multiple', value:'multiple'},
@@ -276,11 +327,14 @@ angular.module('lapp.controller')
 			data.choice = $scope.quizChoice;
 		console.log($scope);
 		data.src = user._id;
-		data.lecture = lecture._id;
-		data.course = course._id;
-
+		data.lectureId = lecture._id;
+		data.courseId = course._id;
+		$modalInstance.close();
 		socket.emit('sendQuiz', data);
 	}
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
 	$scope.addChoice = function(){
 		var quizChoice = $scope.quizChoice;
 		if (quizChoice.length > 3) return;

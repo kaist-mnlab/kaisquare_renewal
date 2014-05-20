@@ -12,18 +12,20 @@ var choiceSchema = new mongoose.Schema({
 
 exports.QuizSchema = new mongoose.Schema(
 {
-	user: {type: mongoose.Schema.Types.ObjectId, ref:'user'},
-	date: Date,
-	time: Number,
-	msg: { type:String, required: true },
-		
-	//is Mutual Relation required?
-	//Lecture
+	userId: {type: mongoose.Schema.Types.ObjectId, ref:'user'},
+	lectureId: {type: mongoose.Schema.Types.ObjectId, ref:'lecture'},
+	question: String,
+	type: String,
+	choice: String
 }
 );
 
 exports.AnswerSchema = new mongoose.Schema(
 {
-	
+	userId: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
+	quizId: {type: mongoose.Schema.Types.ObjectId, ref: 'quiz'},
+	lectureId: {type: mongoose.Schema.Types.ObjectId, ref: 'lecture'},
+	type: String,
+	answer: String
 }
 );

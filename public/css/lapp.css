@@ -53,6 +53,9 @@ div#q{
 	margin-top:5px; 
 	background-color:white;
 }
+div#quizStatArea{
+	background-color:white;
+}
 footer{
 	margin-top:20px;
 	height:30px;

@@ -49,7 +49,9 @@ div#content()
 		div#inputArea
 			input#inputMessage(type="text", data-ng-model="chat_message")
 			button#btnChat.btn.btn-default(type="button", data-ng-click="send_chat()")
-				| Send 
+				| Send
+		div#quizStatArea()
+			canvas#quizChart(width="380", height="300")	 
 	#q()
 		div#q_log()
 			canvas#chart(width="1080", height="150")
