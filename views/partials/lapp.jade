@@ -9,12 +9,12 @@ div#content()
 					//iframe(src="http://acloud01.kaist.ac.kr:55555/student.html?ltid=1&width=640&height=480", frameborder="0", marginwidth="0", marginheight="0", style="width:640px; height:480px;")
 					div(data-ng-switch on="thisUserCtrl")
 						iframe(data-ng-switch-when="8", src="{{trustSrc(streamingURL+'lecturer.html?ltid='+ lectureId+'&video_width=640&video_height=480')}}", frameborder="0", marginwidth="0", marginheight="0", style="width:640px; height:480px;")
-						iframe(data-ng-switch-default, src="{{trustSrc(streamingURL+'/student.html?ltid='+ lectureId+'&width=640&height=480')}}", frameborder="0", marginwidth="0", marginheight="0", style="width:640px; height:480px;")
+						iframe(data-ng-switch-default, src="{{trustSrc(streamingURL+'student.html?ltid='+ lectureId+'&width=640&height=480')}}", frameborder="0", marginwidth="0", marginheight="0", style="width:640px; height:480px;")
 				div(data-ng-switch-when="0")
 					video(lapp-video, width="640px",height="480px",autoplay,preload,controls,src="{{trustSrc(lecture.vod_url)}}")
 		#util(data-ng-switch on="thisUserCtrl")
-			div(data-ng-switch-when="8")
-				div#lecture_ctrl
+			div(data-ng-switch-when="8", data-ng-switch on="lecture.status")
+				div#lecture_ctrl(data-ng-switch-when="1")
 					span.q_button.btn.btn-m
 						button#lecture_start.big_font(type="button")
 							| Start

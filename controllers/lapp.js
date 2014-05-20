@@ -30,8 +30,10 @@ module.exports = {
 			socket.emit('joinLecture', lectureId);
 			
 			Lecture.findById(lectureId, '', {lean:true}, function(error, lecture){
-				if(lecture)
+				if(lecture) {
 					lectureObj = lecture;
+					duration = lecture.duration;
+				}
 			}); 
 			
 			Q.find({lecture: lectureId}, {}, {}, function(error, q){

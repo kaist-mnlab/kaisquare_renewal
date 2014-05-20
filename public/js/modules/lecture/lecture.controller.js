@@ -17,7 +17,7 @@ angular.module('lecture.controller', ['security', 'ui.bootstrap' , 'angularFileU
 
     	$scope.opened = true;
     };
-	
+
 }]);
 
 //app
@@ -31,8 +31,6 @@ angular.module('lecture.controller')
 
 		}
 	);
-	
-
 
 	$scope.launchEdit = function() {
 		//$modalInstance.close();
@@ -47,7 +45,8 @@ angular.module('lecture.controller')
 					}
 				}
 			});
-			
+		
+
 		dlg.result.then(function () {
 			console.log($scope.courseId);
 			$scope.lectures = Lecture.query({course: $scope.course._id});
@@ -97,7 +96,6 @@ angular.module('lecture.controller')
 		course: course._id
 	};
 	
-
 	var uploader = $scope.uploader = $fileUploader.create({
         scope: $scope,                          // to automatically update the html. Default: $rootScope
         url: '/fileUpload',
@@ -110,8 +108,13 @@ angular.module('lecture.controller')
        
         filters: [
             function (item) {                    // first user filter
-                console.info('filter1');
-                return true;
+                console.info('File extension Filter');
+                if(item.type.indexOf("video/mp4")> -1 || item.type.indexOf("video/webm")> -1 || item.type.indexOf("video/ogg")> -1)
+                	return true;
+                else {
+                	
+                	return false;
+                }
             }
         ]
     });
@@ -122,6 +125,7 @@ angular.module('lecture.controller')
 
     uploader.bind('whenaddingfilefailed', function (event, item) {
         console.info('When adding a file failed', item);
+        alert("Video Files Only!");
     });
 
     uploader.bind('afteraddingall', function (event, items) {
@@ -150,10 +154,19 @@ angular.module('lecture.controller')
 
     uploader.bind('complete', function (event, xhr, item, response) {
         console.info('Complete', xhr, item, response);
-        console.log(item.file.name);
-        console.log($location);
         $scope.lecture.vod_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/" + item.file.name;
-        console.log($scope.lecture.vod_url);
+        
+        var videoPreview = $('#videoPreview'); 
+        videoPreview.attr("src",$scope.lecture.vod_url);
+        videoPreview.get(0).load();
+        videoPreview.get(0).play();
+        videoPreview.show();
+        
+        videoPreview.bind('loadeddata', function(e) {
+        	console.log(e.target.duration);
+        	$scope.lecture.duration = e.target.duration;
+        });
+
     });
 
     uploader.bind('progressall', function (event, progress) {

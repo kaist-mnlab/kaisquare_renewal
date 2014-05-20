@@ -60,7 +60,9 @@ app.configure(function() {
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
 	app.use(cookieParser());
-	app.use(express.bodyParser({uploadDir: __dirname + '/tmp'}));
+	app.use(express.bodyParser({uploadDir: __dirname + '/tmp',limit:'2gb'}));
+	app.use(express.json({limit:'2gb'}));
+	app.use(express.urlencoded({limit: '2gb'}));
 	app.use(express.methodOverride());
 	app.use(express.session({
 	    key: sessionKey,

@@ -48,7 +48,7 @@ module.exports = {
 							 date: reqBody.date,
 							 course: reqBody.course,
 							 vod_url: reqBody.vod_url,
-							
+							 duration: reqBody.duration,
 							 };
 
 		console.log(req.files);
