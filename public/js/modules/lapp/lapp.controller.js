@@ -315,6 +315,7 @@ angular.module('lapp.controller')
 	$scope.quiz = { question: '',
 			        type: 'ox',
 				  }
+	$scope.lecture = lecture;
 	$scope.sendQuiz = function(){
 		//if (thisUserCtrl != "8") return;
 		
