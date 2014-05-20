@@ -30,7 +30,16 @@ div#content()
 					button#q_button.big_font(type="button", data-ng-click="send_q()")
 						| Q
 				div#live_question.btn-m
-					<div id="question_msg"></div> 
+					div#qustion_msg(data-ng-model="quiz")
+						label() {{quiz.question}}
+						div(data-ng-switch on="quiz.type")
+							div(data-ng-switch-default)
+								button.btn(type="button", ng-repeat="b in quiz.choice", data-ng-click="quiz_ans_send(b.number)")
+									| {{b.text}}
+							div(data-ng-switch-when="short")
+								input(type="text", data-ng-model="quiz_short_ans")
+								button#btn(type="button", data-ng-click="quiz_ans_send(0)")
+									| Send
 	#right_twit()
 		div#chatArea(data-ng-model="chat_log")
 			ul#chatList
@@ -41,7 +50,9 @@ div#content()
 		div#inputArea
 			input#inputMessage(type="text", data-ng-model="chat_message")
 			button#btnChat.btn.btn-default(type="button", data-ng-click="send_chat()")
-				| Send 
+				| Send
+		div#quizStatArea()
+			canvas#quizChart(width="380", height="300")	 
 	#q()
 		div#q_log()
 			canvas#chart(width="1080", height="150")

@@ -1,7 +1,7 @@
 html{
  background-color:#1b3447;
 }
-body			{ height:100%; font-size:12px; color:#BABABA; font-family:Malgun Gothic,Dotum,Gulim,Helvetica,AppleGothic,Sans-serif; margin:0px auto;  position:relative; text-align:center; min-width:1000px; width:1000px; background:url(./img/bg_top.gif) repeat-x; background-color:#1b3447; }
+body			{ height:100%; font-size:12px; color:#000; font-family:Malgun Gothic,Dotum,Gulim,Helvetica,AppleGothic,Sans-serif; margin:0px auto;  position:relative; text-align:center; min-width:1000px; width:1000px; background:url(./img/bg_top.gif) repeat-x; background-color:#1b3447; }
 table			{ border:0; border-collapse:collapse; }
 a:link			{ color:#0AF; text-decoration:none; }
 a:visited		{ color:#0AF; text-decoration:none; }
@@ -51,6 +51,9 @@ div#q{
 	width:1080px;
 	height: 150px;
 	margin-top:5px; 
+	background-color:white;
+}
+div#quizStatArea{
 	background-color:white;
 }
 footer{
@@ -176,4 +179,9 @@ div.growlUI { background: url('http://jquery.malsup.com/block/check48.png') no-r
 div.growlUI h1, div.growlUI h2 {
 		font-size:4em;
 	color: white; padding: 5px 5px 5px 75px; text-align: left;
+}
+
+.btn-big {
+width: 200px;
+height: 85px;
 }
