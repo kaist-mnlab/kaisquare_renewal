@@ -180,3 +180,8 @@ div.growlUI h1, div.growlUI h2 {
 		font-size:4em;
 	color: white; padding: 5px 5px 5px 75px; text-align: left;
 }
+
+.btn-big {
+width: 200px;
+height: 85px;
+}

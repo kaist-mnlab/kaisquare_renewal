@@ -145,10 +145,8 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 				}
 			if($scope.thisUserCtrl != "8"){			
 				$("#q").hide();
-				$("#quizStatArea").hide();
-			}else {
-				$("#chatArea").css('height', '200px');
 			}
+			$("#quizStatArea").hide();
 		});
 		 
 		socket.on('initQnChat', function(qs, cs){
@@ -191,6 +189,9 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 				stat[2] = {value: 0, color: "#69D2E7"};
 				stat[3] = {value: 0, color: "#4D5360"};
 				$scope.quizStat = stat; 
+				
+				$("#quizStatArea").show();
+				$("#chatArea").css('height', '300px');
 			}, function() {
 				console.log("Dismissed");
 			});
@@ -312,7 +313,7 @@ angular.module('lapp.controller')
 	                   {type:'Multiple', value:'multiple'},
 	                   {type:'Short Answer', value:'short'}];
 	$scope.quiz = { question: '',
-			        type: ''
+			        type: 'ox',
 				  }
 	$scope.sendQuiz = function(){
 		//if (thisUserCtrl != "8") return;
