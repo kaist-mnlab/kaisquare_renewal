@@ -383,7 +383,10 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 		$scope.send_q = function() {
     		data.type = 'q';
     		data.message = 'Q';
-    		data.time = $scope.currentTime = $scope.stopwatch.time()* 0.001;
+    		if ($scope.lecture.status == 1)
+    			$scope.currentTime = $scope.stopwatch.time()* 0.001;
+			
+    		data.time = $scope.currentTime;
 			data.timestamp = Date.now();
     		socket.emit('sendMessage', data);
     	   	socket.emit('qData');
@@ -393,9 +396,11 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 	    	data.type = 'chat';
 	    	data.message = $scope.chat_message;
 	    	data.src_name = $scope.user.username;
-    		data.time = $scope.currentTime = $scope.stopwatch.time()* 0.001;
+	    	if ($scope.lecture.status == 1)
+    			$scope.currentTime = $scope.stopwatch.time()* 0.001;
+    		
+	    	data.time = $scope.currentTime;
 			data.timestamp = Date.now();
-			
     	   	socket.emit('sendMessage', data);
     	   	$scope.chat_message = "";
 	    }

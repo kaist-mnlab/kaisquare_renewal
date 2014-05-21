@@ -109,7 +109,7 @@ module.exports = {
 		socket.on('sendMessage', function(data){
 			console.log('sendMessage!');
 			
-			if( data.src === '') {
+			if( data.src === ''){
 				return;
 			}
 			io.sockets.in(socketRoom[socket.id].lectureId).emit('receiveMessage', data);
@@ -187,11 +187,11 @@ module.exports = {
 		});
 		
 		socket.on('qData', function(){
-			var lastQTime = qs[qs.length-1].time;
-			if(lastQTime > duration)
-				duration = lastQTime;
+		//	var lastQTime = qs[qs.length-1].time;
+		//	if(lastQTime > duration)
+		//		duration = lastQTime;
 		
-			var data = qStat(duration, qs);
+			var data = qStat(lectures[socketRoom[socket.id].lectureId].duration, qs);
 			io.sockets.in(socketRoom[socket.id].lectureId).emit('qData', data);
 		});
 		
@@ -221,17 +221,16 @@ function qStat(lDuration, qs){
 	 *   datasets: [{data:[]}]
 	 * }
 	 */
-	 
-	 
 	 var i = 0;
 	 var labels = [];
 	 var data = [];
-	 for (i = 0; i<=lDuration; i++){
+	 var duration = Math.ceil(lDuration / 60.0);
+	 for (i = 0; i<=duration; i++){
 		 labels.push(i.toString());
 		 data[i] = 0;
 	 }
 	 for (i in qs){
-		 data[Math.floor(qs[i].time)]++;
+		 data[Math.floor(qs[i].time / 60.0)]++;
 	 }
 	 var graph = { labels: labels,
 			       datasets: [
