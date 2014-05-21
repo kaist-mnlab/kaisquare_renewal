@@ -7,15 +7,19 @@ ul.breadcrumb
 		
 
 .page-header
-	h1 Course {{course.title}}
+	h1
+		| Course {{course.title}}
+		div(style="float:right")
+			button.btn.btn-success(data-ng-click="enroll()",  data-course-access-level='courseAccessLevels.anon')
+				span.glyphicon.glyphicon-plus() 
+				| Enroll
+			button.btn.btn-danger(data-ng-click="quit()",  data-course-access-level='courseAccessLevels.user')
+				| Quit
 
 alert(data-ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)") 
 	| {{alert.msg}}
 
-button.btn.btn-success(data-ng-click="enroll()",  data-course-access-level='courseAccessLevels.anon')
-	span.glyphicon.glyphicon-plus() Enroll
-button.btn.btn-danger(data-ng-click="quit()",  data-course-access-level='courseAccessLevels.user')
-	| Quit
+
 
 accordion(close-others="false")
 	accordion-group(heading="Information", is-open="true")

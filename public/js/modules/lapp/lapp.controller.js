@@ -10,6 +10,11 @@ var Stopwatch = {
  		now	: function() {
 				return (new Date()).getTime(); 
 		},
+		
+		setTime : function(s, l) {
+			this.startAt = s;
+			this.lapTime = l;
+		},
 
 		// Public methods
 		// Start or resume
@@ -221,33 +226,72 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 		 
 		socket.on('initQnChat', function(qs, cs){
 			for (var i in cs){
-				$scope.chat_log.push({time:Stopwatch.formattedTime(cs[i].time), src_name:cs[i].user_name, message: cs[i].msg});
+				$scope.chat_log.push({time:Stopwatch.formattedTime(cs[i].time*1000), src_name:cs[i].user_name, message: cs[i].msg});
 			}
+			console.log(qs);
+			console.log(barOption);
 			chart.Bar(qs, barOption);
 		});
 
 		socket.on('qData', function(data){		
+			console.log(data);
 			chart.Bar(data, barOption);
+		});
+		
+		socket.on('startLecture', function(s,l) {
+			console.log("lecture started");
+			console.log(s);
+			$scope.stopwatch.setTime(s, l);
+
+			$scope.stopwatch.start();
+			
+		});
+		
+		socket.on('pauseLecture', function(s, l) {
+		
+			//$scope.stopwatch.setTime(time.time);
+			$scope.stopwatch.stop();
+		});
+		
+		socket.on('stopLecture', function(s,l) {
+		
+			//$scope.stopwatch.setTime(time.time);
+			$scope.stopwatch.stop();
 		});
 		
 		$scope.start_lecture = function() {
 			//start timer
-			$scope.stopwatch.start();
+			$scope.stopwatch.start();	
 			//set lecture "LIVE"
 			
 			
 			//broadcast to "lecture start"
 			//with recording logic
+			socket.emit('startLecture', {startAt: $scope.stopwatch.startAt, lapTime: $scope.stopwatch.lapTime});
 			
 		};
+		
+		$scope.pause_lecture = function() {
+			//pause timer
+			$scope.stopwatch.stop();
+			//set lecture "LIVE"
+			
+			
+			//broadcast to "lecture start"
+			//with recording logic
+			socket.emit('pauseLecture', {time: $scope.stopwatch.time()});
+		};
+		
 		
 		$scope.stop_lecture = function() {
 			//stop timer
 			$scope.stopwatch.stop();
+			$scope.stopwatch.reset();
 			//set lecture "VOD"
 			
 			//broadcast to "lecture stop"
 			//with stopping recording logic and storing
+			socket.emit('stopLecture', {time: $scope.stopwatch.time()});
 		};
 		$scope.make_quiz = function() {
 			//modal
@@ -339,7 +383,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 		$scope.send_q = function() {
     		data.type = 'q';
     		data.message = 'Q';
-    		data.time = $scope.currentTime = $scope.stopwatch.time();
+    		data.time = $scope.currentTime = $scope.stopwatch.time()* 0.001;
 			data.timestamp = Date.now();
     		socket.emit('sendMessage', data);
     	   	socket.emit('qData');
@@ -349,7 +393,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 	    	data.type = 'chat';
 	    	data.message = $scope.chat_message;
 	    	data.src_name = $scope.user.username;
-    		data.time = $scope.currentTime = $scope.stopwatch.time();
+    		data.time = $scope.currentTime = $scope.stopwatch.time()* 0.001;
 			data.timestamp = Date.now();
 			
     	   	socket.emit('sendMessage', data);
@@ -366,8 +410,9 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 		});
 		socket.on('receiveMessage', function(data){
 			//console.log(data.message);
+			
 			if(data.type == 'chat')
-				$scope.chat_log.push({time: Stopwatch.formattedTime(data.time), src_name:data.src_name, message:data.message});
+				$scope.chat_log.push({time: Stopwatch.formattedTime(data.time*1000), src_name:data.src_name, message:data.message});
 			if(data.type == 'q')
 				$scope.q_log += 1;
 	    });

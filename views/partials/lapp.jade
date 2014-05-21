@@ -1,5 +1,6 @@
 link(href="/css/lapp.css", rel="stylesheet", type="text/css")
-link(href="/css/rtwitter.css", rel="stylesheet", type="text/css")
+//link(href="/css/rtwitter.css", rel="stylesheet", type="text/css")
+link(href="/css/twitter.css", rel="stylesheet", type="text/css")
 
 div#content()
 	#timer
@@ -16,20 +17,19 @@ div#content()
 		#util(data-ng-switch on="thisUserCtrl")
 			div(data-ng-switch-when="8", data-ng-switch on="lecture.status")
 				div#lecture_ctrl(data-ng-switch-when="1")
-					span.q_button.btn.btn-m
-						button#lecture_start.big_font(type="button", data-ng-click="start_lecture()")
-							| Start
-					span.q_button.btn.btn-m
-						button#lecture_stop.big_font(type="button", data-ng-click="stop_lecture()")
-							| Stop
-					span.q_button.btn.btn-m
-						button#quiz.big_font(type="button", data-ng-click="make_quiz()")
-							| Quiz
+					button#lecture_start.btn.btn-success.q_button.big_font(type="button", data-ng-click="start_lecture()")
+						span.glyphicon.glyphicon-play()
+					button#lecture_stop.btn.q_button.big_font(type="button", data-ng-click="pause_lecture()")
+						span.glyphicon.glyphicon-pause()
+					button#lecture_stop.btn.btn-danger.q_button.big_font(type="button", data-ng-click="stop_lecture()")
+						span.glyphicon.glyphicon-stop()
+					button#quiz.btn.btn-primary.quiz_button.big_font(type="button", data-ng-click="make_quiz()")
+						span.glyphicon.glyphicon-check()
+						| Quiz
 			div(data-ng-switch-default)
-				span.q_button.btn.btn-m
-					button#q_button.big_font(type="button", data-ng-click="send_q()")
-						| Q
-				div#live_question.btn-m
+				button#q_button.btn.btn-primary.q_button.big_font(type="button", data-ng-click="send_q()")
+					| Q
+				div#live_question
 					div#qustion_msg(data-ng-model="quiz")
 						label() {{quiz.question}}
 						div(data-ng-switch on="quiz.type")
@@ -41,15 +41,28 @@ div#content()
 								button#btn(type="button", data-ng-click="quiz_ans_send(0)")
 									| Send
 	#right_twit()
-		div#chatArea(data-ng-model="chat_log")
-			ul#chatList
-				li(data-ng-repeat="chat in chat_log")
-					| {{chat.time}} :
-					| {{chat.src_name}} :
-					| {{chat.message}}
-		div#inputArea
-			input#inputMessage(type="text", data-ng-model="chat_message")
-			button#btnChat.btn.btn-default(type="button", data-ng-click="send_chat()")
+		div#chatArea.root.timeline.ltr.customisable-border.twitter-timeline.twitter-timeline-rendered(data-ng-model="chat_log")
+			div.stream
+				ul#chatList.h-feed
+					li.h-entry.tweet.customisable-border(data-ng-repeat="chat in chat_log")
+						div.header
+							p.dt-updated.permalink(pubdate)
+								| {{chat.time}}
+							div.h-card.p-author()
+								a.u-url.profile()
+									span.u-photo.avatar.fa.fa-twitter-square.fa-4x()
+									span.p-name.customisable-highlight()
+										| {{chat.src_name}} 
+						div.e-entry-content
+							p.e-entry-title
+								| {{chat.message}}
+						div.footer.customisable-border
+						
+					
+					
+		div#inputArea.timeline-footer(style="overflow:hidden")
+			input#inputMessage.tweet-box-button(type="text", data-ng-model="chat_message", style="float:left")
+			button#btnChat.btn-send(type="button", data-ng-click="send_chat()")
 				| Send
 		div#quizStatArea()
 			canvas#quizChart(width="380", height="300")	 

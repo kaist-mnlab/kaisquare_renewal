@@ -1,17 +1,5 @@
-html{
- background-color:#1b3447;
-}
-body			{ height:100%; font-size:12px; color:#000; font-family:Malgun Gothic,Dotum,Gulim,Helvetica,AppleGothic,Sans-serif; margin:0px auto;  position:relative; text-align:center; min-width:1000px; width:1000px; background:url(./img/bg_top.gif) repeat-x; background-color:#1b3447; }
-table			{ border:0; border-collapse:collapse; }
-a:link			{ color:#0AF; text-decoration:none; }
-a:visited		{ color:#0AF; text-decoration:none; }
-a:active		{ color:#069; text-decoration:none; }
-a:hover			{ color:#091; text-decoration:none; }
-img				{ border:0px; }
-input			{ font-size:11px; color:#000; vertical-align:middle; }
-select			{ font-size:11px; color:#BABABA; vertical-align:middle; }
-textarea		{ font-size:20px; color:#000; }
-ul				{ list-style:none outside; }
+
+body			{ height:100%; font-size:12px; color:#000; font-family:Malgun Gothic,Dotum,Gulim,Helvetica,AppleGothic,Sans-serif; margin:0px auto;  position:relative; text-align:center; min-width:1000px; width:1000px;  }
 
 article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary{
 	display:block;
@@ -39,12 +27,14 @@ div#left_video{
 	height:625px;
 	background-color:#3F7AA7;
 	margin-right:5px;
+	border-radius: 4px;
 }
 div#right_twit{
 	float:left;
 	width:380px;
 	height:625px;
 	background-color:#3F7AA7;
+	border-radius: 4px;
 }
 div#q{
 	float:left;
@@ -70,38 +60,21 @@ div#video{
 	height:480px;
 	background-color:#7EABCE;
 	color:#111;
+	border-radius: 4px;
 }
 div#chatArea{
+	border:#3F7AA7;
+	border-width:1px;
+	border-style:groove;
 	height: 480px;
 	overflow: scroll;
     overflow-x: hidden;
+    
 }
-ul#chatList li {
-	text-align:left;
-}
-.box_shadow{
-	box-shadow:2px 2px 5px silver; 
-	-moz-box-shadow:2px 2px 5px silver; 
-	-webkit-box-shadow:2px 2px 5px silver; 
-	filter:progid:DXImageTransform.Microsoft.Shadow(color=silver,direction=135, strength=5);
-}
-
-#twitterlive { 
-	margin : 0 auto;
-	width: 340px;
-	height: 340px; 
-	color: #000;
-	text-align:left;
-}
-.twitterSearchContainter{
-	height:335px;
-}
-
 
 .q_button{
 	position:relative;
 	float:left;
-	background-color: #7EABCE;
 	left:20px;
 	top:40px;
 	width:100px;
@@ -110,13 +83,24 @@ ul#chatList li {
 	margin:10px 10px 10px 10px;
 }
 
+.quiz_button{
+	position:relative;
+	float:left;
+	left:20px;
+	top:40px;
+	height:80px;
+	vertical-align:bottom;
+	margin:10px 10px 10px 10px;
+
+}
+
 #question_container{
 	position:relative;
 }
 .big_font
 {
 	font-weight:bolder;
-		font-size:5em;
+	font-size:4em;
 
 }
 .middle_font
@@ -126,17 +110,6 @@ ul#chatList li {
 
 }
 
-.q_button{
-	position:relative;
-	float:left;
-	background-color: #7EABCE;
-	left:20px;
-	top:40px;
-	width:100px;
-	height:80px;
-	vertical-align:bottom;
-	margin:10px 10px 10px 10px;
-}
 .a_button{
 	position:relative;
 	float:left;
@@ -158,6 +131,7 @@ ul#chatList li {
 	background-color:#EEE;
 	width:500px;
 	height:80px;
+	border-radius:4px;
 }
 #question_msg{
 	width:400px;
@@ -184,4 +158,27 @@ div.growlUI h1, div.growlUI h2 {
 .btn-big {
 width: 200px;
 height: 85px;
+}
+
+.btn-send {
+	background-color : #E1E1E8;
+	border-color: #DDD #DDD #CCC;
+border-bottom-left-radius: 4px 4px;
+border-bottom-left-radius: 4px 4px;
+border-bottom-right-radius: 4px 4px;
+border-bottom-right-radius: 4px 4px;
+border-style: solid;
+border-width: 1px;
+border-top-left-radius: 4px 4px;
+border-top-left-radius: 4px 4px;
+border-top-right-radius: 4px 4px;
+border-top-right-radius: 4px 4px;
+	float:left;
+	width:60px;
+	display:inline-block;
+	text-align:center;
+	font-size:13px;
+	padding:6px 6px 6px 6px;
+	margin-left:3px;
+	
 }

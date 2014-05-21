@@ -20,7 +20,9 @@ html(lang='en')
     body(data-ng-cloak)
           .navbar(data-ng-controller="NavCtrl")
             .navbar-header
-                a.navbar-brand(href='/courses') KAISquare
+                a.navbar-brand(href='/')
+                    //img(src="img/index/logo.gif")
+                    | KAISquare
             .navbar-inner
                 .container-fluid
                     ul.nav.nav-tabs
@@ -28,14 +30,16 @@ html(lang='en')
                             a(href='/login') Log in
                         li(data-access-level='accessLevels.anon', active-nav)
                             a(href='/register') Register
-                        li(data-access-level='accessLevels.user', active-nav)
-                            a(href='/') Home
-                        li(data-access-level='accessLevels.admin', active-nav)
-                            a(href='/admin') Admin
                         li(data-access-level='accessLevels.public', active-nav)
-                            a(href='/polls') Polls
+                            a(href='/') Home
+                        li(data-access-level='accessLevels.public', active-nav)
+                            a(href='/introduction') Introduction
+                        //li(data-access-level='accessLevels.admin', active-nav)
+                        //    a(href='/admin') Admin
                         li(data-access-level='accessLevels.public', active-nav)
                             a(href='/courses') Courses
+                        li(data-access-level='accessLevels.public', active-nav)
+                            a(href='/polls') Polls
                         li(data-access-level='accessLevels.user')
                             a(href="", data-ng-click="logout()")
                                 | Log out
@@ -50,10 +54,6 @@ html(lang='en')
             span(data-ng-bind="error")
             
         .container(data-ui-view)
-        
-        
-
-          
 
         script(data-main='/js/main' src='/lib/require/require.js')
                 script(src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js')  
@@ -64,6 +64,8 @@ html(lang='en')
             include partials/admin
         script(type="text/ng-template", id="home")
             include partials/home
+        script(type="text/ng-template", id="introduction")
+            include partials/introduction
         script(type="text/ng-template", id="login")
             include partials/login
         script(type="text/ng-template", id="register")

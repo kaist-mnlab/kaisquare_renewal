@@ -33,8 +33,8 @@
              i.icon-edit.icon-white Edit
         a.btn.btn-danger(type='submit', data-ng-click='deleteLecture()', data-course-access-level='courseAccessLevels.tutor')
              i.icon-remove.icon-white Delete
-        a.btn.btn-primary(data-ng-click="startLecture()", data-course-access-level='courseAccessLevels.tutor', data-ng-switch-when="1")
+        a.btn.btn-primary(data-ng-click="view()", data-course-access-level='courseAccessLevels.tutor', data-ng-switch-when="1")
              i.icon-edit.icon-white Start Lecture
-        a.btn.btn-success(data-ng-click="view()")
+        a.btn.btn-success(data-ng-click="view()", data-course-access-level='courseAccessLevels.public')
              i.icon-edit.icon-white View
              

@@ -14,6 +14,7 @@ var Quiz = mongoose.model('quizs', quizSchema);
 var Answer = mongoose.model('answers', answerSchema);
 
 var socketRoom = {};
+var lectures = {};
 module.exports = {
 	index : function(sio) {
 		io = sio;
@@ -22,8 +23,14 @@ module.exports = {
 
 		var qs = [];
 		var cs = [];
+		
 		var lectureObj;
 		var duration = 60;
+		
+		function currentTime(startAt) {
+			return (new Date()).getTime() - startAt;
+		}
+		
 		socket.emit('connected');
 		
 		socket.on('requestLecture', function(Id) {
@@ -32,25 +39,67 @@ module.exports = {
 			console.log(lectureId + " joined");
 			socket.join(lectureId);
 			socketRoom[socket.id] = {lectureId: lectureId, userId: userId};
+			
+			if( lectures[lectureId] === undefined) 
+				lectures[lectureId] = {startAt: 0, lapTime: 0, isLectureStarted: 'false'};
+			
 			console.log(socketRoom);
 			socket.emit('joinLecture', lectureId);
 			
 			Lecture.findById(lectureId, '', {lean:true}, function(error, lecture){
 				if(lecture) {
 					lectureObj = lecture;
-					duration = lecture.duration;
+					if(lecture.duration !== undefined) {
+						lectures[lectureId].duration = lecture.duration;
+					}
+					
+				}
+
+				Q.find({lecture: lectureId}, {}, {}, function(error, q){
+					qs = qs.concat(q);
+					Chat.find({lecture: lectureId}, {}, {}, function(error, c){
+						cs = cs.concat(c);
+						//console.log(cs);
+						socket.emit('initQnChat', qStat(lectures[lectureId].duration, qs), cs);
+					});
+				});
+				
+				
+				if(lectures[lectureId].isLectureStarted == 'true') {
+					console.log("you are late");
+					console.log(lectures[lectureId].startAt);
+					console.log(currentTime(lectures[lectureId].startAt));
+					socket.emit('startLecture', lectures[lectureId].startAt, lectures[lectureId].lapTime);
 				}
 			}); 
 			
-			Q.find({lecture: lectureId}, {}, {}, function(error, q){
-				qs = qs.concat(q);
-				Chat.find({lecture: lectureId}, {}, {}, function(error, c){
-					cs = cs.concat(c);
-					//console.log(cs);
-					socket.emit('initQnChat', qStat(duration, qs), cs);
-				});
-			});
+			
+			
 		});
+		
+		socket.on('startLecture', function(time) {
+			
+			console.log(time.startAt);
+			lectures[socketRoom[socket.id].lectureId].startAt = time.startAt;
+			lectures[socketRoom[socket.id].lectureId].lapTime = time.lapTime;
+			lectures[socketRoom[socket.id].lectureId].isLectureStarted = 'true';
+			
+			io.sockets.in(socketRoom[socket.id].lectureId).emit('startLecture', time.startAt, time.lapTime);
+		});
+		
+		socket.on('pauseLecture', function(time) {
+			lectures[socketRoom[socket.id].lectureId].lapTime = time.time;
+			lectures[socketRoom[socket.id].lectureId].isLectureStarted = 'false'; 
+			io.sockets.in(socketRoom[socket.id].lectureId).emit('pauseLecture', time.startAt, time.lapTime);
+		});
+		
+		socket.on('stopLecture', function(time) {
+			lectures[socketRoom[socket.id].lectureId].lapTime = time.time;
+			lectures[socketRoom[socket.id].lectureId].isLectureStarted = 'false';
+			io.sockets.in(socketRoom[socket.id].lectureId).emit('stopLecture', time.startAt, time.lapTime);
+			
+			//saving
+		}); 
 	
 		socket.on('leaveLecture', function(lectureId) {
 			console.log(lectureId + " leaved");
@@ -61,7 +110,6 @@ module.exports = {
 			console.log('sendMessage!');
 			
 			if( data.src === '') {
-//				console.log("Ketyeo");
 				return;
 			}
 			io.sockets.in(socketRoom[socket.id].lectureId).emit('receiveMessage', data);
@@ -139,6 +187,10 @@ module.exports = {
 		});
 		
 		socket.on('qData', function(){
+			var lastQTime = qs[qs.length-1].time;
+			if(lastQTime > duration)
+				duration = lastQTime;
+		
 			var data = qStat(duration, qs);
 			io.sockets.in(socketRoom[socket.id].lectureId).emit('qData', data);
 		});
@@ -169,6 +221,8 @@ function qStat(lDuration, qs){
 	 *   datasets: [{data:[]}]
 	 * }
 	 */
+	 
+	 
 	 var i = 0;
 	 var labels = [];
 	 var data = [];

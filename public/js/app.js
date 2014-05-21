@@ -24,6 +24,10 @@ define(['angular', 'accessCfg'], function(angular, accessCfg) {
             templateUrl: 'lapp',
             controller: 'LectureAppCtrl'
         })
+        .state('public.introduction', {
+            url: '/introduction',
+            templateUrl: 'introduction',
+        })
         .state('public.polls', {
             url: '/polls/',
             templateUrl: 'poll/list',

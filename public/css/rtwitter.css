@@ -24,25 +24,9 @@
 	background: url('../images/connected_236px.png');
 
 }
-button{
-	-webkit-appearance: button;
--webkit-appearance: none;
--webkit-box-align: center;
--webkit-box-sizing: border-box;
-text-shadow: white 1px 1px 0px;
-color: #333;
-border: none;
-display: inline-block;
-font: -webkit-small-control;
-background: transparent;
-margin: 0px;
-overflow: visible;
-padding: 0px;
-cursor: pointer;
-	
-}
-.btn{
-background: #DDD url(http://platform2.twitter.com/1.1.2/images/bg-btn.gif) repeat-x scroll 0px 0px;
+
+.btn-this{
+background-color : #E1E1E8;
 border-color: #DDD #DDD #CCC;
 border-bottom-left-radius: 4px 4px;
 border-bottom-left-radius: 4px 4px;
