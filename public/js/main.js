@@ -83,7 +83,7 @@ requirejs.config({
 			deps:['angular', 'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter','lecture/lecture.directive']
 		},
 		'lapp/index':{
-			deps: ['angular', 'lapp/lapp.controller', 'lapp/lapp.directive']
+			deps: ['angular', 'lapp/lapp.controller', 'lapp/lapp.directive', 'chart']
 		},
 	}
 });
