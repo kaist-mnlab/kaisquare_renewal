@@ -41,10 +41,14 @@ module.exports = {
 			socketRoom[socket.id] = {lectureId: lectureId, userId: userId};
 			
 			if( lectures[lectureId] === undefined) 
-				lectures[lectureId] = {startAt: 0, lapTime: 0, isLectureStarted: 'false'};
+				lectures[lectureId] = {startAt: 0, lapTime: 0, isLectureStarted: 'false', attendee: []};
 			
 			console.log(socketRoom);
-			socket.emit('joinLecture', lectureId);
+			
+			socket.emit('joinLecture', Id);
+			
+			lectures[lectureId].attendee.push(Id);
+			io.sockets.in(socketRoom[socket.id].lectureId).emit('lectureAttend', lectures[lectureId].attendee);
 			
 			Lecture.findById(lectureId, '', {lean:true}, function(error, lecture){
 				if(lecture) {
@@ -198,10 +202,17 @@ module.exports = {
 		socket.on('disconnect', function(data) {
 			console.log('disconnected');
 			if (socketRoom[socket.id] !== undefined){
-				var key = socketRoom[socket.id].lectureId;
+				var key = socketRoom[socket.id];
+				
 				socket.leave(socketRoom[socket.id]);
 				delete socketRoom[socket.id];
-				io.sockets.in(key).emit('disconnect');
+				//delete lectures[key].attendee
+				
+				lectures[key.lectureId].attendee = lectures[key.lectureId].attendee.filter(function(e){
+					return e.userId !== key.userId;
+				});
+				
+				io.sockets.in(key.lectureId).emit('disconnect');
 			}
 			/*
 			var clients = io.sockets.clients(key);

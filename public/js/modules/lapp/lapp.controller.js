@@ -99,7 +99,10 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 	
 	// Q variable
 	$scope.q_log = 0;
-
+	
+	// Attendance
+	$scope.attendance = [];
+	
 	$scope.trustSrc = function(src) {
 	    return $sce.trustAsResourceUrl(src);
 	}
@@ -404,9 +407,20 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
     	   	socket.emit('sendMessage', data);
     	   	$scope.chat_message = "";
 	    }
-	    
-	    socket.emit('requestLecture', {lectureId: $scope.lecture._id, userId: $scope.user._id});
-		    
+	    $scope.click_user = function(data){
+	    	alert(data);
+	    }
+	    socket.emit('requestLecture', {lectureId: $scope.lecture._id, userId: $scope.user._id, username: $scope.user.username});
+
+	    // attendance (joinLecture에 넣을지 따로 할지는 조금 생각)
+	    socket.on('lectureAttend', function(data){
+	    	console.log("lectureAttend");
+	    	console.log(data);
+	    	var user = {img: null, userId: data.userId, username: data.username};
+	    	$scope.attendance = data;// = user;
+	    	
+	    });
+
 	    socket.on('connected',function(){
 			console.log('KAISquare Lecture connected');
 		});

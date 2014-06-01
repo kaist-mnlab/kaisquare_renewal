@@ -43,6 +43,17 @@ div#q{
 	margin-top:5px; 
 	background-color:white;
 }
+div#attendance{
+	float:left;
+	width:1080px;
+	height: 150px;
+	margin-top:5px; 
+	background-color:white;
+}
+div#attendee{
+	width:100px;
+	float:left;
+}
 div#quizStatArea{
 	background-color:white;
 }

@@ -69,3 +69,11 @@ div#content()
 	#q()
 		div#q_log()
 			canvas#chart(width="1080", height="150")
+	#attendance()
+		div#attend_log(data-ng-model="attendance")
+			div#attendee(ng-repeat="user in attendance", data-ng-click="click_user(user.userId)")
+				span.u-photo.avatar.fa.fa-twitter-square.fa-4x()
+				br
+				label
+					| {{user.username}}
+					
