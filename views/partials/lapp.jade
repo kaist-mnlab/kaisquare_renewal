@@ -1,6 +1,8 @@
 link(href="/css/lapp.css", rel="stylesheet", type="text/css")
 //link(href="/css/rtwitter.css", rel="stylesheet", type="text/css")
 link(href="/css/twitter.css", rel="stylesheet", type="text/css")
+//script(src="https://www.google.com/jsapi")
+//<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
 div#content()
 	#timer
@@ -65,10 +67,13 @@ div#content()
 			button#btnChat.btn-send(type="button", data-ng-click="send_chat()")
 				| Send
 		div#quizStatArea()
-			canvas#quizChart(width="380", height="300")	 
+			div#quizChart(google-chart chart="quiz_chart")
+			//canvas#quizChart(width="380", height="300")	 
 	#q()
 		div#q_log()
-			canvas#chart(width="1080", height="150")
+			div#q_chart(google-chart chart="q_chart")
+			//canvas#chart(width="1080", height="150")
+	
 	#attendance()
 		div#attend_log(data-ng-model="attendance")
 			div#attendee(ng-repeat="user in attendance", data-ng-click="click_user(user.userId)")

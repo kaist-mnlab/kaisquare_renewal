@@ -191,10 +191,6 @@ module.exports = {
 		});
 		
 		socket.on('qData', function(){
-		//	var lastQTime = qs[qs.length-1].time;
-		//	if(lastQTime > duration)
-		//		duration = lastQTime;
-		
 			var data = qStat(lectures[socketRoom[socket.id].lectureId].duration, qs);
 			io.sockets.in(socketRoom[socket.id].lectureId).emit('qData', data);
 		});
@@ -227,27 +223,26 @@ module.exports = {
 }
 
 function qStat(lDuration, qs){
-	/*
-	 * { labels: []
-	 *   datasets: [{data:[]}]
-	 * }
+	/* 
+	 * Google column chart
 	 */
 	 var i = 0;
 	 var labels = [];
 	 var data = [];
 	 var duration = Math.ceil(lDuration / 60.0);
+	 if (isNaN(duration)) duration = 10;
+	 var columnChart =[['Time (min)', 'Value']];
 	 for (i = 0; i<=duration; i++){
-		 labels.push(i.toString());
-		 data[i] = 0;
+		 var d = [];
+		 d.push(i.toString());
+		 d.push(0);
+		 //console.log(d);
+		 columnChart.push(d);
 	 }
+	 console.log(duration);
 	 for (i in qs){
-		 data[Math.floor(qs[i].time / 60.0)]++;
+		 var time = Math.floor(qs[i].time / 60.0); 
+		 (columnChart[time + 1])[1]++;
 	 }
-	 var graph = { labels: labels,
-			       datasets: [
-			                  {data: data}
-			                 ]
-	 			 };
-
-	 return graph;
+	 return columnChart;
 }

@@ -75,7 +75,7 @@ var Stopwatch = {
 
 /* Controllers */
 define(['angular'], function(angular) {
-angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
+angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 //app
 .controller('LectureAppCtrl',
 ['$rootScope', '$scope', '$location', '$modal', 'Course', 'Lecture','$stateParams','$sce','socket','security', function($rootScope, $scope, $location, $modal, Course, Lecture,$stateParams, $sce, socket, security) {
@@ -99,6 +99,8 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 	
 	// Q variable
 	$scope.q_log = 0;
+	$scope.q_chart = {};
+	$scope.quiz_chart = {};
 	
 	// Attendance
 	$scope.attendance = [];
@@ -121,88 +123,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 		}
 	});
 		
-	// graph initialization
-	var ctx = $("#chart").get(0).getContext("2d");
-	var chart = new Chart(ctx);
-	
-	// quiz answer statistics graph
-	var ctx2 = $("#quizChart").get(0).getContext("2d");
-	var quizStatChart = new Chart(ctx2);
-	var barOption = {
-			
-			//Boolean - If we show the scale above the chart data			
-			scaleOverlay : true,
-			
-			//Boolean - If we want to override with a hard coded scale
-			scaleOverride : false,
-			
-			//** Required if scaleOverride is true **
-			//Number - The number of steps in a hard coded scale
-			scaleSteps : null,
-			//Number - The value jump in the hard coded scale
-			scaleStepWidth : null,
-			//Number - The scale starting value
-			scaleStartValue : null,
-
-			//String - Colour of the scale line	
-			scaleLineColor : "rgba(0,0,0,.1)",
-			
-			//Number - Pixel width of the scale line	
-			scaleLineWidth : 0.5,
-
-			//Boolean - Whether to show labels on the scale	
-			scaleShowLabels : false,
-			
-			//Interpolated JS string - can access value
-			scaleLabel : "<%=value%>",
-			
-			//String - Scale label font declaration for the scale label
-			scaleFontFamily : "'Arial'",
-			
-			//Number - Scale label font size in pixels	
-			scaleFontSize : 8,
-			
-			//String - Scale label font weight style	
-			scaleFontStyle : "normal",
-			
-			//String - Scale label font colour	
-			scaleFontColor : "#666",	
-			
-			///Boolean - Whether grid lines are shown across the chart
-			scaleShowGridLines : false,
-			
-			//String - Colour of the grid lines
-			scaleGridLineColor : "rgba(0,0,0,.05)",
-			
-			//Number - Width of the grid lines
-			scaleGridLineWidth : 0.5,	
-
-			//Boolean - If there is a stroke on each bar	
-			barShowStroke : true,
-			
-			//Number - Pixel width of the bar stroke	
-			barStrokeWidth : 0.5,
-			
-			//Number - Spacing between each of the X value sets
-			barValueSpacing : 0.5,
-			
-			//Number - Spacing between data sets within X values
-			barDatasetSpacing : 0.5,
-			
-			//Boolean - Whether to animate the chart
-			animation : true,
-
-			//Number - Number of animation steps
-			animationSteps : 60,
-			
-			//String - Animation easing effect
-			animationEasing : "easeOutQuart",
-
-			//Function - Fires when the animation is complete
-			onAnimationComplete : null
-		}
-
-	
     $scope.lecture.$promise.then( function() {
     	Stopwatch.text = ($('#timer'));
     	$scope.stopwatch = Stopwatch;
@@ -232,13 +152,24 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 				$scope.chat_log.push({time:Stopwatch.formattedTime(cs[i].time*1000), src_name:cs[i].user_name, message: cs[i].msg});
 			}
 			console.log(qs);
-			console.log(barOption);
-			chart.Bar(qs, barOption);
+			//console.log(barOption);
+			
+			var chart = {};
+			chart.type = "ColumnChart";
+			chart.data = qs;
+			chart.options = {
+				displayExactValues: true,
+				width: 1080,
+				height: 150,
+				legend: {position:"none"},
+				chartArea: {left:0,top:0,bottom:0,height:"100%"}
+			};
+			$scope.q_chart = chart;
 		});
 
 		socket.on('qData', function(data){		
-			console.log(data);
-			chart.Bar(data, barOption);
+			//console.log(data);
+			$scope.q_chart.data = data;
 		});
 		
 		socket.on('startLecture', function(s,l) {
@@ -318,13 +249,26 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 					}
 				});
 				
-			dlg.result.then(function () {
+			dlg.result.then(function (question) {
+				var quizChart = {};
+				console.log(question);
+				quizChart.type = "PieChart";
+				quizChart.options = {
+					width: 380,
+					height: 200,
+					title: question,
+					displayExactValues: true,
+					is3D: true
+				};
 				var stat = [];
-				stat[0] = {value: 0, color: "#F38630"};
-				stat[1] = {value: 0, color: "#E0E4CC"};
-				stat[2] = {value: 0, color: "#69D2E7"};
-				stat[3] = {value: 0, color: "#4D5360"};
-				$scope.quizStat = stat; 
+				stat[0] = ['Answer', 'Number'];
+				stat[1] = ['1', 0];
+				stat[2] = ['2', 0];
+				stat[3] = ['3', 0];
+				stat[4] = ['4', 0];
+				quizChart.data = stat;
+				console.log(quizChart);
+				$scope.quiz_chart = quizChart; 
 				
 				$("#quizStatArea").show();
 				$("#chatArea").css('height', '300px');
@@ -337,46 +281,15 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap' ])
 			console.log(data);
 			$scope.quiz = data;
 		});
-		socket.on('receiveAns', function(data){
+		socket.on('receiveAns', function(ans){
 			console.log('receiveAns');
-			
-			var quizStat = $scope.quizStat;
-			quizStat[data.answer-1].value = quizStat[data.answer-1].value + 1;
-			var pieOption = {
-					//Boolean - Whether we should show a stroke on each segment
-					segmentShowStroke : true,
-					
-					//String - The colour of each segment stroke
-					segmentStrokeColor : "#fff",
-					
-					//Number - The width of each segment stroke
-					segmentStrokeWidth : 2,
-					
-					//Boolean - Whether we should animate the chart	
-					animation : true,
-					
-					//Number - Amount of animation steps
-					animationSteps : 100,
-					
-					//String - Animation easing effect
-					animationEasing : "easeOutBounce",
-					
-					//Boolean - Whether we animate the rotation of the Pie
-					animateRotate : true,
-
-					//Boolean - Whether we animate scaling the Pie from the centre
-					animateScale : false,
-					
-					//Function - Will fire on animation completion.
-					onAnimationComplete : null
-				}
-			quizStatChart.Pie(quizStat, pieOption);
+			$scope.quiz_chart.data[ans.answer][1]++;
 		});
 		
 		$scope.quiz_ans_send = function(answer){
 			var data = $scope.quiz;
 			var target = data.src;
-			console.log(target);
+			//console.log(target);
 			data.answer = answer;
 			data.src = $scope.user._id;
 			socket.emit('sendQuizAns', {target: target, data: data});
@@ -480,11 +393,12 @@ angular.module('lapp.controller')
 			data.choice = [{number: '1', text: ''}];
 		else if (data.type == "multiple")
 			data.choice = $scope.quizChoice;
-		console.log($scope);
+		//console.log($scope);
 		data.src = user._id;
 		data.lectureId = lecture._id;
 		data.courseId = course._id;
-		$modalInstance.close();
+		
+		$modalInstance.close($scope.quiz.question);
 		socket.emit('sendQuiz', data);
 	}
 	$scope.cancel = function() {
