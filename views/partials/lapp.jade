@@ -15,7 +15,7 @@ div#content()
 						iframe(data-ng-switch-when="8", src="{{trustSrc(streamingURL+'lecturer.html?ltid='+ lectureId+'&video_width=640&video_height=480')}}", frameborder="0", marginwidth="0", marginheight="0", style="width:640px; height:480px;")
 						iframe(data-ng-switch-default, src="{{trustSrc(streamingURL+'student.html?ltid='+ lectureId+'&width=640&height=480')}}", frameborder="0", marginwidth="0", marginheight="0", style="width:640px; height:480px;")
 				div(data-ng-switch-when="0")
-					video(lapp-video, width="640px",height="480px",autoplay,preload,controls,src="{{trustSrc(lecture.vod_url)}}")
+					video(lapp-video, width="640px",height="480px",preload,controls,src="{{trustSrc(lecture.vod_url)}}")
 		#util(data-ng-switch on="thisUserCtrl")
 			div(data-ng-switch-when="8", data-ng-switch on="lecture.status")
 				div#lecture_ctrl(data-ng-switch-when="1")
@@ -59,21 +59,22 @@ div#content()
 							p.e-entry-title
 								| {{chat.message}}
 						div.footer.customisable-border
-						
-					
-					
 		div#inputArea.timeline-footer(style="overflow:hidden")
 			input#inputMessage.tweet-box-button(type="text", data-ng-model="chat_message", style="float:left")
 			button#btnChat.btn-send(type="button", data-ng-click="send_chat()")
 				| Send
 		div#quizStatArea()
 			div#quizChart(google-chart chart="quiz_chart")
-			//canvas#quizChart(width="380", height="300")	 
+			//canvas#quizChart(width="380", height="300")
+		div#kaisqr_canvas(lapp-canvas style="width:400px; height:300px; background-color:#ffffff;" )
+			canvas(width="300px" height="200px" style="border: 1px solid #000000")
+			div#colors(ng-repeat="color in canvasStrokeColor")
+				span(ng-click="selectColor(color.color)" style="float:left; margin:5px;")
+					| {{color.color}}	 
 	#q()
 		div#q_log()
 			div#q_chart(google-chart chart="q_chart")
 			//canvas#chart(width="1080", height="150")
-	
 	#attendance()
 		div#attend_log(data-ng-model="attendance")
 			div#attendee(ng-repeat="user in attendance", data-ng-click="click_user(user.userId)")
@@ -81,4 +82,3 @@ div#content()
 				br
 				label
 					| {{user.username}}
-					

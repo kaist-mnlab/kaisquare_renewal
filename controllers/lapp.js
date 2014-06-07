@@ -195,6 +195,14 @@ module.exports = {
 			io.sockets.in(socketRoom[socket.id].lectureId).emit('qData', data);
 		});
 		
+		
+		//canvas
+		
+		socket.on('canvasDraw', function(stroke){
+			socket.broadcast.emit('canvasDraw', stroke);
+		});
+		
+		
 		socket.on('disconnect', function(data) {
 			console.log('disconnected');
 			if (socketRoom[socket.id] !== undefined){

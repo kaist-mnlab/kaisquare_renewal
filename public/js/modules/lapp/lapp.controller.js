@@ -78,7 +78,7 @@ define(['angular'], function(angular) {
 angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 //app
 .controller('LectureAppCtrl',
-['$rootScope', '$scope', '$location', '$modal', 'Course', 'Lecture','$stateParams','$sce','socket','security', function($rootScope, $scope, $location, $modal, Course, Lecture,$stateParams, $sce, socket, security) {
+['$rootScope', '$scope', '$location', '$modal', 'Course', 'Lecture','$stateParams','$sce','socket','security','$compile', function($rootScope, $scope, $location, $modal, Course, Lecture,$stateParams, $sce, socket, security, $compile) {
 	$scope.user = security.user;
 	if($scope.user._id == "")
 		$scope.user.username = "No Name";
@@ -93,7 +93,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 	$scope.streamingHost = $location.$$host; 
 	$scope.streamingURL = "http://" + $scope.streamingHost + ":" + $scope.streamingPort + "/";
 
-	
+	$scope.socket = socket;
 	$scope.currentTime = 0;
 	$scope.duration = 0;
 	
@@ -321,7 +321,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
     	   	$scope.chat_message = "";
 	    }
 	    $scope.click_user = function(data){
-	    	alert(data);
+	    	//alert(data);
 	    }
 	    socket.emit('requestLecture', {lectureId: $scope.lecture._id, userId: $scope.user._id, username: $scope.user.username});
 
@@ -365,11 +365,98 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			}
 		},
 		link: function(scope, element, attrs){
-				element.bind('timeupdate', scope.onTimeUpdate);
-			}
+			element.bind('timeupdate', scope.onTimeUpdate);
 		}
+	}
+})
+.directive('lappCanvas', function(){
+	return {
+		link: function(scope, element, attrs){
+			console.log($(element[0])[0].firstChild);
+			var canvas = $(element[0])[0].firstChild;
+			var ctx = canvas.getContext('2d');
+			canvas = $(canvas);
+			var socket = scope.socket;
+			
+			var isDrawing = false;
+			ctx.lineWidth = 1.0;
+			ctx.miterLimit = 1.0;
+			ctx.strokeStyle = "black";
+			
+			function getMousePosition(event){
+				var x, y;
+				if(event.offsetX!==undefined){
+					x = event.offsetX;
+					y = event.offsetY;
+				}else{
+					x = event.layerX - event.currentTarget.offsetLeft;
+					y = event.layerY - event.currentTarget.offsetTop;
+				}
+				return {x: x, y: y};
+			}
+			function draw(stroke){
+				ctx.moveTo(stroke.lastX, stroke.lastY);
+				ctx.lineTo(stroke.currentX, stroke.currentY);
+				ctx.strokeStyle = stroke.strokeStyle;
+				ctx.stroke();
+			}
+			var left = element.offset().left;
+			var top = element.offset().top;
+			var lastX;
+			var lastY;
+			scope.canvasStrokeColor = [{color: 'black'},
+			                           {color: 'red'},
+			                           {color: 'blue'},
+			                           {color: 'green'},
+			                           {color: 'white'}
+			                           ];
+			scope.selectColor = function(color){
+				ctx.strokeStyle = color;
+			};
+			canvas.bind('mousedown', function(event){
+				var point = getMousePosition(event);
+				lastX = point.x;
+				lastY = point.y;
+				
+				ctx.beginPath();
+				
+				isDrawing = true;
+			});
+			canvas.bind('mousemove', function(event){
+				var point;
+				var currentX, currentY;
+				var stroke;
+				
+				if (isDrawing){
+					point = getMousePosition(event);
+					currentX = point.x;
+					currentY = point.y;
+					
+					stroke = {lastX: lastX, 
+							  lastY: lastY, 
+							  currentX: currentX, 
+							  currentY: currentY,
+							  strokeStyle: ctx.strokeStyle};
+					
+					draw(stroke);
+					socket.emit('canvasDraw', stroke);
+					lastX = currentX;
+					lastY = currentY;
+				}
+			});
+			canvas.bind('mouseup', function(event){
+				isDrawing = false;
+			});
+			canvas.bind('mouseout', function(event){
+				isDrawing = false;
+			});
+			
+			socket.on('canvasDraw', function(stroke){
+				draw(stroke);
+			});
+		}
+	}
 });
-
 
 angular.module('lapp.controller')
 .controller('QuizQuestionCtrl',
