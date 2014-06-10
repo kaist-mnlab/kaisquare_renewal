@@ -58,9 +58,10 @@ module.exports = {
 					}
 					
 				}
-
+				while(qs.length > 0) qs.pop();
 				Q.find({lecture: lectureId}, {}, {}, function(error, q){
 					qs = qs.concat(q);
+					while(cs.length > 0) cs.pop();
 					Chat.find({lecture: lectureId}, {}, {}, function(error, c){
 						cs = cs.concat(c);
 						//console.log(cs);
