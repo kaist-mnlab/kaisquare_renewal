@@ -47,7 +47,7 @@ requirejs.config({
 			deps:['angular']
 		},
 		'angular-ui-bootstrap':{
-			deps:['angular']
+			deps:['angular', 'jquery']
 		},
 		
 		'angular-file-upload':{

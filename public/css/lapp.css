@@ -23,11 +23,15 @@ div#content{
 
 div#left_video{
 	float:left;
-	width:350px;
-	height:625px;
+	//width:350px;
+	//height:625px;
 	background-color:#000000;
 	margin-right:5px;
 	border-radius: 4px;
+	max-width: 650px;
+	min-width: 350px;
+	//max-height: 490px;
+	min-height: 250px;
 }
 div#right_twit{
 	float:left;
@@ -77,22 +81,37 @@ div#video{
 	float:none;
 	top:20px;
 	left:20px;
-	width:350px;
-	height:250px;
+	max-width: 650px;
+	min-width: 350px;
+	max-height: 490px;
+	min-height: 250px;
 	background-color:#7EABCE;
 	color:#111;
 	border-radius: 4px;
 }
+div.tutorVideo{
+	width: 320px;
+	height: 240px;
+}
+div.studentVideo{
+	width: 640px;
+	height: 480px;
+}
 div#lecture_ctrl{
 	position: relative;
 	float: left;
-	width:320px;
+	width: 320px;
 	height: 50px;
 	padding: 10px;
 }
-div#ctrl{
+div#tutorCtrl{
 	width: 320px;
 	height: 50px;
+}
+div#studentCtrl{
+	width: 650px;
+	height: 130px;
+	background-color: #000000;
 }
 div#util{
 	width:320px;
@@ -145,7 +164,7 @@ div#kaisqr_canvas canvas {
 	position:relative;
 	float:left;
 	left:20px;
-	top:40px;
+	top:15px;
 	width:100px;
 	height:80px;
 	vertical-align:bottom;
@@ -198,11 +217,12 @@ div#kaisqr_canvas canvas {
 	float:left;
 
 	left:40px;
-	top:45px;
+	top:15px;
 	background-color:#EEE;
 	width:500px;
 	height:80px;
 	border-radius:4px;
+	margin-top: 3px;
 }
 #question_msg{
 	width:400px;

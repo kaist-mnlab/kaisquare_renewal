@@ -143,8 +143,12 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				}
 			if($scope.thisUserCtrl != "8"){			
 				$("#q").hide();
+				$("#whiteboard").attr('width', '250px');
+				$("#whiteboard").attr('height', '280px');
+				$("#right_twit").css('width', '230px');
 			}
 			$("#quizStatArea").hide();
+			
 		});
 		 
 		socket.on('initQnChat', function(qs, cs){
@@ -372,8 +376,8 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 .directive('lappCanvas', function(){
 	return {
 		link: function(scope, element, attrs){
-			console.log($(element[0])[0].firstChild);
-			var canvas = $(element[0])[0].firstChild;
+			console.log($(element[0])[0].children[1]);
+			var canvas = $(element[0])[0].children[1];
 			var ctx = canvas.getContext('2d');
 			canvas = $(canvas);
 			var socket = scope.socket;
