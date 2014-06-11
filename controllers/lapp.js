@@ -251,7 +251,7 @@ function qStat(lDuration, qs){
 	 console.log(duration);
 	 for (i in qs){
 		 var time = Math.floor(qs[i].time / 60.0); 
-		 (columnChart[time + 1])[1]++;
+		 columnChart[time + 1][1]++;
 	 }
 	 return columnChart;
 }

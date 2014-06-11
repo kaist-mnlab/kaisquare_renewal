@@ -31,11 +31,16 @@ div#left_video{
 }
 div#right_twit{
 	float:left;
-	width:380px;
+	width:235px;
 	height:625px;
 	background-color:#3F7AA7;
 	border-radius: 4px;
 }
+
+ul#chatList{
+	margin-left: -50px;
+}
+
 div#q{
 	float:left;
 	width:1080px;
@@ -79,12 +84,24 @@ div#chatArea{
 	border:#3F7AA7;
 	border-width:1px;
 	border-style:groove;
-	height: 480px;
+	height: 280px;
 	overflow: scroll;
     overflow-x: hidden;
-    
 }
-
+div.stream{
+	overflow: hidden;
+}
+div.stream::-webkit-scrollbar{
+	display: none;
+}
+div#kaisqr_canvas{
+	height: 235px;
+	margin-top: 10px;
+	background-color: #ffffff;
+}
+div#kaisqr_canvas canvas {
+	border: 1px solid #000000;
+}
 .q_button{
 	position:relative;
 	float:left;
