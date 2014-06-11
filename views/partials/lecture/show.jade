@@ -1,40 +1,41 @@
-.modal-header
-    h1 Lecture {{lecture.title}}
+.modal-header.lectureheader
+	h1 Lecture {{lecture.title}}
 
 .modal-body
-    div()
-        table.table.table-bordered
-            tbody(data-ng-switch on="lecture.status")
-                tr
-                td Lecture Title
-                td
-                   | {{lecture.title}}
-                tr
-                td Description
-                td
-                   | {{lecture.description}}
-                tr
-                td Date
-                td
-                   | {{lecture.date}}
-                tr
-                td Live/VOD
-                td
-                   p(data-ng-switch-when="1")
-                       | Live
-                   p(data-ng-switch-when="0")
-                       | VoD
-                tr(data-ng-switch-when="0")
-                   td VOD URL
-                   td {{lecture.vod_url}}    
+	div.lectureinfo
+		div.lecturethumb
+			img.thumbnail(src="/thumb/{{lecture.title}}.jpg")
+		div.atglance.well
+			p.atglancetitle
+				| Lecture At Glance
+			p
+				strong.atglacesmalltitle
+					| Description
+				p
+					| {{lecture.description}}
+			p
+				strong.atglacesmalltitle
+					| Date
+				p
+					| {{lecture.date}}
+
+			p
+				div(data-ng-switch on="lecture.status")
+					strong(data-ng-switch-when="1")
+						span.glyphicon.glyphicon-facetime-video
+						|   Live
+					strong(data-ng-switch-when="0")
+						span.glyphicon.glyphicon-play-circle
+						|   VoD
+						br
+						| {{lecture.vod_url}}    
 .modal-footer
-    .well(data-ng-controller="CourseItemCtrl", data-ng-switch on="lecture.status")
-        a.btn.btn-warning(data-ng-click="launchEdit()", data-course-access-level='courseAccessLevels.tutor')
-             i.icon-edit.icon-white Edit
-        a.btn.btn-danger(type='submit', data-ng-click='deleteLecture()', data-course-access-level='courseAccessLevels.tutor')
-             i.icon-remove.icon-white Delete
-        a.btn.btn-primary(data-ng-click="view()", data-course-access-level='courseAccessLevels.tutor', data-ng-switch-when="1")
-             i.icon-edit.icon-white Start Lecture
-        a.btn.btn-success(data-ng-click="view()", data-course-access-level='courseAccessLevels.public')
-             i.icon-edit.icon-white View
-             
+	.lecturedetail.well(data-ng-controller="CourseItemCtrl", data-ng-switch on="lecture.status")
+		a.btn.btn-warning(data-ng-click="launchEdit()", data-course-access-level='courseAccessLevels.tutor')
+			i.icon-edit.icon-white Edit
+		a.btn.btn-danger(type='submit', data-ng-click='deleteLecture()', data-course-access-level='courseAccessLevels.tutor')
+			i.icon-remove.icon-white Delete
+		a.btn.btn-primary(data-ng-click="view()", data-course-access-level='courseAccessLevels.tutor', data-ng-switch-when="1")
+			i.icon-edit.icon-white Start Lecture
+		a.btn.btn-success(data-ng-click="view()", data-course-access-level='courseAccessLevels.public')
+			i.icon-edit.icon-white View

@@ -120,7 +120,8 @@ requirejs( [
 		'lecture/index',
 		'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter', 'lecture/lecture.directive',
 		'lapp/index',
-		'lapp/lapp.controller', 'lapp/lapp.directive'
+		'lapp/lapp.controller', 'lapp/lapp.directive',
+		'//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'
 	],
 
 	//占쎈��귨옙�뤿뻻 嚥≪뮆諭띰옙占썼굜�뺢컶占썩뫁��	

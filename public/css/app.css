@@ -4,5 +4,168 @@
 }
 
 body {
-    padding: 20px;
+
+}
+
+.top-wrapper {
+	
+	background: -webkit-linear-gradient(top, #373737, #212121)
+}
+
+.navbar {
+
+	margin: 0px;
+}
+
+ul.nav {
+	float:right;
+	margin-top: 11px;
+}
+
+.navbar-header a {
+	color: white;
+}
+
+.nav-tabs {
+	border-bottom: none;
+}
+
+.nav-tabs a {
+	color: #6e7e8e;
+	font-size:14px;
+	font-weight:500;
+}
+
+.mainlogo {
+	width:50px;
+	height:auto;
+	border-radius: 6px;
+	
+}
+.nav-tabs>li>a:hover,  {
+	color: white;
+	background: transparent;
+	border: transparent;
+	
+}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li>a:focus {
+	color: white;
+	background: transparent;
+	border:1px solid #ddd
+	border-bottom-color: transparent;
+}
+
+.post {
+	
+	width:44%;
+	float:left;
+	padding:auto;
+	margin-left:10px;
+	margin-right:10px;
+}
+
+.course.thumbnail {
+	
+	height: auto;
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+	max-width:100%;
+}
+
+.lecture.thumbnail {
+	
+	max-height: 100px;
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+	width:auto;
+}
+
+.post-desc {
+	padding-bottom: 15px;
+	overflow:hidden;
+	margin-top:-10px;
+	margin-left:auto;
+	margin-right:auto;
+
+	display:block;
+	
+}
+.content.well {
+	background-color:white;
+}
+
+.lecturedesc.post {
+	
+	max-width:30%;
+}
+
+
+.lecturedetail.well {
+	display:block;
+	width:100%;
+}
+
+.lectureinfo{
+	
+	margin-left:auto;
+	margin-right:auto;	
+}
+
+.floatleft {
+	
+	float:left;
+}
+
+.lectureheader{
+	color: white;
+	background: -webkit-linear-gradient(top, #373737, #212121);
+}
+
+.lecturethumb{
+	display:block;
+	min-width:60%;
+	height:auto;
+}
+
+.atglance {
+	display:block;
+	min-width:40%;
+	max-width:100%;
+
+}
+
+.atglancetitle {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.atglancesmalltitle {
+	font-size: 15px;
+	font-weight: bold;
+}
+
+.content.title {
+	font-size: 18px;
+	font-weight: bold;
+}
+.content.abstract {
+	font-size: 14px;
+	font-weight: 400;
+}
+
+h1.header {
+   
+    font-family: 'ProximaNova-Light', Helvetica, Arial, sans-serif; 
+}
+
+p.lead {
+	font-size: 17px;
+
+}
+
+.mainheader img{
+	width: 100%;
+	height:auto;
 }

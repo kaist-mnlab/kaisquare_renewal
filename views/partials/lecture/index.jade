@@ -11,26 +11,30 @@
 	.col-xs-12
 		hr
 
-table.table
-	thead
-		tr
-			th() Lecture Title
-			th() Description
-			th Lecture Type
-	tbody(data-ng-switch, on="lectures.length")
-		tr(data-ng-switch-when="0")
-			td
-				| No lecture in databases. Would you like to create one?
-			td
-		tr(data-ng-repeat="lecture in lectures | filter:query")
-			td
-				a(data-ng-click="launchLecture(lecture._id)")
-					| {{lecture.title}}
-			td
-				| {{lecture.description}}
-			td
-				div(data-ng-switch, on="lecture.status")
-					div(data-ng-switch-when="1")
-						| Live
-					div(data-ng-switch-when="0")
-						| VOD
+div(data-ng-switch, on="lectures.length")
+	div(data-ng-switch-when="0")
+		| No lecture in databases. Would you like to create one?
+	div(data-ng-repeat="lecture in lectures | filter:query")
+		div.lecturedesc.post.content.well
+			a(data-ng-click="launchLecture(lecture._id)")
+				//img.thumbnail(src="/thumb/{{$index+1}}.jpg")
+				img.lecture.thumbnail(src="/thumb/{{lecture.title}}.jpg")
+			div.well.lecturedesc.post-desc
+				p.content.title
+					a(data-ng-click="launchLecture(lecture._id)")
+						| {{lecture.title}}
+				p.content.abstract
+					strong
+						| Description
+					br
+					| {{lecture.description}}
+				p.content.tutor
+					strong
+						| Lecture Type
+					div(data-ng-switch, on="lecture.status")
+						div(data-ng-switch-when="1")
+							| Live
+						div(data-ng-switch-when="0")
+							| VOD
+			
+

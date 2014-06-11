@@ -1,5 +1,5 @@
 
-body			{ height:100%; font-size:12px; color:#000; font-family:Malgun Gothic,Dotum,Gulim,Helvetica,AppleGothic,Sans-serif; margin:0px auto;  position:relative; text-align:center; min-width:1000px; width:1000px;  }
+body			{ height:100%; font-size:12px; color:#000; font-family:Malgun Gothic,Dotum,Gulim,Helvetica,AppleGothic,Sans-serif; margin:0px auto;  position:relative; text-align:center; min-width:1000px; }
 
 article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary{
 	display:block;
