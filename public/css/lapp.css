@@ -23,18 +23,19 @@ div#content{
 
 div#left_video{
 	float:left;
-	width:700px;
+	width:350px;
 	height:625px;
-	background-color:#3F7AA7;
+	background-color:#000000;
 	margin-right:5px;
 	border-radius: 4px;
 }
 div#right_twit{
 	float:left;
-	width:235px;
-	height:625px;
-	background-color:#3F7AA7;
+	width:100%;
+	height:305px;
+	background-color:#ffffff;
 	border-radius: 4px;
+	max-width:500px;
 }
 
 ul#chatList{
@@ -43,17 +44,19 @@ ul#chatList{
 
 div#q{
 	float:left;
-	width:1080px;
-	height: 220px;
+	width:920px;
+	height: 160px;
 	margin-top:5px; 
 	background-color:white;
 }
 div#attendance{
 	float:left;
-	width:1080px;
-	height: 150px;
-	margin-top:5px; 
+	width:340px;
+	height: 315px;
+	margin:5px;
+	padding: 5px; 
 	background-color:white;
+	border: 1px solid #000000;
 }
 div#attendee{
 	width:100px;
@@ -67,26 +70,60 @@ footer{
 	height:30px;
 }
 div#kaisqr_canvas {
-	float:left;
+	float:none;
 }
 div#video{
-	position:relative;
+	padding:5px;
 	float:none;
 	top:20px;
 	left:20px;
-	width:640px;
-	height:480px;
+	width:350px;
+	height:250px;
 	background-color:#7EABCE;
 	color:#111;
 	border-radius: 4px;
+}
+div#lecture_ctrl{
+	position: relative;
+	float: left;
+	width:320px;
+	height: 50px;
+	padding: 10px;
+}
+div#ctrl{
+	width: 320px;
+	height: 50px;
+}
+div#util{
+	width:320px;
+	height:50px;
+}
+div#chatModule{
+	float:left; 
+	min-width:250px; 
+	width:100%; 
+	height:305px; 
+	background-color:gray;
 }
 div#chatArea{
 	border:#3F7AA7;
 	border-width:1px;
 	border-style:groove;
-	height: 280px;
+	height: 250px;
 	overflow: scroll;
     overflow-x: hidden;
+}
+div.chat{
+	width: 100%;
+	min-width: 250px;
+	max-width: 500px;
+}
+div#inputArea{
+	overflow:hidden;
+}
+input#inputMessage{
+	float: left;
+	width: 72%;
 }
 div.stream{
 	overflow: hidden;
@@ -95,8 +132,10 @@ div.stream::-webkit-scrollbar{
 	display: none;
 }
 div#kaisqr_canvas{
+	position:relative;
+	float:left;
 	height: 235px;
-	margin-top: 10px;
+	margin-top: 0px;
 	background-color: #ffffff;
 }
 div#kaisqr_canvas canvas {
@@ -123,7 +162,9 @@ div#kaisqr_canvas canvas {
 	margin:10px 10px 10px 10px;
 
 }
-
+.btn{
+	margin:3px;
+}
 #question_container{
 	position:relative;
 }
@@ -136,7 +177,7 @@ div#kaisqr_canvas canvas {
 .middle_font
 {
 	font-weight:bolder;
-		font-size:3em;
+	font-size:3em;
 
 }
 
@@ -148,7 +189,7 @@ div#kaisqr_canvas canvas {
 	width:40px;
 	height:30px;
 	vertical-align:bottom;
-	margin:1dd0px;
+	margin:10px;
 }
 
 #live_question

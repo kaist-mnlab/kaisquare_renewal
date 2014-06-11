@@ -7,25 +7,23 @@ link(href="/css/twitter.css", rel="stylesheet", type="text/css")
 div#content()
 	#timer
 	#left_video()
-		#video()
-			div(data-ng-switch on="lecture.status")
-				div(data-ng-switch-when="1")
-					//iframe(src="http://acloud01.kaist.ac.kr:55555/student.html?ltid=1&width=640&height=480", frameborder="0", marginwidth="0", marginheight="0", style="width:640px; height:480px;")
-					div(data-ng-switch on="thisUserCtrl")
-						iframe(data-ng-switch-when="8", src="{{trustSrc(streamingURL+'lecturer.html?ltid='+ lectureId+'&video_width=640&video_height=480')}}", frameborder="0", marginwidth="0", marginheight="0", style="width:640px; height:480px;")
-						iframe(data-ng-switch-default, src="{{trustSrc(streamingURL+'student.html?ltid='+ lectureId+'&width=640&height=480')}}", frameborder="0", marginwidth="0", marginheight="0", style="width:640px; height:480px;")
-				div(data-ng-switch-when="0")
-					video(lapp-video, width="640px",height="480px",preload,controls,src="{{trustSrc(lecture.vod_url)}}")
+		div#video(data-ng-switch on="lecture.status")
+			div(data-ng-switch-when="1" data-ng-switch on="thisUserCtrl")
+				//iframe(src="http://acloud01.kaist.ac.kr:55555/student.html?ltid=1&width=640&height=480", frameborder="0", marginwidth="0", marginheight="0", style="width:640px; height:480px;")
+				iframe(data-ng-switch-when="8", src="{{trustSrc(streamingURL+'lecturer.html?ltid='+ lectureId+'&video_width=320&video_height=240')}}", frameborder="0", marginwidth="0", marginheight="0", style="width:320px; height:240px;")
+				iframe(data-ng-switch-default, src="{{trustSrc(streamingURL+'student.html?ltid='+ lectureId+'&width=640&height=480')}}", frameborder="0", marginwidth="0", marginheight="0", style="width:640px; height:480px;")
+			div(data-ng-switch-when="0")
+				video(lapp-video, width="640px",height="480px",preload,controls,src="{{trustSrc(lecture.vod_url)}}")
 		#util(data-ng-switch on="thisUserCtrl")
-			div(data-ng-switch-when="8", data-ng-switch on="lecture.status")
+			div#ctrl(data-ng-switch-when="8", data-ng-switch on="lecture.status")
 				div#lecture_ctrl(data-ng-switch-when="1")
-					button#lecture_start.btn.btn-success.q_button.big_font(type="button", data-ng-click="start_lecture()")
+					button#lecture_start.btn.btn-success.small_font(type="button", data-ng-click="start_lecture()")
 						span.glyphicon.glyphicon-play()
-					button#lecture_stop.btn.q_button.big_font(type="button", data-ng-click="pause_lecture()")
+					button#lecture_stop.btn.small_font(type="button", data-ng-click="pause_lecture()")
 						span.glyphicon.glyphicon-pause()
-					button#lecture_stop.btn.btn-danger.q_button.big_font(type="button", data-ng-click="stop_lecture()")
+					button#lecture_stop.btn.btn-danger.small_font(type="button", data-ng-click="stop_lecture()")
 						span.glyphicon.glyphicon-stop()
-					button#quiz.btn.btn-primary.quiz_button.big_font(type="button", data-ng-click="make_quiz()")
+					button#quiz.btn.btn-primary.small_font(type="button", data-ng-click="make_quiz()")
 						span.glyphicon.glyphicon-check()
 						| Quiz
 			div(data-ng-switch-default)
@@ -42,43 +40,43 @@ div#content()
 								input(type="text", data-ng-model="quiz_short_ans")
 								button#btn(type="button", data-ng-click="quiz_ans_send(0)")
 									| Send
+		#attendance()
+			div#attend_log(data-ng-model="attendance")
+				div#attendee(ng-repeat="user in attendance", data-ng-click="click_user(user.userId)")
+					span.u-photo.avatar.fa.fa-twitter-square.fa-4x()
+					br
+					label
+						| {{user.username}}
 	#right_twit()
-		div#chatArea.root.timeline.ltr.customisable-border.twitter-timeline.twitter-timeline-rendered(data-ng-model="chat_log")
-			div.stream
-				ul#chatList
-					li.h-entry.tweet.customisable-border(data-ng-repeat="chat in chat_log")
-						div.header
-							p.dt-updated.permalink(pubdate)
-								| {{chat.time}}
-							div.h-card.p-author()
-								a.u-url.profile()
-									span.u-photo.avatar.fa.fa-twitter-square.fa-4x()
-									span.p-name.customisable-highlight()
-										| {{chat.src_name}} 
-						div.e-entry-content
-							p.e-entry-title
-								| {{chat.message}}
-						div.footer.customisable-border
-		div#inputArea.timeline-footer(style="overflow:hidden")
-			input#inputMessage.tweet-box-button(type="text", data-ng-model="chat_message", style="float:left")
-			button#btnChat.btn-send(type="button", data-ng-click="send_chat()")
-				| Send
-		div#quizStatArea()
+		div#chatModule()
+			div#chatArea.chat.root.timeline.ltr.customisable-border.twitter-timeline.twitter-timeline-rendered(data-ng-model="chat_log")
+				div.stream
+					ul#chatList
+						li.h-entry.tweet.customisable-border(data-ng-repeat="chat in chat_log")
+							div.header
+								p.dt-updated.permalink(pubdate)
+									| {{chat.time}}
+								div.h-card.p-author()
+									a.u-url.profile()
+										span.u-photo.avatar.fa.fa-twitter-square.fa-4x()
+										span.p-name.customisable-highlight()
+											| {{chat.src_name}} 
+							div.e-entry-content
+								p.e-entry-title
+									| {{chat.message}}
+							div.footer.customisable-border
+			div#inputArea.chat.timeline-footer()
+				input.tweet-box-button#inputMessage(type="text", data-ng-model="chat_message")
+				button#btnChat.btn-send(type="button", data-ng-click="send_chat()")
+					| Send
+		div#quizStatArea(style="width:250px; height:250px; float:left;")
 			div#quizChart(google-chart chart="quiz_chart")
-			//canvas#quizChart(width="380", height="300")
-		div#kaisqr_canvas(lapp-canvas)
-			canvas(width="235px" height="200px")
-			div#colors(ng-repeat="color in canvasStrokeColor")
-				span(ng-click="selectColor(color.color)" style="float:left; margin:5px;")
-					| {{color.color}}	 
+	div#kaisqr_canvas(lapp-canvas)
+		canvas(width="500px" height="250px")
+		div#colors(ng-repeat="color in canvasStrokeColor")
+			span(ng-click="selectColor(color.color)" style="float:left; margin-left:5px; margin-right: 5px;")
+				| {{color.color}}
 	#q()
 		div#q_log()
 			div#q_chart(google-chart chart="q_chart")
 			//canvas#chart(width="1080", height="150")
-	#attendance()
-		div#attend_log(data-ng-model="attendance")
-			div#attendee(ng-repeat="user in attendance", data-ng-click="click_user(user.userId)")
-				span.u-photo.avatar.fa.fa-twitter-square.fa-4x()
-				br
-				label
-					| {{user.username}}

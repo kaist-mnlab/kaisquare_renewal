@@ -159,10 +159,10 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			chart.data = qs;
 			chart.options = {
 				displayExactValues: true,
-				width: 1080,
+				width: 900,
 				height: 150,
-				legend: {position:"none"},
-				chartArea: {left:0,top:0,bottom:0,height:"100%"}
+				legend: {position:"none"}
+				//chartArea: {left:0,top:0,bottom:0,height:"100%"}
 			};
 			$scope.q_chart = chart;
 		});
@@ -254,7 +254,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				console.log(question);
 				quizChart.type = "PieChart";
 				quizChart.options = {
-					width: 380,
+					width: 250,
 					height: 200,
 					title: question,
 					displayExactValues: true,
@@ -271,7 +271,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				$scope.quiz_chart = quizChart; 
 				
 				$("#quizStatArea").show();
-				$("#chatArea").css('height', '300px');
+				$("#chatModule").css('width', '0%');
 			}, function() {
 				console.log("Dismissed");
 			});
