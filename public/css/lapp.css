@@ -25,7 +25,7 @@ div#left_video{
 	float:left;
 	//width:350px;
 	//height:625px;
-	background-color:#000000;
+	background-color:#ffffff;
 	margin-right:5px;
 	border-radius: 4px;
 	max-width: 650px;
@@ -104,19 +104,27 @@ div#lecture_ctrl{
 	height: 50px;
 	padding: 10px;
 }
+div#util{
+	width:100%;
+	//height:50px;
+	margin-top:10px;
+	max-height: 170px;
+	background-color: #ffffff;
+}
 div#tutorCtrl{
 	width: 320px;
 	height: 50px;
 }
 div#studentCtrl{
-	width: 650px;
-	height: 130px;
+	width: 100%;
+	height: 120px;
+	max-height:120px;
 	background-color: #000000;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
 }
-div#util{
-	width:320px;
-	height:50px;
-}
+
 div#chatModule{
 	float:left; 
 	min-width:250px; 
@@ -215,8 +223,7 @@ div#kaisqr_canvas canvas {
 {
 	position:relative;
 	float:left;
-
-	left:40px;
+	left:30px;
 	top:15px;
 	background-color:#EEE;
 	width:500px;
