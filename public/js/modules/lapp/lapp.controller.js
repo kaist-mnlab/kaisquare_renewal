@@ -472,7 +472,18 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			};
 			
 			function onSessionJoined(event) {
-			    attachMediaStream($('#remote').attr({ 'width': 640, 'height': 480 }).get(0), event.stream);
+				var width = 640;
+				var height = 480;
+				console.log(scope.$parent.isMobile);
+				
+				if(scope.$parent.isMobile == 1) {
+					width = 320;
+					height = 240;
+				}
+			
+				
+			
+			    attachMediaStream($('#remote').attr({ 'width': width, 'height': height }).get(0), event.stream);
 			}
 
 			$(window).bind("beforeunload", function (event) {
