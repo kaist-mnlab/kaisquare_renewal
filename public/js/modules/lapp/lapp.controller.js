@@ -149,8 +149,11 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			}
 			$("#quizStatArea").hide();
 			
-		});
+			 socket.emit('requestLecture', {lectureId: $scope.lecture._id, userId: $scope.user._id, username: $scope.user.username});
 		 
+			
+		});
+		
 		socket.on('initQnChat', function(qs, cs){
 			for (var i in cs){
 				$scope.chat_log.push({time:Stopwatch.formattedTime(cs[i].time*1000), src_name:cs[i].user_name, message: cs[i].msg});
@@ -327,22 +330,44 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 	    $scope.click_user = function(data){
 	    	//alert(data);
 	    }
-	    socket.emit('requestLecture', {lectureId: $scope.lecture._id, userId: $scope.user._id, username: $scope.user.username});
-
+	   
 	    // attendance (joinLecture�� ������ ��� ������ ���� ��)
 	    socket.on('lectureAttend', function(data){
-	    	console.log("lectureAttend");
-	    	console.log(data);
-	    	var user = {img: null, userId: data.userId, username: data.username};
+
+			if($scope.thisUserCtrl != "8") 
+				return;
+
+	    	var attendance = $("#attend_log")[0].children;
+	    	for( ; attendance.length > 0; ){
+    			attendance[0].remove();
+	    	}
+
+	    	for( var i = 0; i<data.length; ++i){
+		    	var user = {img: null, userId: data[i].userId, username: data[i].username};
+		    	$("#attend_log").prepend(
+		    		"<div id='" + user.userId + "' style='float:left' > <div id='" + user.userId + "_thumb' ><span class='u-photo avatar fa fa-twitter-square fa-4x'></span></div> <br> <label>" + user.username  + "</label></div>"
+		    	
+		    	);
+		    }
+	    	
 	    	$scope.attendance = data;// = user;
+	    	
+	    
 	    	
 	    });
 
 	    socket.on('connected',function(){
 			console.log('KAISquare Lecture connected');
 		});
+		socket.on('disconnect',function(data) {
+			console.log(data + " has been elemeifadsfasdf");
+			$("#"+data).remove();
+			
+		});
+		
 		socket.on('joinLecture',function(data){
 			console.log('KAISquare Lecture ' + data + " has been connected.");
+			
 		});
 		socket.on('receiveMessage', function(data){
 			//console.log(data.message);
@@ -376,26 +401,33 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			getUserMedia(constraints, handleUserMedia, handleUserMediaError);
 
 			function handleUserMedia(stream) {
-				var session = new CreateSession('#local', { gid: scope.$parent.lectureId, uid: scope.$parent.user._id, width: 640, height: 480, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+				//attachMediaStream($('#local').attr({'width':  640, 'height': 480}).get(0), stream);
+				attachMediaStream($('#local').attr({'width':  320, 'height': 240}).get(0), stream);
+				var session = new CreateSession({ gid: scope.$parent.lectureId, uid: scope.$parent.user._id, width: 640, height: 480, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
 				session.onSessionJoined = onSessionJoined;
 				session.onSessionClosed = onSessionClosed;
 				session.start();
 			};
 
 			function handleUserMediaError(error) {
-				alert('Unable to access user media: ' + error);
+				alert('Unable to access user media' );
+				console.log(error);
 			};
 
 			function onSessionJoined(event) {
-				attachMediaStream($('<video></video>').attr({ 'id': event.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': event.uid }).appendTo('#'+event.uid).get(0), event.stream);
+				//여기를 수정하라
+				if( typeof event.uid !== 'undefined' && event.uid !== scope.$parent.user._id ){
+					console.log("onsessionjoined_lecture");
+					console.log(event);
+					console.log($('#'+event.uid));
+					$('#'+event.uid+'_thumb')[0].children[0].remove();
+					attachMediaStream($('<video></video>').attr({ 'id': event.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': event.uid }).appendTo('#'+event.uid+'_thumb').get(0), event.stream);
+				}
 			};
 
 			function onSessionClosed(event) {
 				$('#' + event.socket_id).remove();
 			};
-			
-			
-		
 			
 		}
 	}
@@ -421,12 +453,22 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			var session;
 
 			function handleUserMedia(stream) {
-				session = new JoinSession('#remote', '#local', { gid: scope.$parent.lectureId, uid: scope.$parent.user._id, width: 640, height: 480, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } }).start();
+				attachMediaStream($('#local').get(0), stream);
+				session = new JoinSession({ gid: scope.$parent.lectureId, uid: scope.$parent.user._id, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+				session.onSessionJoined = onSessionJoined;
+			    session.start();
 			};
 
 			function handleUserMediaError(error) {
-				alert('Unable to access user media: ' + error);
+				//alert('Access to lecture without media!');
+			    session = new JoinSession({ gid: scope.$parent.lectureId, uid: scope.$parent.user._id, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+			    session.onSessionJoined = onSessionJoined;
+			    session.start();
 			};
+			
+			function onSessionJoined(event) {
+			    attachMediaStream($('#remote').attr({ 'width': 640, 'height': 480 }).get(0), event.stream);
+			}
 
 			$(window).bind("beforeunload", function (event) {
 				if (session != null)
@@ -460,7 +502,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 .directive('lappCanvas', function(){
 	return {
 		link: function(scope, element, attrs){
-			console.log($(element[0])[0].children[1]);
+			//console.log($(element[0])[0].children[1]);
 			var canvas = $(element[0])[0].children[1];
 			var ctx = canvas.getContext('2d');
 			canvas = $(canvas);

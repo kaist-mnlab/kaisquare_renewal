@@ -46,16 +46,8 @@ div#content(data-ng-switch on="thisUserCtrl")
 								button#btn(type="button", data-ng-click="quiz_ans_send(0)")
 									| Send
 		#attendance(data-ng-switch-when="8")
-			div#attend_log( data-ng-model="attendance")
-				div#attendee(ng-repeat="user in attendance", data-ng-click="click_user(user.userId)")
-					div(data-ng-switch on="user.join")
-						div(data-ng-switch-on="true")
-							//div#{{user._id}}
-						div(data-ng-switch-default)
-							span.u-photo.avatar.fa.fa-twitter-square.fa-4x()
-					br
-					label
-						| {{user.username}}
+			div#attend_log()
+
 	#right_twit(ng-style="{{stud_chat_css}}")
 		div#chatModule()
 			div#chatArea.chat.root.timeline.ltr.customisable-border.twitter-timeline.twitter-timeline-rendered(data-ng-model="chat_log")

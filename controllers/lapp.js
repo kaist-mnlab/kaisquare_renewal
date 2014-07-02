@@ -217,7 +217,7 @@ module.exports = {
 					return e.userId !== key.userId;
 				});
 				
-				io.sockets.in(key.lectureId).emit('disconnect');
+				io.sockets.in(key.lectureId).emit('disconnect', key.userId);
 			}
 			/*
 			var clients = io.sockets.clients(key);

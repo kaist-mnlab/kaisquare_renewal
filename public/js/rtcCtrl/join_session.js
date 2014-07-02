@@ -13,6 +13,12 @@ function JoinSession(option) {
 	this.option = option;
 };
 
+function addCandidateSuccess() {
+}
+
+function addCandidateFail() {
+}
+
 JoinSession.prototype = {
     start: function () {    	
 		this.signaling.emit('join', { gid: this.gid, uid: this.uid });
@@ -73,7 +79,7 @@ JoinSession.prototype = {
 				sdpMLineIndex: message.msg.label,
 				candidate: message.msg.candidate
 			});
-			pc.addIceCandidate(candidate);
+			pc.addIceCandidate(candidate, addCandidateSuccess, addCandidateFail);
 		}
 	},
 	log: function (array) {
