@@ -87,7 +87,7 @@ requirejs.config({
 			deps:['angular', 'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter','lecture/lecture.directive']
 		},
 		'lapp/index':{
-			deps: ['angular', 'lapp/lapp.controller', 'lapp/lapp.directive', 'chart', 'angular-google-chart','rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session', 'rtcCtrl/join_session_for_ff']
+			deps: ['angular', 'lapp/lapp.controller', 'lapp/lapp.directive', 'chart', 'angular-google-chart','rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session']
 		},
 		'angular-google-chart':{
 			deps: ['angular']
@@ -129,7 +129,7 @@ requirejs( [
 		'lapp/lapp.controller', 'lapp/lapp.directive',
 		'bootstrap',
 		
-		'rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session', 'rtcCtrl/join_session_for_ff',
+		'rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session',
 		//  'rtcCtrl/record' 
 	],
 
