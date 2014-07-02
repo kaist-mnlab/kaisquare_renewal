@@ -417,10 +417,16 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			                           {color: 'red'},
 			                           {color: 'blue'},
 			                           {color: 'green'},
-			                           {color: 'white'}
+			                           {color: 'white'},
+			                           {color: 'clear'}
 			                           ];
 			scope.selectColor = function(color){
-				ctx.strokeStyle = color;
+				if (color == "clear"){
+					ctx.beginPath();
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+				}
+				else 
+					ctx.strokeStyle = color;
 			};
 			canvas.bind('mousedown', function(event){
 				var point = getMousePosition(event);
