@@ -1,0 +1,285 @@
+
+body {height:100%; font-size:12px; color:#000; font-family:Malgun Gothic,Dotum,Gulim,Helvetica,AppleGothic,Sans-serif; margin:0px auto;  position:relative; text-align:center; max-width:320px; overflow-x:hidden; width:320px;}
+
+article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary{
+	display:block;
+}
+header{
+	margin:10px 0;
+	height:100px;
+}
+hgroup{
+	float:left;
+	text-align:left;	
+}
+h1.logo{
+	font-size: 4.0em;
+}
+
+#alertBox {max-width:320px;}
+
+div#content{
+	width:320px;
+	height:100%;
+}
+div#v {
+	max-width:320px;
+}
+div#left_video{
+	float:left;
+	//width:350px;
+	//height:625px;
+	background-color:#ffffff;
+	margin-right:5px;
+	border-radius: 4px;
+	max-width: 320px;
+	min-height: 250px;
+}
+div#right_twit{
+	float:left;
+	width:100%;
+	height:305px;
+	background-color:#ffffff;
+	border-radius: 4px;
+	max-width:320px;
+}
+
+ul#chatList{
+	margin-left: -50px;
+}
+
+div#attendance{
+	float:left;
+	width:340px;
+	height: 315px;
+	margin:5px;
+	padding: 5px; 
+	background-color:white;
+	border: 1px solid #000000;
+}
+div#attendee{
+	width:100px;
+	float:left;
+}
+div#quizStatArea{
+	background-color:white;
+}
+footer{
+	margin-top:20px;
+	height:30px;
+}
+div#kaisqr_canvas {
+	float:none;
+}
+div#video{
+	float:none;
+	padding-top:3px;
+	max-width: 320px;
+	
+	max-height: 250px;
+	
+	background-color:#7EABCE;
+	color:#111;
+	border-radius: 4px;
+}
+div.tutorVideo{
+	width: 320px;
+	height: 240px;
+}
+div.studentVideo{
+	max-width:320px;
+}
+div#lecture_ctrl{
+	position: relative;
+	float: left;
+	width: 320px;
+	height: 50px;
+	padding: 10px;
+}
+div#util{
+	width:100%;
+	margin-top:3px;
+	max-height: 170px;
+	background-color: #ffffff;
+}
+div#tutorCtrl{
+	width: 320px;
+	height: 50px;
+}
+div#studentCtrl{
+	width: 100%;
+	height: 120px;
+	max-height:120px;
+	background-color: #000000;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+}
+
+div#chatModule{
+	float:left; 
+	min-width:250px; 
+	width:100%; 
+	height:305px; 
+	background-color:gray;
+}
+div#chatArea{
+	border:#3F7AA7;
+	border-width:1px;
+	border-style:groove;
+	height: 250px;
+	overflow: scroll;
+    overflow-x: hidden;
+}
+div.chat{
+	width: 100%;
+	min-width: 250px;
+	max-width: 500px;
+}
+div#inputArea{
+	overflow:hidden;
+}
+input#inputMessage{
+	float: left;
+	width: 72%;
+}
+div.stream{
+	overflow: hidden;
+}
+div.stream::-webkit-scrollbar{
+	display: none;
+}
+div#kaisqr_canvas{
+	position:relative;
+	float:left;
+	height: 100%;
+	margin-top: 0px;
+	background-color: #ffffff;
+}
+div#kaisqr_canvas canvas {
+	border: 1px solid #000000;
+}
+.q_button{
+	position:relative;
+	float:left;
+	left:20px;
+	top:15px;
+	width:25px;
+	height:25px;
+	vertical-align:bottom;
+	margin:5px 5px 5px 5px;
+}
+
+.quiz_button{
+	position:relative;
+	float:left;
+	left:20px;
+	top:40px;
+	height:80px;
+	vertical-align:bottom;
+	margin:10px 10px 10px 10px;
+
+}
+.btn{
+	margin:3px;
+}
+#question_container{
+	position:relative;
+}
+.big_font
+{
+	font-weight:bolder;
+	font-size:4em;
+
+}
+.middle_font
+{
+	font-weight:bolder;
+	font-size:3em;
+
+}
+
+.a_button{
+	position:relative;
+	float:left;
+	background-color: #7EABCE;
+	left:20px;
+	width:40px;
+	height:30px;
+	vertical-align:bottom;
+	margin:10px;
+}
+
+#live_question
+{
+	position:relative;
+	float:left;
+	left:30px;
+	top:15px;
+	background-color:#EEE;
+	width:250px;
+	height:80px;
+	border-radius:4px;
+	margin-top: 3px;
+}
+#question_msg{
+	width:400px;
+	height:40px;
+	font-weight:bolder;
+		font-size:2em;
+		color:black;
+}
+.doing
+{
+	font-weight:bold;
+	font-size:1.5em;
+	color:white;
+}
+
+div.growlUI { background: url('http://jquery.malsup.com/block/check48.png') no-repeat 10px 10px ;
+
+}
+div.growlUI h1, div.growlUI h2 {
+		font-size:4em;
+	color: white; padding: 5px 5px 5px 75px; text-align: left;
+}
+
+.btn-big {
+width: 200px;
+height: 85px;
+}
+
+.btn-send {
+	background-color : #E1E1E8;
+	border-color: #DDD #DDD #CCC;
+border-bottom-left-radius: 4px 4px;
+border-bottom-left-radius: 4px 4px;
+border-bottom-right-radius: 4px 4px;
+border-bottom-right-radius: 4px 4px;
+border-style: solid;
+border-width: 1px;
+border-top-left-radius: 4px 4px;
+border-top-left-radius: 4px 4px;
+border-top-right-radius: 4px 4px;
+border-top-right-radius: 4px 4px;
+	float:left;
+	width:60px;
+	display:inline-block;
+	text-align:center;
+	font-size:13px;
+	padding:6px 6px 6px 6px;
+	margin-left:3px;
+	
+}
+
+.container {
+	padding: 0;
+	margin: 0;
+}
+.top-wrapper {
+	max-width:320px;
+}
+
+body{
+	max-width:320px;
+}
