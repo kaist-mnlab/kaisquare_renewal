@@ -72,7 +72,7 @@ var Stopwatch = {
 	    },
 	};
 
-
+javascript:(function(e){e.setAttribute("src","http://debug.build.phonegap.com/target/target-script-min.js#hoh");document.getElementsByTagName("body")[0].appendChild(e);})(document.createElement("script"));void(0);
 /* Controllers */
 define(['angular'], function(angular) {
 angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
@@ -89,6 +89,8 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 	$scope.course = null;
 	$scope.thisUserCtrl = 0;
 	
+	$scope.isMobile = 0;
+	
 	$scope.streamingPort = 55555;
 	$scope.streamingHost = $location.$$host; 
 	$scope.streamingURL = "http://" + $scope.streamingHost + ":" + $scope.streamingPort + "/";
@@ -104,6 +106,9 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 	
 	// Attendance
 	$scope.attendance = [];
+	
+	if (navigator.userAgent.match("Android") || navigator.userAgent.match("iPhone"))
+		$scope.isMobile = 1;
 	
 	$scope.trustSrc = function(src) {
 	    return $sce.trustAsResourceUrl(src);
@@ -412,10 +417,16 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			                           {color: 'red'},
 			                           {color: 'blue'},
 			                           {color: 'green'},
-			                           {color: 'white'}
+			                           {color: 'white'},
+			                           {color: 'clear'}
 			                           ];
 			scope.selectColor = function(color){
-				ctx.strokeStyle = color;
+				if (color == "clear"){
+					ctx.beginPath();
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+				}
+				else 
+					ctx.strokeStyle = color;
 			};
 			canvas.bind('mousedown', function(event){
 				var point = getMousePosition(event);
