@@ -5,7 +5,7 @@ requirejs.config({
 	paths:{
 
 
-		'text': '../lib/require/text', //HTML 占쎄퀣�좑옙怨뺧옙 揶쏉옙議뉛옙�釉�text! 占쎄쑬�곻옙�뚮뮞�쒙옙�븐늿肉т빳占쎈뼄.
+		'text': '../lib/require/text', 
 		'jquery': '../lib/jquery/jquery',
 		'jquery-ui': '../lib/jquery/jquery-ui-1.10.2.min',
 		'angular': '../lib/angular/angular',
@@ -23,7 +23,10 @@ requirejs.config({
 		'lapp':	'modules/lapp',
 		'domReady': '../lib/require/domReady',
 		'chart': '../lib/chart/chart',
-		'angular-google-chart': '../lib/angular-google-chart/ng-google-chart'
+		'angular-google-chart': '../lib/angular-google-chart/ng-google-chart',
+		'bootstrap': '//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min',
+		'rtcCtrl': 'rtcCtrl'
+		
 	},
 
 	shim:{
@@ -84,20 +87,23 @@ requirejs.config({
 			deps:['angular', 'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter','lecture/lecture.directive']
 		},
 		'lapp/index':{
-			deps: ['angular', 'lapp/lapp.controller', 'lapp/lapp.directive', 'chart', 'angular-google-chart']
+			deps: ['angular', 'lapp/lapp.controller', 'lapp/lapp.directive', 'chart', 'angular-google-chart','rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session', 'rtcCtrl/join_session_for_ff']
 		},
 		'angular-google-chart':{
 			deps: ['angular']
-		}
+		},
+		'bootstrap':{
+			deps:['jquery'],
+		},
 	}
 });
 
 
-//requireJS�쒙옙占쎌뮇�쒙옙�뤿연 筌뤴뫀諭�嚥≪뮆諭�
+
 requirejs( [
-		'text', //沃섎챶��占쎌쥙堉듸옙��う path, css占쏙옙html占쏙옙嚥≪뮆諭띰옙�띾┛ 占쎄쑵釉�requireJS 占쎈슢��뉩紐꾩뵥
-		'jquery', //沃섎챶��占쎌쥙堉듸옙��う path, jQuery占쏙옙AMD�쒙옙筌욑옙�앾옙�띾┛ 占쎈슢揆占쏙옙占쎈��껃칰占썸에�뺣굡占쎈�猷�jQuery 占쎈Ŧ��$嚥∽옙占쎈챷�㏆옙占쏙옙占쏙옙�덈뼄.
-		'angular', //沃섎챶��占쎌쥙堉듸옙��う path
+		'text', 
+		'jquery', 
+		'angular', 
 		'jquery-ui',
 		'/socket.io/socket.io.js',
 		'angular-resource',
@@ -121,10 +127,12 @@ requirejs( [
 		'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter', 'lecture/lecture.directive',
 		'lapp/index',
 		'lapp/lapp.controller', 'lapp/lapp.directive',
-		'//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'
+		'bootstrap',
+		
+		'rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session', 'rtcCtrl/join_session_for_ff',
+		//  'rtcCtrl/record' 
 	],
 
-	//占쎈��귨옙�뤿뻻 嚥≪뮆諭띰옙占썼굜�뺢컶占썩뫁��	
 	function (text, $, angular) {
 
 		'use strict';

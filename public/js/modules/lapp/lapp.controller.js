@@ -329,7 +329,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 	    }
 	    socket.emit('requestLecture', {lectureId: $scope.lecture._id, userId: $scope.user._id, username: $scope.user.username});
 
-	    // attendance (joinLecture¿¡ ³ÖÀ»Áö µû·Î ÇÒÁö´Â Á¶±Ý »ý°¢)
+	    // attendance (joinLectureï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½)
 	    socket.on('lectureAttend', function(data){
 	    	console.log("lectureAttend");
 	    	console.log(data);
@@ -356,6 +356,88 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
     });
 	
 }])
+.directive('lappRtclecture', function(){
+	// http://stackoverflow.com/questions/22164969/angularjs-two-way-binding-videos-currenttime-with-directive
+	// currentTime of Video 
+	return {
+		controller: function($scope, $element){
+			
+		},
+		link: function(scope, element, attrs){
+			var constraints = {
+				video: {
+					mandatory: {
+						minWidth: 640,
+						minHeight: 480
+					}
+				},
+				audio: 'true'
+			};
+			getUserMedia(constraints, handleUserMedia, handleUserMediaError);
+
+			function handleUserMedia(stream) {
+				var session = new CreateSession('#local', { gid: scope.$parent.lectureId, uid: scope.$parent.user._id, width: 640, height: 480, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+				session.onSessionJoined = onSessionJoined;
+				session.onSessionClosed = onSessionClosed;
+				session.start();
+			};
+
+			function handleUserMediaError(error) {
+				alert('Unable to access user media: ' + error);
+			};
+
+			function onSessionJoined(event) {
+				attachMediaStream($('<video></video>').attr({ 'id': event.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': event.uid }).appendTo('#'+event.uid).get(0), event.stream);
+			};
+
+			function onSessionClosed(event) {
+				$('#' + event.socket_id).remove();
+			};
+			
+			
+		
+			
+		}
+	}
+})
+.directive('lappRtcstudent', function(){
+	// http://stackoverflow.com/questions/22164969/angularjs-two-way-binding-videos-currenttime-with-directive
+	// currentTime of Video 
+	return {
+		controller: function($scope, $element){
+			
+		},
+		link: function(scope, element, attrs){
+			var constraints = {
+				video: {
+					mandatory: {
+						minWidth: 640,
+						minHeight: 480
+					}
+				},
+				audio: 'true'
+			};
+			getUserMedia(constraints, handleUserMedia, handleUserMediaError);
+			var session;
+
+			function handleUserMedia(stream) {
+				session = new JoinSession('#remote', '#local', { gid: scope.$parent.lectureId, uid: scope.$parent.user._id, width: 640, height: 480, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } }).start();
+			};
+
+			function handleUserMediaError(error) {
+				alert('Unable to access user media: ' + error);
+			};
+
+			$(window).bind("beforeunload", function (event) {
+				if (session != null)
+					session.close();
+			});
+			
+		
+			
+		}
+	}
+})
 .directive('lappVideo', function(){
 	// http://stackoverflow.com/questions/22164969/angularjs-two-way-binding-videos-currenttime-with-directive
 	// currentTime of Video 
@@ -369,6 +451,8 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			}
 		},
 		link: function(scope, element, attrs){
+		
+		
 			element.bind('timeupdate', scope.onTimeUpdate);
 		}
 	}

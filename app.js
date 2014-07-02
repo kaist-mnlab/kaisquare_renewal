@@ -35,6 +35,7 @@ var port = exports.port = +process.argv[2] || process.env.PORT || 6789;
 var server = http.createServer(app);
 var io = require('socket.io');
 var lapp = require('./controllers/lapp');
+var rtcCtrl = require('./controllers/rtcCtrl');
 
 if (process.env.REDISTOGO_URL) {
   var rtg   = require('url').parse(process.env.REDISTOGO_URL);
@@ -132,5 +133,6 @@ server = exports.server = http.createServer(app).listen(app.get('port'), functio
 var sio = module.exports.io = io.listen(server);
 
 lapp.index(sio);
+rtcCtrl.index(sio);
 sio.sockets.on('connection', lapp.lecture);
 sio.sockets.on('connection', pollCtrl.vote);
