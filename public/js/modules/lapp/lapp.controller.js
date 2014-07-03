@@ -336,7 +336,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 	    	//alert(data);
 	    }
 	   
-	    // attendance (joinLecture�� ������ ��� ������ ���� ��)
+	    // attendance (joinLecture占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占�占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙)
 	    socket.on('lectureAttend', function(data){
 
 			if($scope.thisUserCtrl != "8") 
@@ -351,13 +351,17 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 		    	var user = {img: null, userId: data[i].userId, username: data[i].username};
 		    	$("#attend_log").prepend(
 		    		"<div id='" + user.userId + "' style='float:left' > <div id='" + user.userId + "_thumb' ><span class='u-photo avatar fa fa-twitter-square fa-4x'></span></div> <br> <label>" + user.username  + "</label></div>"
-		    	
 		    	);
+		    	if ($scope.studentScreen[user.userId] !== undefined){
+		    		var u = $scope.stduentScreen[user.userId];
+		    		$('#'+u.class+'_thumb')[0].children[0].remove();
+					attachMediaStream($('<video></video>').attr({ 'id': u.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': u.uid }).appendTo('#'+u.uid+'_thumb').get(0), u.stream);
+		    	}
 		    }
 	    	
 	    	$scope.attendance = data;// = user;
 	    	
-	    
+	    	$scope.studentScreen = {};
 	    	
 	    });
 
@@ -420,13 +424,14 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			};
 
 			function onSessionJoined(event) {
-				//여기를 수정하라
+				//�ш린瑜��섏젙�섎씪
 				if( typeof event.uid !== 'undefined' && event.uid !== scope.$parent.user._id ){
 					console.log("onsessionjoined_lecture");
 					console.log(event);
 					console.log($('#'+event.uid));
 					$('#'+event.uid+'_thumb')[0].children[0].remove();
 					attachMediaStream($('<video></video>').attr({ 'id': event.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': event.uid }).appendTo('#'+event.uid+'_thumb').get(0), event.stream);
+					scope.$parent.studentScreen[event.uid] = {'socket_id': event.socket_id, 'uid': event.uid, 'stream': event.stream};
 				}
 			};
 
