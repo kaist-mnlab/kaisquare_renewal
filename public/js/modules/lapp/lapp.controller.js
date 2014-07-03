@@ -335,7 +335,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 	    $scope.click_user = function(data){
 	    	//alert(data);
 	    }
-	   
+	    $scope.studentScreen = {};
 	    // attendance (joinLecture占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占�占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙)
 	    socket.on('lectureAttend', function(data){
 
@@ -361,7 +361,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 	    	
 	    	$scope.attendance = data;// = user;
 	    	
-	    	$scope.studentScreen = {};
+	    	
 	    	
 	    });
 
