@@ -87,7 +87,8 @@ requirejs.config({
 			deps:['angular', 'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter','lecture/lecture.directive']
 		},
 		'lapp/index':{
-			deps: ['angular', 'lapp/lapp.controller', 'lapp/lapp.directive', 'chart', 'angular-google-chart','rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session']
+			deps: ['angular', 'lapp/lapp.controller', 'lapp/lapp.directive', 
+			'chart', 'angular-google-chart','rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session', "https://www.webrtc-experiment.com/RecordRTC.js", 'rtcCtrl/recorder']
 		},
 		'angular-google-chart':{
 			deps: ['angular']
@@ -129,7 +130,7 @@ requirejs( [
 		'lapp/lapp.controller', 'lapp/lapp.directive',
 		'bootstrap',
 		
-		'rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session',
+		'rtcCtrl/recorder','rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session', "https://www.webrtc-experiment.com/RecordRTC.js", 
 		//  'rtcCtrl/record' 
 	],
 

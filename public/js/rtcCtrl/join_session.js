@@ -13,12 +13,6 @@ function JoinSession(option) {
 	this.option = option;
 };
 
-function addCandidateSuccess() {
-}
-
-function addCandidateFail() {
-}
-
 JoinSession.prototype = {
     start: function () {    	
 		this.signaling.emit('join', { gid: this.gid, uid: this.uid });
@@ -36,7 +30,7 @@ JoinSession.prototype = {
 
 		function handleRemoteStreamAdded(event) {
 		    console.log('Remote stream added.');
-		    session.onSessionJoined({ stream: event.stream });
+		    !!session.onSessionJoined && session.onSessionJoined({ stream: event.stream });
 			session.remoteStream = event.stream;
 		}
 
@@ -79,7 +73,7 @@ JoinSession.prototype = {
 				sdpMLineIndex: message.msg.label,
 				candidate: message.msg.candidate
 			});
-			pc.addIceCandidate(candidate, addCandidateSuccess, addCandidateFail);
+			pc.addIceCandidate(candidate);
 		}
 	},
 	log: function (array) {

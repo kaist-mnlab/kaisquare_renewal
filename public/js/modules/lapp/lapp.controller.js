@@ -91,10 +91,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 	
 	$scope.isMobile = 0;
 	
-	$scope.streamingPort = 55555;
-	$scope.streamingHost = $location.$$host; 
-	$scope.streamingURL = "http://" + $scope.streamingHost + ":" + $scope.streamingPort + "/";
-
 	$scope.socket = socket;
 	$scope.currentTime = 0;
 	$scope.duration = 0;
@@ -203,6 +199,9 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 		
 			//$scope.stopwatch.setTime(time.time);
 			$scope.stopwatch.stop();
+			recorder.stop();
+			
+			
 		});
 		
 		$scope.start_lecture = function() {
@@ -214,6 +213,10 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			//broadcast to "lecture start"
 			//with recording logic
 			socket.emit('startLecture', {startAt: $scope.stopwatch.startAt, lapTime: $scope.stopwatch.lapTime});
+			recorder.start();
+			
+			$("#lecture_start").attr("disabled", true);
+			$("#lecture_stop").attr("disabled", false);
 			
 		};
 		
@@ -235,9 +238,19 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			$scope.stopwatch.reset();
 			//set lecture "VOD"
 			
+			
+			$("#lecture_start").attr("disabled", false);
+			$("#lecture_stop").attr("disabled", true);
+			
 			//broadcast to "lecture stop"
 			//with stopping recording logic and storing
 			socket.emit('stopLecture', {time: $scope.stopwatch.time()});
+			recorder.stop();
+			
+			
+			
+			
+			
 		};
 		$scope.make_quiz = function() {
 			//modal
@@ -408,11 +421,19 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				audio: 'true'
 			};
 			getUserMedia(constraints, handleUserMedia, handleUserMediaError);
-
+			var videoElement = $('#local').attr({'width':  320, 'height': 240}).get(0);
+			
 			function handleUserMedia(stream) {
 				//attachMediaStream($('#local').attr({'width':  640, 'height': 480}).get(0), stream);
-				attachMediaStream($('#local').attr({'width':  320, 'height': 240}).get(0), stream);
-				var session = new CreateSession({ gid: scope.$parent.lectureId, uid: scope.$parent.user._id, width: 640, height: 480, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+				//attachMediaStream($('#local').attr({'width':  320, 'height': 240}).get(0), stream);
+				//var session = new CreateSession({ gid: scope.$parent.lectureId, uid: scope.$parent.user._id, width: 640, height: 480, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+				
+				//startRecording.disabled = false;
+                videoElement.src = window.URL.createObjectURL(stream); 
+				window.recorder = new Recorder(stream, { gid: scope.$parent.lectureId, uid: scope.$parent.user._id });
+                recorder.onRecordCompleted = onRecordCompleted;
+                window.session = new CreateSession(stream, { gid: scope.$parent.lectureId, uid: scope.$parent.user._id, width: 640, height: 480, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+				
 				session.onSessionJoined = onSessionJoined;
 				session.onSessionClosed = onSessionClosed;
 				session.start();
@@ -438,6 +459,28 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			function onSessionClosed(event) {
 				$('#' + event.socket_id).remove();
 			};
+			
+			function onRecordCompleted(href) {
+                videoElement.src = href;
+                
+                //Turn it to VOD
+				var lecture = scope.$parent.lecture;
+				lecture.duration = scope.$parent.stopwatch.time();
+				lecture.status = 0;
+				lecture.vod_url = href;
+				
+				
+				lecture.$save(function(p, resp) {
+					if(!p.error) {
+						// If there is no error, redirect to the main view
+						console.log("lecture update complete!");
+					} else {
+						alert('Could not create course');
+					}
+				});
+				
+				
+            };
 			
 		}
 	}

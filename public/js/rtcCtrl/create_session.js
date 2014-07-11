@@ -1,7 +1,7 @@
 //WebRTC를 통한 Streaming Session을 생성하기 위한 API 및 Callback Method를 제공하는 Class
 //selector: remote video element를 
-function CreateSession(option) {
-	this.localStream = option.stream;
+function CreateSession(stream, option) {
+	this.localStream = stream;
 	this.iceServer = option.iceServers || { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] };
 	this.pcs = {};
 	this.signaling = io.connect();
@@ -43,7 +43,7 @@ CreateSession.prototype = {
 
 		function handleRemoteStreamAdded(event) {
 			console.log('Remote stream added.');
-			session.onSessionJoined({ socket_id: msg.socket_id, stream: event.stream, uid: msg.uid });
+			!!session.onSessionJoined && session.onSessionJoined({ socket_id: msg.socket_id, stream: event.stream, uid: msg.uid });
 			session.remoteStream = event.stream;
 		}
 
@@ -67,7 +67,7 @@ CreateSession.prototype = {
 	closed: function (message) {
 	    console.log('close ' + message);
 	    delete this.session.pcs[message.sid];
-	    this.session.onSessionClosed({ sid: message.sid, uid: message.uid });
+	    !!this.session.onSessionClosed && this.session.onSessionClosed({ sid: message.sid, uid: message.uid });
 	},
 	sendMessage: function (type, dest, msg) {
 		message = { type: type, src: this.pcs.socket_id, dest: dest, msg: msg };
