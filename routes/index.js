@@ -230,6 +230,15 @@ var routes = [
     	
     },
     
+    {
+    	path: '/pptFileUpload',
+    	httpMethod: 'POST',
+    	middleware: [function(req, res){
+    		console.log("PPT Upload");
+    		var url = ppt_uploaded_file(req.files.file);
+    		res.json({success:true, url: url});
+    	}],
+    },
 
     // All other get requests should be handled by AngularJS's client-side routing system
     {
@@ -260,15 +269,30 @@ function move_uploaded_file(file) {
       
     fs.rename(tmp_path, target_path, function(err){
         if(err) throw err;
-        /* 어떤 예제에서 아래와 같이 TMP_PATH를 다시 UNLINK해주지만 이미 RENAME으로 이동시켰기 때문에 TMP_PATH가 없다는 오류가 나게 됩니다.
+        /* �대뼡 �덉젣�먯꽌 �꾨옒��媛숈씠 TMP_PATH瑜��ㅼ떆 UNLINK�댁＜吏�쭔 �대� RENAME�쇰줈 �대룞�쒖섟湲��뚮Ц��TMP_PATH媛��녿떎���ㅻ쪟媛��섍쾶 �⑸땲��
         FS.UNLINK(TMP_PATH, FUNCTION() {
             IF (ERR) THROW ERR;
             RES.SEND('FILE UPLOADED TO: ' + TARGET_PATH + ' - ' + REQ.FILES.THUMBNAIL.SIZE + ' BYTES');
         });*/
         console.log('->> upload done');
         return file.name;
+    });	
+}
+
+function ppt_uploaded_file(file){
+	var tmp_path = file.path;
+	var target_path = __dirname + '/../public/uploads/' + file.name;
+	console.log('->> tmp_path: ' + tmp_path );
+    console.log('->> target_path: ' + target_path );
+    
+    fs.rename(tmp_path, target_path, function(err){
+    	if (err) throw err;
+    	console.log('->> upload done');
+    	
+    	// ppt to img convert!
+    	
+    	return file.name;
     });
-	
 }
 
 module.exports.main = 

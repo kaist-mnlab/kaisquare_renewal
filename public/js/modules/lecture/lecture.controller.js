@@ -87,15 +87,23 @@ angular.module('lecture.controller')
 .controller('LectureNewCtrl',
 ['$scope', '$modalInstance', '$location','$stateParams','Lecture', 'course', '$fileUploader','XSRF_TOKEN',  function($scope, $modalInstance, $location, $stateParams, Lecture, course, $fileUploader, csrf_token) {
 	//var user = $scope.user;
-
+	
+	$scope.fileUploadFlag = 0;
+	$scope.updateFlag = function(flag){
+		$scope.fileUploadFlag = flag;
+	}
 	$scope.course = course;
 	$scope.lecture = {
 		title: '',
 		description: '',
 		status: 0,
-		course: course._id
+		course: course._id,
+		vod_url: '',
+		material_url: []
 	};
+	console.info("fileupload: debug");
 	
+	// VoD upload
 	var uploader = $scope.uploader = $fileUploader.create({
         scope: $scope,                          // to automatically update the html. Default: $rootScope
         url: '/fileUpload',
@@ -111,8 +119,9 @@ angular.module('lecture.controller')
                 console.info('File extension Filter');
                 if(item.type.indexOf("video/mp4")> -1 || item.type.indexOf("video/webm")> -1 || item.type.indexOf("video/ogg")> -1)
                 	return true;
+                if($scope.fileUploadFlag != 1)
+                	return false;
                 else {
-                	
                 	return false;
                 }
             }
@@ -125,7 +134,7 @@ angular.module('lecture.controller')
 
     uploader.bind('whenaddingfilefailed', function (event, item) {
         console.info('When adding a file failed', item);
-        alert("Video Files Only!");
+        //alert("Video Files Only!");
     });
 
     uploader.bind('afteraddingall', function (event, items) {
@@ -173,8 +182,143 @@ angular.module('lecture.controller')
         console.info('Total progress: ' + progress);
     });
 
-    
+    // Presentation file upload
+    var presentFileUploader = $scope.presentFileUploader = $fileUploader.create({
+        scope: $scope,                          // to automatically update the html. Default: $rootScope
+        url: '/pptFileUpload',
+        formData: [
+            { key: 'value' }
+        ],
+        headers: 
+                  {'X-CSRF-TOKEN': csrf_token
+        },
+       
+        filters: [
+            function (item) {                    // first user filter
+                console.info('File extension Filter');
+                console.info(item.type);
+                if($scope.fileUploadFlag != 2)
+                	return false;
+                if(item.type.indexOf("presentation")> -1)
+                	return true;
+                else {
+                	return false;
+                }
+            }
+        ]
+    });
+	
+    presentFileUploader.bind('afteraddingfile', function (event, item) {
+        console.info('After adding a file', item);
+    });
 
+    presentFileUploader.bind('whenaddingfilefailed', function (event, item) {
+        console.info('When adding a file failed', item);
+        //alert('PPT/PPTX only!')
+    });
+
+    presentFileUploader.bind('afteraddingall', function (event, items) {
+        console.info('After adding all files', items);
+    });
+
+    presentFileUploader.bind('beforeupload', function (event, item) {
+        console.info('Before upload', item);
+    });
+
+    presentFileUploader.bind('progress', function (event, item, progress) {
+        console.info('Progress: ' + progress, item);
+    });
+
+    presentFileUploader.bind('success', function (event, xhr, item, response) {
+        console.info('Success', xhr, item, response);
+    });
+
+    presentFileUploader.bind('cancel', function (event, xhr, item) {
+        console.info('Cancel', xhr, item);
+    });
+
+    presentFileUploader.bind('error', function (event, xhr, item, response) {
+        console.info('Error', xhr, item, response);
+    });
+
+    presentFileUploader.bind('complete', function (event, xhr, item, response) {
+        console.info('Complete', xhr, item, response);
+        $scope.lecture.presentation_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/" + item.file.name;
+    });
+    presentFileUploader.bind('progressall', function (event, progress) {
+        console.info('Total progress: ' + progress);
+    });
+    
+    // Lecture file upload
+    var lecFileUploader = $scope.lecFileUploader = $fileUploader.create({
+        scope: $scope,                          // to automatically update the html. Default: $rootScope
+        url: '/fileUpload',
+        formData: [
+            { key: 'value' }
+        ],
+        headers: 
+                  {'X-CSRF-TOKEN': csrf_token
+        },
+       
+        filters: [
+            function (item) {                    // first user filter
+            	console.log(item);
+                console.info('File extension Filter');
+                console.info(item.type);
+                
+                if($scope.fileUploadFlag != 3)
+                	return false;
+                if(item.type.indexOf("presentation")> -1)
+                	return true;
+                else {
+                	return true;
+                }
+            }
+        ]
+    });
+	
+    lecFileUploader.bind('afteraddingfile', function (event, item) {
+        console.info('After adding a file', item);
+    });
+
+    lecFileUploader.bind('whenaddingfilefailed', function (event, item) {
+        console.info('When adding a file failed', item);
+        //alert('PPT/PPTX only!')
+    });
+
+    lecFileUploader.bind('afteraddingall', function (event, items) {
+        console.info('After adding all files', items);
+    });
+
+    lecFileUploader.bind('beforeupload', function (event, item) {
+        console.info('Before upload', item);
+    });
+
+    lecFileUploader.bind('progress', function (event, item, progress) {
+        console.info('Progress: ' + progress, item);
+    });
+
+    lecFileUploader.bind('success', function (event, xhr, item, response) {
+        console.info('Success', xhr, item, response);
+    });
+
+    lecFileUploader.bind('cancel', function (event, xhr, item) {
+        console.info('Cancel', xhr, item);
+    });
+
+    lecFileUploader.bind('error', function (event, xhr, item, response) {
+        console.info('Error', xhr, item, response);
+    });
+
+    lecFileUploader.bind('complete', function (event, xhr, item, response) {
+        console.info('Complete', xhr, item, response);
+        $scope.lecture.material_url.push($location.$$absUrl.replace($location.$$url, "") + "/uploads/" + item.file.name);
+    });
+    lecFileUploader.bind('progressall', function (event, progress) {
+        console.info('Total progress: ' + progress);
+    });
+    // END: supplyment file upload
+    
 	$scope.createLecture = function() {
 		var lecture = $scope.lecture;
 		
@@ -232,7 +376,6 @@ angular.module('lecture.controller')
 		} else {
 			alert('You must enter a title');
 		}
-
 	};
 	
 	$scope.cancel = function() {

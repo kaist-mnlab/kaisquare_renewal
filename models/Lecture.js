@@ -21,7 +21,8 @@ var LectureSchema = exports.LectureSchema = new mongoose.Schema({
 	description: { type: String, required: true },
 	vod_url: String,
 	//File?
-	materialURL:[{url: String}],
+	presentation_url: String,
+	material_url:[{url: String}],
 	course: {type: mongoose.Schema.Types.ObjectId, ref:'course'},
 	
 	//
