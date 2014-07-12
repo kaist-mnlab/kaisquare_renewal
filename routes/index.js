@@ -231,15 +231,16 @@ var routes = [
     },
     
     {
-    	path: '/pptFileUpload',
+    	path: '/createLecture',
     	httpMethod: 'POST',
     	middleware: [function(req, res){
-    		console.log("PPT Upload");
-    		var url = ppt_uploaded_file(req.files.file);
-    		res.json({success:true, url: url});
+    		console.log("POST: CREATELECTURE")
+    		console.log(req.body);
+    		move_lecture_files(req.body);
+    		res.json({success:true});
     	}],
     },
-
+    
     // All other get requests should be handled by AngularJS's client-side routing system
     {
         path: '/*',
@@ -263,38 +264,76 @@ var routes = [
 
 function move_uploaded_file(file) {
 	var tmp_path = file.path;
-    var target_path = __dirname + '/../public/uploads/' + file.name;
+    var target_path = __dirname + '/../public/uploads/temp/';
+    
+    file_mkdir(target_path);
+        
+    target_path = target_path + file.name;
+    
+    file_move(tmp_path, target_path, function(err){
+    	if(!err){
+    		return file.name;
+    	}
+    });
+    /*
     console.log('->> tmp_path: ' + tmp_path );
     console.log('->> target_path: ' + target_path );
       
     fs.rename(tmp_path, target_path, function(err){
-        if(err) throw err;
-        /* �대뼡 �덉젣�먯꽌 �꾨옒��媛숈씠 TMP_PATH瑜��ㅼ떆 UNLINK�댁＜吏�쭔 �대� RENAME�쇰줈 �대룞�쒖섟湲��뚮Ц��TMP_PATH媛��녿떎���ㅻ쪟媛��섍쾶 �⑸땲��
-        FS.UNLINK(TMP_PATH, FUNCTION() {
-            IF (ERR) THROW ERR;
-            RES.SEND('FILE UPLOADED TO: ' + TARGET_PATH + ' - ' + REQ.FILES.THUMBNAIL.SIZE + ' BYTES');
-        });*/
+        if(err) {
+        	console.log(err);
+        }
+        
+        console.log('->> file_path: ' + file.name)
         console.log('->> upload done');
+        
         return file.name;
-    });	
+    });
+    */	
 }
 
-function ppt_uploaded_file(file){
-	var tmp_path = file.path;
-	var target_path = __dirname + '/../public/uploads/' + file.name;
-	console.log('->> tmp_path: ' + tmp_path );
-    console.log('->> target_path: ' + target_path );
+function move_lecture_files(info) {
+	var tmp_path = __dirname + '/../public/uploads/temp/'
+    var target_path = __dirname + '/../public/uploads/' + info._id + '/';
+
+    file_mkdir(target_path);
     
-    fs.rename(tmp_path, target_path, function(err){
-    	if (err) throw err;
-    	console.log('->> upload done');
-    	
-    	// ppt to img convert!
-    	
-    	return file.name;
+    // vod
+    var vod_file_name = info.vod_url.replace(/^.*[\\\/]/, '');
+    file_move(tmp_path + vod_file_name, target_path + vod_file_name, function(err){});
+    
+    // presentation
+    var presentation_file_path = info.presentation_url.replace(/^.*[\\\/]/, '');
+    file_move(tmp_path + presentation_file_path, target_path + presentation_file_path, function(err){});
+    
+    // material
+    for(var i in info.material_url){
+    	var material_file_name = info.material_url[i].url.replace(/^.*[\\\/]/, '');
+    	file_move(tmp_path + material_file_name, target_path + material_file_name, function(err){});
+    }
+
+}
+function file_mkdir(path, callback){
+    fs.mkdir(path, function(e){
+    	if(!e || (e && e.code == 'EEXIST')){
+    		
+    	}else{
+    		console.log("mkdir fail")
+    	}
     });
 }
-
+function file_move(origin_path, target_path, callback){
+    console.log('->> origin_path: ' + origin_path );
+    console.log('->> target_path: ' + target_path );
+      
+    fs.rename(origin_path, target_path, function(err){
+        if(err) {
+        	console.log(err);
+        }
+        console.log('->> move done');
+        callback(err);
+    });
+}
 module.exports.main = 
 
 	function(app) {

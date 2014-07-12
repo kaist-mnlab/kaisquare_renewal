@@ -206,6 +206,7 @@ angular.module('course.controller')
 				$scope.lectures = Lecture.query({course: $scope.courseId});
 			}, function() {
 				console.log("Dismissed");
+				
 			});
 			
 			break;

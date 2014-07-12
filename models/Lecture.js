@@ -25,7 +25,6 @@ var LectureSchema = exports.LectureSchema = new mongoose.Schema({
 	material_url:[{url: String}],
 	course: {type: mongoose.Schema.Types.ObjectId, ref:'course'},
 	
-	//
 	status: Number,
 	
 	qs: [{type: mongoose.Schema.Types.ObjectId, ref:'q'}],

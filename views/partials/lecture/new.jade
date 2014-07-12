@@ -7,14 +7,14 @@ form(role="form", data-ng-submit="createLecture()", data-ng-file-drop)
 			label(for="course") Course  : {{course.title}}
 		.form-group
 			label(for="lectureTitle") Title
-			input#lectureTitle.form-control(type="text", data-ng-model="lecture.title")
+			input#lectureTitle.form-control(type="text", data-ng-model="lecture.title" ng-minlength="1")
 		.form-group
 			label(for="lectureDescription") Description
-			input#lectureDescription.form-control(type="text", data-ng-model="lecture.description")
+			input#lectureDescription.form-control(type="text", data-ng-model="lecture.description" ng-minlength="1")
 		.form-group
 			label(for="lectureDate") Date
 			p.input-group
-				input#lectureDate.form-control.ng-valid-date(type="text", data-ng-model="lecture.date", datepicker-popup="yyyy-MM-dd", data-ng-required="true", close-text="Close")
+				input#lectureDate.form-control.ng-valid-date(type="text", data-ng-model="lecture.date", datepicker-popup="yyyy-MM-dd", data-ng-required="true", close-text="Close" ui-date)
 				span.input-group-btn
 					button.btn.btn-default(type="button", data-ng-click="open($event)")
 						i.glyphicon.glyphicon-calendar
@@ -26,14 +26,19 @@ form(role="form", data-ng-submit="createLecture()", data-ng-file-drop)
 					| LIVE
 				button.btn.btn-primary(type="button", data-ng-model="lecture.status", btn-radio="0")
 					| VOD
-		div(data-ng-switch on="lecture.status" data-ng-model="fileUploadFlag" )
+		div(data-ng-switch on="lecture.status")
 			div(data-ng-switch-when="0")
-				.form-group
-					label(for="lectureVoDURL") VOD URL
-					input#lectureVoDURL.form-control(type="text", data-ng-model="lecture.vod_url")
 				.form-group(ng-mouseenter="updateFlag(1)")
 					label(for="lectureVoDFile") Video File Upload
 					input#lectureVoDFile.form-control(type="file" data-ng-file-select )
+				.form-group(ng-mouseenter="updateFlag(2)")
+					label(for="lecturePresentationFile") Presentation File Upload
+					input#lecturePresentationFile.form-control(type="file", data-ng-file-select)
+				.form-group(ng-mouseenter="updateFlag(3)") 
+					label(for="lectureMaterialFile") Material File Upload
+					input#lectureMaterialFile.form-control(type="file", data-ng-file-select, multiple)
+				div.well.my-drop-zone(ng-file-over ng-mouseenter="updateFlag(3)") 
+					| Base Drop Zone
 				table
 					thead
 						tr
@@ -69,104 +74,19 @@ form(role="form", data-ng-submit="createLecture()", data-ng-file-drop)
 								button.btn.btn-danger.btn-xs(type="button", data-ng-click="item.remove()")
 									span.glyphicon.glyphicon-trash
 									| Remove
-			video#videoPreview(width="320", height="240", style="display:none", controls)
-			//div(data-ng-switch-when="1")
-			//	| Live
-		div
-			label 
-				| Lecture Materials
-			.form-group(ng-mouseenter="updateFlag(2)")
-				label(for="lecturePresentationFile") Presentation File Upload
-				input#lectureMaterialFile.form-control(type="file", data-ng-file-select)
-			table
-				thead
-					tr
-						th Name
-						th(data-ng-show="presentFileUploader.isHTML5") Size
-						th(data-ng-show="presentFileUploader.isHTML5") Progress
-						th Status
-						th Actions
-				tbody
-					tr(data-ng-repeat="item in presentFileUploader.queue")
-						td
-							strong
-								| {{item.file.name}}
-						td(data-ng-show="presentFileUploader.isHTML5", nowrap)
-							| {{ item.file.size/1024/1024|number:2 }} MB
-						td(data-ng-show="presentFileUploader.isHTML5")
-							div.progress(style="margin-bottom: 0;")
-								div.progress-bar(role="progressbar", data-ng-style="{ 'width': item.progress + '%' }")
-						td
-							span(data-ng-show="item.isSuccess")
-								i.glyphicon.glyphicon-ok
-							span(data-ng-show="item.isCancel")
-								i.glyphicon.glyphicon-ban-circle
-							span(data-ng-show="item.isError")
-								i.glyphicon.glyphicon-remove
-						td
-							button.btn.btn-success.btn-xs(type="button", data-ng-click="item.upload()", data-ng-disabled="item.isReady || item.isUploading || item.isSuccess")
-								span.glyphicon.glyphicon-upload
-								| Upload
-							button.btn.btn-warning.btn-xs(type="button", data-ng-click="item.cancel()", data-ng-disabled="!item.isUploading")
-								span.glyphicon.glyphicon-ban-circle
-								| Cancel
-							button.btn.btn-danger.btn-xs(type="button", data-ng-click="item.remove()")
-								span.glyphicon.glyphicon-trash
-								| Remove
-		div
-			label 
-				| Lecture Materials
-			div.well.my-drop-zone(ng-file-over ng-mouseenter="updateFlag(3)") 
-				| Base Drop Zone
-			.form-group(ng-mouseenter="updateFlag(3)") 
-				label(for="lectureMaterialFile") Material File Upload
-				input#lectureMaterialFile.form-control(type="file", data-ng-file-select, multiple)
-			table
-				thead
-					tr
-						th Name
-						th(data-ng-show="lecFileUploader.isHTML5") Size
-						th(data-ng-show="lecFileUploader.isHTML5") Progress
-						th Status
-						th Actions
-				tbody
-					tr(data-ng-repeat="item in lecFileUploader.queue")
-						td
-							strong
-								| {{item.file.name}}
-						td(data-ng-show="lecFileUploader.isHTML5", nowrap)
-							| {{ item.file.size/1024/1024|number:2 }} MB
-						td(data-ng-show="lecFileUploader.isHTML5")
-							div.progress(style="margin-bottom: 0;")
-								div.progress-bar(role="progressbar", data-ng-style="{ 'width': item.progress + '%' }")
-						td
-							span(data-ng-show="item.isSuccess")
-								i.glyphicon.glyphicon-ok
-							span(data-ng-show="item.isCancel")
-								i.glyphicon.glyphicon-ban-circle
-							span(data-ng-show="item.isError")
-								i.glyphicon.glyphicon-remove
-						td
-							button.btn.btn-success.btn-xs(type="button", data-ng-click="item.upload()", data-ng-disabled="item.isReady || item.isUploading || item.isSuccess")
-								span.glyphicon.glyphicon-upload
-								| Upload
-							button.btn.btn-warning.btn-xs(type="button", data-ng-click="item.cancel()", data-ng-disabled="!item.isUploading")
-								span.glyphicon.glyphicon-ban-circle
-								| Cancel
-							button.btn.btn-danger.btn-xs(type="button", data-ng-click="item.remove()")
-								span.glyphicon.glyphicon-trash
-								| Remove
+				table
 					tr
 						td
-							button.btn.btn-success.btn-xs(type="button", data-ng-click="lecFileUploader.uploadAll()", data-ng-disabled="item.isReady || item.isUploading || item.isSuccess")
+							button.btn.btn-success.btn-xs(type="button", data-ng-click="uploader.uploadAll()", data-ng-disabled="item.isReady || item.isUploading || item.isSuccess")
 								span.glyphicon.glyphicon-upload
 								| Upload All
-							button.btn.btn-warning.btn-xs(type="button", data-ng-click="lecFileUploader.cancelAll()", data-ng-disabled="!item.isUploading")
+							button.btn.btn-warning.btn-xs(type="button", data-ng-click="uploader.cancelAll()", data-ng-disabled="!item.isUploading")
 								span.glyphicon.glyphicon-ban-circle
 								| Cancel All
-							button.btn.btn-danger.btn-xs(type="button", data-ng-click="lecFileUploader.clearQueue()")
+							button.btn.btn-danger.btn-xs(type="button", data-ng-click="uploader.clearQueue()")
 								span.glyphicon.glyphicon-trash
 								| Remove All
+			video#videoPreview(width="320", height="240", style="display:none", controls)
 	.modal-footer   
 		button.btn.btn-primary.pull-right(type="submit") Create Lecture !
 		button.btn.btn-danger(type="button", data-ng-click="cancel()")
