@@ -278,5 +278,16 @@ border-top-right-radius: 4px 4px;
 	font-size:13px;
 	padding:6px 6px 6px 6px;
 	margin-left:3px;
-	
+}
+
+#slide {
+	position:relative;
+}
+#slide_pen{
+	position:relative;
+	top:-240px;
+}
+#presentation_controller{
+	position:relative;
+	top:-240px;
 }

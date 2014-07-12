@@ -557,8 +557,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			}
 		},
 		link: function(scope, element, attrs){
-		
-		
 			element.bind('timeupdate', scope.onTimeUpdate);
 		}
 	}
@@ -606,9 +604,9 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			                           {color: 'clear'}
 			                           ];
 			scope.selectColor = function(color){
+				console.log(color);
 				if (color == "clear"){
-					ctx.beginPath();
-					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 				}
 				else 
 					ctx.strokeStyle = color;
@@ -656,7 +654,130 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			});
 		}
 	}
-});
+})
+.directive('lappPresentation', function(){
+	return {
+		link: function(scope, element, attrs){
+			
+			var ppt = "http://localhost:6789/uploads/53c181df19d549fc34c063fd/Test1/";
+			var fileType = ".png";
+
+			var startNumber = 1;
+			var maxNumber = 10;
+			var pageNumber = startNumber;
+			
+			var slide = $(element[0])[0].children[1];
+			var canvas = $(element[0])[0].children[2];
+			var ctx = canvas.getContext('2d');
+			
+			var slide = $(slide);
+			slide.attr('src', ppt + pageNumber + fileType);
+			scope.moveLeft = function(){
+				if(pageNumber == startNumber){
+					pageNumber = maxNumber;
+				}else{
+					pageNumber -= 1;
+				}				
+				slide.attr('src', ppt + pageNumber + fileType);
+			}
+			scope.moveRight = function(){
+				if(pageNumber == maxNumber){
+					pageNumber = startNumber;
+				}else{
+					pageNumber += 1;
+				}
+				slide.attr('src', ppt + pageNumber + fileType);
+			}
+			
+			var canvas = $(canvas);
+			var socket = scope.socket;
+			
+			var isDrawing = false;
+			ctx.lineWidth = 1.0;
+			ctx.miterLimit = 1.0;
+			ctx.strokeStyle = "black";
+			
+			function getMousePosition(event){
+				var x, y;
+				if(event.offsetX!==undefined){
+					x = event.offsetX;
+					y = event.offsetY;
+				}else{
+					x = event.layerX - event.currentTarget.offsetLeft;
+					y = event.layerY - event.currentTarget.offsetTop;
+				}
+				return {x: x, y: y};
+			}
+			function draw(stroke){
+				ctx.moveTo(stroke.lastX, stroke.lastY);
+				ctx.lineTo(stroke.currentX, stroke.currentY);
+				ctx.strokeStyle = stroke.strokeStyle;
+				ctx.stroke();
+			}
+			var left = element.offset().left;
+			var top = element.offset().top;
+			var lastX;
+			var lastY;
+			scope.canvasStrokeColor = [{color: 'black'},
+			                           {color: 'red'},
+			                           {color: 'blue'},
+			                           {color: 'green'},
+			                           {color: 'white'},
+			                           {color: 'clear'}
+			                           ];
+			scope.selectColor = function(color){
+				if (color == "clear"){
+					ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
+				}
+				else 
+					ctx.strokeStyle = color;
+			};
+			canvas.bind('mousedown', function(event){
+				var point = getMousePosition(event);
+				lastX = point.x;
+				lastY = point.y;
+				
+				ctx.beginPath();
+				
+				isDrawing = true;
+			});
+			canvas.bind('mousemove', function(event){
+				var point;
+				var currentX, currentY;
+				var stroke;
+				
+				if (isDrawing){
+					point = getMousePosition(event);
+					currentX = point.x;
+					currentY = point.y;
+					
+					stroke = {lastX: lastX, 
+							  lastY: lastY, 
+							  currentX: currentX, 
+							  currentY: currentY,
+							  strokeStyle: ctx.strokeStyle};
+					
+					draw(stroke);
+					//socket.emit('canvasDraw', stroke);
+					lastX = currentX;
+					lastY = currentY;
+				}
+			});
+			canvas.bind('mouseup', function(event){
+				isDrawing = false;
+			});
+			canvas.bind('mouseout', function(event){
+				isDrawing = false;
+			});
+			/*
+			socket.on('canvasDraw', function(stroke){
+				draw(stroke);
+			});
+			*/
+		}
+	}
+})
+;
 
 angular.module('lapp.controller')
 .controller('QuizQuestionCtrl',
