@@ -105,7 +105,13 @@ module.exports = {
 			
 			//saving
 		}); 
-	
+		
+		socket.on('liveTimeUpdate', function(time){
+			//console.log("liveTime: " + time);
+			if(socketRoom[socket.id] !== undefined)
+				lectures[socketRoom[socket.id].lectureId].duration = time;
+		});
+		
 		socket.on('leaveLecture', function(lectureId) {
 			console.log(lectureId + " leaved");
 			socket.leave(socketRoom[socket.id].lectureId);
@@ -239,7 +245,10 @@ function qStat(lDuration, qs){
 	 var labels = [];
 	 var data = [];
 	 var duration = Math.ceil(lDuration / 60.0);
+	 console.log(lDuration + " " + duration);
 	 if (isNaN(duration)) duration = 10;
+	 else if (duration < 10) duration = 10;
+	 
 	 var columnChart =[['Time (min)', 'Value']];
 	 for (i = 0; i<=duration; i++){
 		 var d = [];
@@ -250,8 +259,9 @@ function qStat(lDuration, qs){
 	 }
 	 console.log(duration);
 	 for (i in qs){
-		 var time = Math.floor(qs[i].time / 60.0); 
-		 columnChart[time + 1][1]++;
+		 var time = Math.floor(qs[i].time / 60.0);
+		 if (columnChart[time + 1] !== undefined)
+			 columnChart[time + 1][1]++;
 	 }
 	 return columnChart;
 }

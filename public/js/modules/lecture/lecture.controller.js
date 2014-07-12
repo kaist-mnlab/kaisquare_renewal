@@ -224,22 +224,28 @@ angular.module('lecture.controller')
 					// If there is no error, redirect to the main view
 					console.log(p);
 					var url_data = {_id: p._id, vod_url: p.vod_url, presentation_url: p.presentation_url, material_url: p.material_url};
+					
 					$http.post('/createLecture', url_data).success(function(resp){
-						var base_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/" + p._id + "/";
-						p.vod_url = base_url + p.vod_url.replace(/^.*[\\\/]/, '');
-						p.presentation_url = base_url + p.presentation_url.replace(/^.*[\\\/]/, '');
-						for (var i in p.material_url){
-							p.material_url[i].url = base_url + p.material_url[i].url.replace(/^.*[\\\/]/, '');
+						try{
+							var base_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/" + p._id + "/";
+							p.vod_url = base_url + p.vod_url.replace(/^.*[\\\/]/, '');
+							p.presentation_url = base_url + p.presentation_url.replace(/^.*[\\\/]/, '');
+							for (var i in p.material_url){
+								p.material_url[i].url = base_url + p.material_url[i].url.replace(/^.*[\\\/]/, '');
+							}
+							p.$save(function(q, resp){
+								if(!q.error){
+									$modalInstance.close();
+								}
+								else{
+									alert('Could not create course');
+								}
+							});
+						}catch(err){
+							$modalInstance.close();
 						}
-						p.$save(function(q, resp){
-							if(!q.error){
-								$modalInstance.close();
-							}
-							else{
-								alert('Could not create course');
-							}
-						})
 					});
+					
 				} else {
 					alert('Could not create course');
 				}

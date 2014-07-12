@@ -7,6 +7,12 @@ var Stopwatch = {
 		startAt: 0,	// Time of last start / resume. (0 if not running)
 		lapTime: 0,	// Time on the clock when last stopped in milliseconds
 		timer: null,
+		socket: null,
+		
+		init: function(socket){
+			this.socket = socket;
+		},
+		
  		now	: function() {
 				return (new Date()).getTime(); 
 		},
@@ -19,6 +25,7 @@ var Stopwatch = {
 		// Public methods
 		// Start or resume
 		start : function() {
+			if(this.startAt != 0) return;
 			this.startAt = this.startAt ? this.startAt : this.now();
 			this.timer = setInterval(redirect, 100, this);
 	        function redirect(w) {
@@ -69,6 +76,8 @@ var Stopwatch = {
 
 	    update:  function(){
 	        this.text.html(this.formattedTime(this.time()));
+	        this.socket.emit("liveTimeUpdate", this.time() / 1000);
+	        console.log("timer update");
 	    },
 	};
 
@@ -127,6 +136,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
     $scope.lecture.$promise.then( function() {
     	Stopwatch.text = ($('#timer'));
     	$scope.stopwatch = Stopwatch;
+    	$scope.stopwatch.init(socket);
     	
     	var data = { src: $scope.user._id,
     			     lecture: $scope.lecture._id,
@@ -151,8 +161,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			$("#quizStatArea").hide();
 			
 			 socket.emit('requestLecture', {lectureId: $scope.lecture._id, userId: $scope.user._id, username: $scope.user.username});
-		 
-			
 		});
 		
 		socket.on('initQnChat', function(qs, cs){
@@ -199,8 +207,9 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 		
 			//$scope.stopwatch.setTime(time.time);
 			$scope.stopwatch.stop();
-			recorder.stop();
-			
+			try{
+				recorder.stop();
+			}catch(err){}
 			
 		});
 		
@@ -213,7 +222,9 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			//broadcast to "lecture start"
 			//with recording logic
 			socket.emit('startLecture', {startAt: $scope.stopwatch.startAt, lapTime: $scope.stopwatch.lapTime});
-			recorder.start();
+			try{
+				recorder.start();
+			}catch(err){}
 			
 			$("#lecture_start").attr("disabled", true);
 			$("#lecture_stop").attr("disabled", false);
@@ -245,12 +256,9 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			//broadcast to "lecture stop"
 			//with stopping recording logic and storing
 			socket.emit('stopLecture', {time: $scope.stopwatch.time()});
-			recorder.stop();
-			
-			
-			
-			
-			
+			try{
+				recorder.stop();
+			}catch(err){}
 		};
 		$scope.make_quiz = function() {
 			//modal
