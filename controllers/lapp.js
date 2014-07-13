@@ -20,10 +20,9 @@ module.exports = {
 		io = sio;
 	},
 	lecture : function (socket) {
+		//var qs = [];
+		//var cs = [];
 
-		var qs = [];
-		var cs = [];
-		
 		var lectureObj;
 		var duration = 60;
 		
@@ -40,9 +39,11 @@ module.exports = {
 			socket.join(lectureId);
 			socketRoom[socket.id] = {lectureId: lectureId, userId: userId};
 			
-			if( lectures[lectureId] === undefined) 
+			if( lectures[lectureId] === undefined){
 				lectures[lectureId] = {startAt: 0, lapTime: 0, isLectureStarted: 'false', attendee: []};
-			
+				lectures[lectureId].qs = [];
+				lectures[lectureId].cs = [];
+			}
 			console.log(socketRoom);
 			
 			socket.emit('joinLecture', Id);
@@ -58,14 +59,17 @@ module.exports = {
 					}
 					
 				}
-				while(qs.length > 0) qs.pop();
+			
+				while(lectures[lectureId].qs.length > 0) lectures[lectureId].qs.pop();
 				Q.find({lecture: lectureId}, {}, {}, function(error, q){
-					qs = qs.concat(q);
-					while(cs.length > 0) cs.pop();
+					lectures[lectureId].qs = lectures[lectureId].qs.concat(q);
+					//qs = qs.concat(q);
+					
+					while(lectures[lectureId].cs.length > 0) lectures[lectureId].cs.pop();
 					Chat.find({lecture: lectureId}, {}, {}, function(error, c){
-						cs = cs.concat(c);
+						lectures[lectureId].cs = lectures[lectureId].cs.concat(c);
 						//console.log(cs);
-						socket.emit('initQnChat', qStat(lectures[lectureId].duration, qs), cs);
+						socket.emit('initQnChat', qStat(lectures[lectureId].duration, lectures[lectureId].qs), lectures[lectureId].cs);
 					});
 				});
 				
@@ -137,7 +141,7 @@ module.exports = {
 						throw err;
 					}
 				});
-				qs.push(q);
+				lectures[socketRoom[socket.id].lectureId].qs.push(q);
 			}
 			else if (data.type == "chat"){
 				//console.log("chat ");
@@ -148,7 +152,7 @@ module.exports = {
 						throw 'Error';
 					}
 				});
-				cs.push(chat);
+				lectures[socketRoom[socket.id].lectureId].cs.push(chat);
 			}
     	});
     	
@@ -198,7 +202,7 @@ module.exports = {
 		});
 		
 		socket.on('qData', function(){
-			var data = qStat(lectures[socketRoom[socket.id].lectureId].duration, qs);
+			var data = qStat(lectures[socketRoom[socket.id].lectureId].duration, lectures[socketRoom[socket.id].lectureId].qs);
 			io.sockets.in(socketRoom[socket.id].lectureId).emit('qData', data);
 		});
 		
