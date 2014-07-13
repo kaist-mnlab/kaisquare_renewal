@@ -14,7 +14,7 @@ var Stopwatch = {
 		},
 		
  		now	: function() {
-				return (new Date()).getTime(); 
+			return (new Date()).getTime(); 
 		},
 		
 		setTime : function(s, l) {
@@ -665,8 +665,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 })
 .directive('lappPresentation', function(){
 	return {
-		link: function(scope, element, attrs){
-			
+		link: function(scope, element, attrs){	
 			var ppt = "http://localhost:6789/uploads/53c181df19d549fc34c063fd/Test1/";
 			var fileType = ".png";
 
@@ -685,8 +684,13 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 					pageNumber = maxNumber;
 				}else{
 					pageNumber -= 1;
-				}				
+				}
+
+				pptLog(pageNumber);
+				ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 				slide.attr('src', ppt + pageNumber + fileType);
+				
+				drawAll(penTrace[pageNumber]);
 			}
 			scope.moveRight = function(){
 				if(pageNumber == maxNumber){
@@ -694,7 +698,18 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				}else{
 					pageNumber += 1;
 				}
+				pptLog(pageNumber);
+				ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 				slide.attr('src', ppt + pageNumber + fileType);
+				
+				drawAll(penTrace[pageNumber]);
+			}
+			
+			var stopwatch = scope.stopwatch;
+			var eventTrace = [];
+			var penTrace = {};
+			for (var i = startNumber; i <= maxNumber; i++){
+				penTrace[i] = [];
 			}
 			
 			var canvas = $(canvas);
@@ -717,29 +732,68 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				return {x: x, y: y};
 			}
 			function draw(stroke){
+				penLog(stroke);
+							
 				ctx.moveTo(stroke.lastX, stroke.lastY);
 				ctx.lineTo(stroke.currentX, stroke.currentY);
 				ctx.strokeStyle = stroke.strokeStyle;
 				ctx.stroke();
 			}
+			function penLog(stroke){
+				if (stopwatch === undefined)
+					stopwatch = scope.stopwatch;
+				var o = new Object();
+				o.type = "stroke";
+				o.stroke = stroke;
+				o.time = stopwatch.time();
+				
+				penTrace[pageNumber].push(o);
+			}
+			function pptLog(page){
+				if (stopwatch === undefined)
+					stopwatch = scope.stopwatch;
+				var o = new Object();
+				o.type = "ppt";
+				o.page = page;
+				o.time = stopwatch.time();
+				eventTrace.push(o);
+			}
+			function drawAll(strokes){
+				for (var i in strokes){
+					var stroke = strokes[i].stroke;
+					if (stroke.strokeStyle == "clear"){
+						ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
+						continue;
+					}
+					ctx.beginPath();
+					ctx.moveTo(stroke.lastX, stroke.lastY);
+					ctx.lineTo(stroke.currentX, stroke.currentY);
+					ctx.strokeStyle = stroke.strokeStyle;
+					ctx.stroke();
+				}
+			}
+			
 			var left = element.offset().left;
 			var top = element.offset().top;
 			var lastX;
 			var lastY;
-			scope.canvasStrokeColor = [{color: 'black'},
+			scope.presentationPenColor = [{color: 'black'},
 			                           {color: 'red'},
 			                           {color: 'blue'},
 			                           {color: 'green'},
 			                           {color: 'white'},
 			                           {color: 'clear'}
 			                           ];
-			scope.selectColor = function(color){
+			scope.presentationSelectColor = function(color){
 				if (color == "clear"){
+					var stroke = {strokeStyle: color};
+					penLog(stroke);
 					ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 				}
 				else 
 					ctx.strokeStyle = color;
 			};
+			
 			canvas.bind('mousedown', function(event){
 				var point = getMousePosition(event);
 				lastX = point.x;
@@ -782,6 +836,80 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				draw(stroke);
 			});
 			*/
+			var traceLog = [];
+			var tracer = null;
+			var e = 0;
+			var starttime = 0;
+			var stoptime = 0;
+			scope.presentationReplay = function(){
+				ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
+				slide.attr('src', ppt + startNumber + fileType);
+				
+				// timeout based event tracing
+				traceLog = [];
+				for (var i in penTrace){
+					penTrace[i].sort(function(a, b){return a.time - b.time});
+					traceLog = traceLog.concat(penTrace[i]);
+				}
+				traceLog = traceLog.concat(eventTrace);
+				traceLog.sort(function(a, b){return a.time - b.time});
+				
+				tracer = setTimeout(startTrace, traceLog[e].time);
+				
+				starttime = (new Date()).getTime(); 			
+				console.log(traceLog);
+				console.log(penTrace);				
+				console.log(eventTrace);
+			}
+			
+			function startTrace(){
+				//console.log(e);
+				var event = traceLog[e++];
+				if (event.type == "stroke"){
+					drawTrace(event.stroke);
+				}else if (event.type == "ppt"){
+					ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
+					slide.attr('src', ppt + event.page + fileType);
+					drawAllTrace(penTrace[event.page], event.time);
+				}
+				
+				if (e < traceLog.length){
+					tracer = setTimeout(startTrace, traceLog[e].time - traceLog[e - 1].time);
+				}else{
+					console.log("stop trace debug: " + (traceLog.length == e));
+					stoptime = (new Date()).getTime();
+					console.log("diff: " + traceLog[e - 1].time + " " + (stoptime-starttime));
+					clearTimeout(tracer);
+				}
+			}
+			function drawTrace (stroke){
+				if (stroke.strokeStyle == "clear"){
+					ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
+					return;
+				}
+				ctx.beginPath();
+				ctx.moveTo(stroke.lastX, stroke.lastY);
+				ctx.lineTo(stroke.currentX, stroke.currentY);
+				ctx.strokeStyle = stroke.strokeStyle;
+				ctx.stroke();
+			}
+			function drawAllTrace(strokes, time) {
+				for (var i in strokes){
+					var stroke = strokes[i].stroke;
+					if (strokes[i].time > time) break;
+					drawTrace(stroke);
+				}
+			}
+			
+			scope.presentationReset = function (){
+				eventTrace = [];
+				penTrace = {};
+				for (var i = startNumber; i <= maxNumber; i++){
+					penTrace[i] = [];
+				}
+				ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
+				slide.attr('src', ppt + startNumber + fileType);
+			}
 		}
 	}
 })
