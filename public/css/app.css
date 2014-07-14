@@ -97,10 +97,10 @@ ul.nav {
 	background-color:white;
 }
 
-.lecturedesc.post {
+.lecturedesc {
 	
 	max-width:30%;
-	min-width:270px;
+	min-width:240px;
 	margin-left:0px;
 }
 
