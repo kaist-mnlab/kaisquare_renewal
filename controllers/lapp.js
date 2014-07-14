@@ -210,10 +210,16 @@ module.exports = {
 		//canvas
 		
 		socket.on('canvasDraw', function(stroke){
-			socket.broadcast.emit('canvasDraw', stroke);
+			io.sockets.in(socketRoom[socket.id].lectureId).emit('canvasDraw', stroke);
 		});
 		
-		
+		//ppt
+		socket.on('pptEvent', function(event){
+			io.sockets.in(socketRoom[socket.id].lectureId).emit('pptEvent', event);
+		});
+		socket.on('pptSave', function(log){
+			
+		});
 		socket.on('disconnect', function(data) {
 			console.log('disconnected');
 			if (socketRoom[socket.id] !== undefined){

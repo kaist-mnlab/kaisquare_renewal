@@ -26,10 +26,13 @@ var LectureSchema = exports.LectureSchema = new mongoose.Schema({
 	course: {type: mongoose.Schema.Types.ObjectId, ref:'course'},
 	
 	status: Number,
-	
+	/*
 	qs: [{type: mongoose.Schema.Types.ObjectId, ref:'q'}],
 	chats: [{type: mongoose.Schema.Types.ObjectId, ref:'chat'}],
 	quizs: [{type: mongoose.Schema.Types.ObjectId, ref:'quiz'}],
+	*/
+	
+	
 	
 	hidden: Boolean,
 	meta: {
