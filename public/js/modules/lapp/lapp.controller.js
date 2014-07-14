@@ -974,7 +974,8 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				var log = {};
 				log.penTrace = penTrace;
 				log.eventTrace = eventTrace;
-				
+				angular.toJson(log);
+				console.log(angular.toJson(log));
 				socket.emit('pptSave', log);
 			}
 		}
