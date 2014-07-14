@@ -73,7 +73,7 @@ JoinSession.prototype = {
 				sdpMLineIndex: message.msg.label,
 				candidate: message.msg.candidate
 			});
-			pc.addIceCandidate(candidate);
+			pc.addIceCandidate(candidate, function(){}, function(){});
 		}
 	},
 	log: function (array) {

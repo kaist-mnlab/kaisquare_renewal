@@ -380,7 +380,9 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 		    	);
 		    	if ($scope.studentScreen[user.userId] !== undefined){
 		    		var u = $scope.stduentScreen[user.userId];
-		    		$('#'+u.class+'_thumb')[0].children[0].remove();
+		    		var uid = $('#'+u.uid+'_thumb')[0];
+		    		if(typeof uid !== 'undefined')
+		    			uid.children[0].remove();
 					attachMediaStream($('<video></video>').attr({ 'id': u.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': u.uid }).appendTo('#'+u.uid+'_thumb').get(0), u.stream);
 		    	}
 		    }
@@ -395,7 +397,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			console.log('KAISquare Lecture connected');
 		});
 		socket.on('disconnect',function(data) {
-			console.log(data + " has been elemeifadsfasdf");
+			console.log(data + " has been eliminated");
 			$("#"+data).remove();
 			
 		});
@@ -462,8 +464,9 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				if( typeof event.uid !== 'undefined' && event.uid !== scope.$parent.user._id ){
 					console.log("onsessionjoined_lecture");
 					console.log(event);
-					console.log($('#'+event.uid));
-					$('#'+event.uid+'_thumb')[0].children[0].remove();
+					var uidthumb = $('#'+event.uid+'_thumb')[0];
+					if(typeof uidthumb !== 'undefined')
+						uidthumb.children[0].remove();
 					attachMediaStream($('<video></video>').attr({ 'id': event.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': event.uid }).appendTo('#'+event.uid+'_thumb').get(0), event.stream);
 					scope.$parent.studentScreen[event.uid] = {'socket_id': event.socket_id, 'uid': event.uid, 'stream': event.stream};
 				}
