@@ -1,7 +1,12 @@
 'use strict';
 
 /* Controllers */
-define(['angular'], function(angular) {
+define(['angular',
+        'security/security.service',
+        'security/security.controller',
+        'security/security.directive'
+        
+        ], function(angular) {
 
 angular.module('security', [
   'security.service',
