@@ -344,8 +344,14 @@ function move_lecture_files(info) {
     	
     }
 }
-function file_mkdir(path){
-    fs.mkdirSync(path);
+function file_mkdir(path, callback){
+    fs.mkdir(path, function(e){
+    	if(!e || (e && e.code == 'EEXIST')){
+    		
+    	}else{
+    		console.log("mkdir fail")
+    	}
+    });
 }
 function file_move(origin_path, target_path, callback){
     console.log('->> origin_path: ' + origin_path );
