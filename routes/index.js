@@ -349,7 +349,8 @@ function move_lecture_files(info) {
 	    					fs.readdir(__dirname + "/../public/uploads/" + info._id + "/ppt/", function(error, files){
 	    						if (!error){
 	    							var n = files.length;
-	    							Lecture.findByIdAndUpdate(info._id, {_id: info._id ,ppt_page: n}, function(err, doc){
+	    							console.log(n);
+	    							Lecture.findByIdAndUpdate(info._id, {ppt_page: n}, function(err, doc){
 	    								if(err || !doc) {
 	    									console.log(err);
 	    								} else {
