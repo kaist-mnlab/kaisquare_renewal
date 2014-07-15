@@ -57,7 +57,6 @@ module.exports = {
 					if(lecture.duration !== undefined) {
 						lectures[lectureId].duration = lecture.duration;
 					}
-					
 				}
 			
 				while(lectures[lectureId].qs.length > 0) lectures[lectureId].qs.pop();
@@ -166,7 +165,7 @@ module.exports = {
 							question: data.question,
 							type: data.type,
 							choice: data.choice
-						  }
+						  };
 			var quiz = new Quiz(quizObj);
 			quiz.save(function(err,doc){
 				if (err || !doc){
@@ -210,10 +209,22 @@ module.exports = {
 		//canvas
 		
 		socket.on('canvasDraw', function(stroke){
-			socket.broadcast.emit('canvasDraw', stroke);
+			io.sockets.in(socketRoom[socket.id].lectureId).emit('canvasDraw', stroke);
 		});
 		
-		
+		//ppt
+		socket.on('pptEvent', function(event){
+			io.sockets.in(socketRoom[socket.id].lectureId).emit('pptEvent', event);
+		});
+		socket.on('pptSave', function(log){
+			lectureObj.ppt_event_log = log;
+			
+			Lecture.findByIdAndUpdate(lectureObj._id , lectureObj, function(err, doc){
+				if(err){
+					console.log(err);
+				}
+			});
+		});
 		socket.on('disconnect', function(data) {
 			console.log('disconnected');
 			if (socketRoom[socket.id] !== undefined){

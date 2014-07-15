@@ -22,14 +22,21 @@ var LectureSchema = exports.LectureSchema = new mongoose.Schema({
 	vod_url: String,
 	//File?
 	presentation_url: String,
+	
+	// JSON string
+	ppt_event_log: String,
+	
 	material_url:[{url: String}],
 	course: {type: mongoose.Schema.Types.ObjectId, ref:'course'},
 	
 	status: Number,
-	
+	/*
 	qs: [{type: mongoose.Schema.Types.ObjectId, ref:'q'}],
 	chats: [{type: mongoose.Schema.Types.ObjectId, ref:'chat'}],
 	quizs: [{type: mongoose.Schema.Types.ObjectId, ref:'quiz'}],
+	*/
+	
+	
 	
 	hidden: Boolean,
 	meta: {
