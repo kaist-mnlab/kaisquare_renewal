@@ -353,7 +353,7 @@ function move_lecture_files(info) {
 	    								if(err || !doc) {
 	    									console.log(err);
 	    								} else {
-	    									
+	    									console.log("update the # of ppt_page");
 	    								}	
 	    							});
 	    						}else{
