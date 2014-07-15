@@ -14,14 +14,13 @@ var courseCtrl = require('../controllers/courseCtrl');
 var lectureCtrl = require('../controllers/lectureCtrl');
 var fs = require('fs');
 
+var LectureSchema = require('../models/Lecture.js').LectureSchema;
+var Lecture = mongoose.model('lectures', LectureSchema);
+
 // Main application view
 index = function(req, res) {
 	res.render('index');
 };
-
-
-
-
 
 var routes = [
 
@@ -234,10 +233,11 @@ var routes = [
     	path: '/createLecture',
     	httpMethod: 'POST',
     	middleware: [function(req, res){
-    		console.log("POST: CREATELECTURE")
+    		console.log("POST: CREATELECTURE");
     		//console.log(req.body);
     		move_lecture_files(req.body);
     		res.json({success:true});
+    		console.log("POST: CREATELECTURE END")
     	}],
     },
     
@@ -301,7 +301,10 @@ function move_lecture_files(info) {
     // vod
     if (info.status == 0){
     	var vod_file = info.vod_url.replace(/^.*[\\\/]/, '');
-    	file_move(tmp_path + vod_file, target_path + vod_file, function(err){});
+    	if (vod_file != ''){
+    		console.log("vod");
+    		file_move(tmp_path + vod_file, target_path + vod_file, function(err){});
+    	}
     }
     
     // material
@@ -312,14 +315,18 @@ function move_lecture_files(info) {
 
     // presentation
     var presentation_file = info.presentation_url.replace(/^.*[\\\/]/, '');
-    file_move(tmp_path + presentation_file, target_path + presentation_file, function(err){});
+    console.log("presentation_file: " + presentation_file);
+    
+    var isPPT = (presentation_file != '');
+    if (isPPT)
+    	file_move(tmp_path + presentation_file, target_path + presentation_file, function(err){});
     
     var ppt_file = target_path + presentation_file;
     var file = presentation_file;
     var isWin = !!process.platform.match(/^win/);
     
     // convert ppt to images
-    if (!isWin){
+    if (!isWin && isPPT){
 	    // probably *nix, assume "unoconv", "convert (from "imagemagick")"
     	// apt-get install unoconv & imagemagick
     	
@@ -338,10 +345,24 @@ function move_lecture_files(info) {
 	    		            
 	    				} else {
 	    					console.log("ppt conversion is finished");
+	    				    
+	    					fs.readdir(__dirname + "/../public/uploads/53c181df19d549fc34c063fd/ppt/", function(error, files){
+	    						if (!error){
+	    							console.log(files);
+	    							var n = files.length;
+	    							Lecture.findByIdAndUpdate(info._id, {ppt_page: n}, function(err, doc){
+	    								if(err || !doc) {
+	    									console.log(err);
+	    								} else {
+	    									
+	    								}	
+	    							});
+	    						}else{
+	    							console.log(error);
+	    						}
+	    					});
 	    				}
 	    			});
-    }else {
-    	
     }
 }
 function file_mkdir(path, callback){
@@ -359,6 +380,7 @@ function file_move(origin_path, target_path, callback){
       
     fs.rename(origin_path, target_path, function(err){
         if(err) {
+        	console.log("file_move: err");
         	console.log(err);
         }
         console.log('->> move done');

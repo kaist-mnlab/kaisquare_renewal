@@ -97,9 +97,12 @@ angular.module('lecture.controller')
 		title: '',
 		description: '',
 		status: 0,
+		duration: 0,
+		ppt_page: 0,
 		course: course._id,
 		vod_url: '',
-		material_url: []
+		material_url: [],
+		presentation_url: ''
 	};
 	console.info("fileupload: debug");
 	
@@ -181,8 +184,15 @@ angular.module('lecture.controller')
         var base_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/temp/";
 //        $scope.lecture.vod_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/temp/" + item.file.name;
         console.log($location.$$absUrl + " " + $location.$$url);
-        var vod = $("#lectureVoDFile").attr("value").replace(/^.*[\\\/]/, '');
-        var presentation = $("#lecturePresentationFile").attr("value").replace(/^.*[\\\/]/, '');
+        var vod = "";
+        if ($scope.lecture.status == 0)
+        	vod = $("#lectureVoDFile").attr("value").replace(/^.*[\\\/]/, '');
+        var presentation = "";
+        try{
+        	presentation = $("#lecturePresentationFile").attr("value").replace(/^.*[\\\/]/, '');
+        }catch(err){
+        	
+        }
         
         if (vod == item.file.name){
         	$scope.lecture.vod_url = base_url + item.file.name;
@@ -221,6 +231,7 @@ angular.module('lecture.controller')
 			newLecture.$save(function(p, resp) {
 				if(!p.error) {
 					// If there is no error, redirect to the main view
+					console.log("p");
 					console.log(p);
 					var url_data = {_id: p._id, status: p.status, vod_url: p.vod_url, presentation_url: p.presentation_url, material_url: p.material_url};
 					
@@ -235,6 +246,7 @@ angular.module('lecture.controller')
 							}
 							p.$save(function(q, resp){
 								if(!q.error){
+									console.log("q");
 									$modalInstance.close();
 								}
 								else{
