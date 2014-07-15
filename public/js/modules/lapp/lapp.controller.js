@@ -146,7 +146,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
     	var data = { src: $scope.user._id,
     			     lecture: $scope.lecture._id,
     			   };
-    			   
+    	
     	$scope.course = Course.get( {courseId: $scope.lecture.course});
 		
 		$scope.course.$promise.then(function() {
@@ -392,10 +392,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 		    	}
 		    }
 	    	
-	    	$scope.attendance = data;// = user;
-	    	
-	    	
-	    	
+	    	$scope.attendance = data;// = user;    	
 	    });
 
 	    socket.on('connected',function(){
@@ -686,6 +683,12 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 
 			var startNumber = 1;
 			var maxNumber = scope.lecture.ppt_page;
+
+			scope.lecture.$promise.then(function(){
+				maxNumber = scope.lecture.ppt_page;
+				console.log(maxNumber);	
+			});
+
 			var pageNumber = startNumber;
 			
 			var slide = $(element[0])[0].children[1];
