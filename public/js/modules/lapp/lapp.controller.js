@@ -686,7 +686,13 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 
 			scope.lecture.$promise.then(function(){
 				maxNumber = scope.lecture.ppt_page;
-				console.log(maxNumber);	
+				console.log(maxNumber);
+				for (var i = startNumber; i <= maxNumber; i++){
+					penTrace[i] = {};
+					penTrace[i].clearPoint = 0;
+					penTrace[i].trace = [];
+				}
+				
 			});
 
 			var pageNumber = startNumber;
