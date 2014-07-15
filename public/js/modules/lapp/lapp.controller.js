@@ -727,7 +727,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				drawAll(penTrace[pageNumber]);
 			}
 			scope.moveRight = function(){
-				if(pageNumber == maxNumber){
+				if(pageNumber == maxNumber - 1){
 					pageNumber = startNumber;
 				}else{
 					pageNumber += 1;
