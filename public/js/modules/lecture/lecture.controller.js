@@ -160,7 +160,7 @@ angular.module('lecture.controller')
     });
 
     uploader.bind('progress', function (event, item, progress) {
-        console.info('Progress: ' + progress, item);
+        //console.info('Progress: ' + progress, item);
     });
 
     uploader.bind('success', function (event, xhr, item, response) {
@@ -208,13 +208,12 @@ angular.module('lecture.controller')
     });
 
     uploader.bind('progressall', function (event, progress) {
-        console.info('Total progress: ' + progress);
+        //console.info('Total progress: ' + progress);
     });
 
 	$scope.createLecture = function() {
 		var lecture = $scope.lecture;
 		console.log(lecture);
-		return;
 		if(lecture.title.length > 0) {
 		
 			var newLecture = new Lecture(lecture);
