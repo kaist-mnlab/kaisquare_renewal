@@ -235,7 +235,7 @@ var routes = [
     	httpMethod: 'POST',
     	middleware: [function(req, res){
     		console.log("POST: CREATELECTURE")
-    		console.log(req.body);
+    		//console.log(req.body);
     		move_lecture_files(req.body);
     		res.json({success:true});
     	}],
@@ -299,19 +299,50 @@ function move_lecture_files(info) {
     file_mkdir(target_path);
     
     // vod
-    var vod_file_name = info.vod_url.replace(/^.*[\\\/]/, '');
-    file_move(tmp_path + vod_file_name, target_path + vod_file_name, function(err){});
-    
-    // presentation
-    var presentation_file_path = info.presentation_url.replace(/^.*[\\\/]/, '');
-    file_move(tmp_path + presentation_file_path, target_path + presentation_file_path, function(err){});
+    if (info.status == 0){
+    	var vod_file = info.vod_url.replace(/^.*[\\\/]/, '');
+    	file_move(tmp_path + vod_file, target_path + vod_file, function(err){});
+    }
     
     // material
     for(var i in info.material_url){
-    	var material_file_name = info.material_url[i].url.replace(/^.*[\\\/]/, '');
-    	file_move(tmp_path + material_file_name, target_path + material_file_name, function(err){});
+    	var material_file = info.material_url[i].url.replace(/^.*[\\\/]/, '');
+    	file_move(tmp_path + material_file, target_path + material_file, function(err){});
     }
 
+    // presentation
+    var presentation_file = info.presentation_url.replace(/^.*[\\\/]/, '');
+    file_move(tmp_path + presentation_file, target_path + presentation_file, function(err){});
+    
+    var ppt_file = target_path + presentation_file;
+    var file = presentation_file;
+    var isWin = !!process.platform.match(/^win/);
+    
+    // convert ppt to images
+    if (!isWin){
+	    // probably *nix, assume "unoconv", "convert (from "imagemagick")"
+    	// apt-get install unoconv & imagemagick
+    	
+    	file_mkdir(target_path + "ppt/");
+	    var exec = require('child_process').exec;
+	    
+	    var command = "unoconv -f pdf " + ppt_file + " && convert " + file.substring(0, file.lastIndexOf(".")) + ".pdf " + "./ppt/" + "%d.png";
+	    var encode_finished = false;
+	    var child = exec(command, function (error){
+	    				encode_finished = true;
+	    				if(error){
+	    		            console.log(error.stack);
+	    		            console.log('Error code: ' + error.code);
+	    		            console.log('Signal received: ' + error.signal);
+	    		            
+	    				} else {
+	    					
+	    				}
+	    			});
+	    while(!encode_finished){}
+    }else {
+    	
+    }
 }
 function file_mkdir(path, callback){
     fs.mkdir(path, function(e){

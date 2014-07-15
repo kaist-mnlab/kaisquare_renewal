@@ -214,7 +214,7 @@ angular.module('lecture.controller')
 	$scope.createLecture = function() {
 		var lecture = $scope.lecture;
 		console.log(lecture);
-		
+		return;
 		if(lecture.title.length > 0) {
 		
 			var newLecture = new Lecture(lecture);
@@ -223,12 +223,13 @@ angular.module('lecture.controller')
 				if(!p.error) {
 					// If there is no error, redirect to the main view
 					console.log(p);
-					var url_data = {_id: p._id, vod_url: p.vod_url, presentation_url: p.presentation_url, material_url: p.material_url};
+					var url_data = {_id: p._id, status: p.status, vod_url: p.vod_url, presentation_url: p.presentation_url, material_url: p.material_url};
 					
 					$http.post('/createLecture', url_data).success(function(resp){
 						try{
 							var base_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/" + p._id + "/";
-							p.vod_url = base_url + p.vod_url.replace(/^.*[\\\/]/, '');
+							if (p.status == 0)
+								p.vod_url = base_url + p.vod_url.replace(/^.*[\\\/]/, '');
 							p.presentation_url = base_url + p.presentation_url.replace(/^.*[\\\/]/, '');
 							for (var i in p.material_url){
 								p.material_url[i].url = base_url + p.material_url[i].url.replace(/^.*[\\\/]/, '');
