@@ -681,18 +681,17 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			
 			var fileType = ".png";
 
-			var startNumber = 1;
+			var startNumber = 0;
 			var maxNumber = scope.lecture.ppt_page;
 
 			scope.lecture.$promise.then(function(){
 				maxNumber = scope.lecture.ppt_page;
 				console.log(maxNumber);
-				for (var i = startNumber; i <= maxNumber; i++){
+				for (var i = startNumber; i < maxNumber; i++){
 					penTrace[i] = {};
 					penTrace[i].clearPoint = 0;
 					penTrace[i].trace = [];
 				}
-				
 			});
 
 			var pageNumber = startNumber;
@@ -707,7 +706,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			var eventTrace = [];
 			var penTrace = {};
 			
-			for (var i = startNumber; i <= maxNumber; i++){
+			for (var i = startNumber; i < maxNumber; i++){
 				penTrace[i] = {};
 				penTrace[i].clearPoint = 0;
 				penTrace[i].trace = [];
@@ -977,7 +976,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			scope.presentationReset = function (){
 				eventTrace = [];
 				penTrace = {};
-				for (var i = startNumber; i <= maxNumber; i++){
+				for (var i = startNumber; i < maxNumber; i++){
 					penTrace[i] = {};
 					penTrace[i].clearPoint = 0;
 					penTrace[i].trace = [];
