@@ -693,6 +693,17 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			var ctx = canvas.getContext('2d');
 			
 			var slide = $(slide);
+			
+			var stopwatch = scope.stopwatch;
+			var eventTrace = [];
+			var penTrace = {};
+			
+			for (var i = startNumber; i <= maxNumber; i++){
+				penTrace[i] = {};
+				penTrace[i].clearPoint = 0;
+				penTrace[i].trace = [];
+			}
+			
 			slide.attr('src', ppt + pageNumber + fileType);
 			scope.moveLeft = function(){
 				if(pageNumber == startNumber){
@@ -720,17 +731,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				
 				drawAll(penTrace[pageNumber]);
 			}
-			
-			var stopwatch = scope.stopwatch;
-			var eventTrace = [];
-			var penTrace = {};
-			for (var i = startNumber; i <= maxNumber; i++){
-				penTrace[i] = {};
-				
-				penTrace[i].clearPoint = 0;
-				penTrace[i].trace = [];
-			}
-			
 			var canvas = $(canvas);
 			var socket = scope.socket;
 			
@@ -886,7 +886,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				}
 			});
 			
-			
 			// for replay
 			var traceLog = [];
 			var tracer = null;
@@ -971,11 +970,9 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				penTrace = {};
 				for (var i = startNumber; i <= maxNumber; i++){
 					penTrace[i] = {};
-					
 					penTrace[i].clearPoint = 0;
 					penTrace[i].trace = [];
 				}
-
 				ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 				slide.attr('src', ppt + startNumber + fileType);
 				pptLog(startNumber);
