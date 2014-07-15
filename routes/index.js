@@ -326,7 +326,7 @@ function move_lecture_files(info) {
     	file_mkdir(target_path + "ppt/");
 	    var exec = require('child_process').exec;
 	    
-	    var command = "unoconv -f pdf " + ppt_file + " && convert " + file.substring(0, file.lastIndexOf(".")) + ".pdf" + " ./ppt/" + "%d.png";
+	    var command = "unoconv -f pdf " + ppt_file + " && convert " + target_path + file.substring(0, file.lastIndexOf(".")) + ".pdf " + target_path + "ppt/" + "%d.png";
 	    console.log(command);
 	    var encode_finished = false;
 	    var child = exec(command, function (error){
@@ -344,14 +344,8 @@ function move_lecture_files(info) {
     	
     }
 }
-function file_mkdir(path, callback){
-    fs.mkdir(path, function(e){
-    	if(!e || (e && e.code == 'EEXIST')){
-    		
-    	}else{
-    		console.log("mkdir fail")
-    	}
-    });
+function file_mkdir(path){
+    fs.mkdirSync(path);
 }
 function file_move(origin_path, target_path, callback){
     console.log('->> origin_path: ' + origin_path );
