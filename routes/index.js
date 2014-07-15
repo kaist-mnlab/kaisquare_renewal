@@ -339,7 +339,6 @@ function move_lecture_files(info) {
 	    					
 	    				}
 	    			});
-	    while(!encode_finished){}
     }else {
     	
     }
