@@ -16,16 +16,20 @@ requirejs.config({
 		'angular-ui-bootstrap':'../lib/angular/ui-bootstrap-tpls-0.10.0.min',
 		'angular-file-upload':'../lib/angular/angular-file-upload.min',
 		'library': '../lib',
+		
 		'poll': 'modules/poll',
 		'security': 'modules/security',
 		'course': 'modules/course',
 		'lecture': 'modules/lecture',
 		'lapp':	'modules/lapp',
+		'rtcCtrl': 'rtcCtrl',
+		
 		'domReady': '../lib/require/domReady',
 		'chart': '../lib/chart/chart',
 		'angular-google-chart': '../lib/angular-google-chart/ng-google-chart',
 		'bootstrap': '//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min',
-		'rtcCtrl': 'rtcCtrl'
+		
+		
 		
 	},
 
@@ -57,39 +61,17 @@ requirejs.config({
 			deps:['angular']
 		},
 		
-		'accessCfg':{
+		'access-config':{
 			deps:['jquery'],
-			exports:'accessCfg'
+			exports:'accessConfig'
 		},
 		'app':{
-			deps:['angular', 'accessCfg', 'security/index', 'poll/index', 'lecture/index']
+			deps:['angular']
 		},
 		'auth':{
 			deps:['angular']
 		},
-		'routes':{
-			deps:['angular']
-		},
-
-		'poll/index':{
-			deps:['angular', 'poll/poll.controller', 'poll/poll.service']
-		},
-		'security/index':{
-			deps:['angular', 'security/security.controller', 'security/security.directive', 'security/security.service']
-		},
-		'course/index':{
-			deps:['angular', 'angular-ui-bootstrap', 'course/course.controller', 'course/course.service','course/course.filter', 'lecture/index']
-		},
-		'course/directive':{
-			deps:['angular', 'security/index']
-		},
-		'lecture/index':{
-			deps:['angular', 'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter','lecture/lecture.directive']
-		},
-		'lapp/index':{
-			deps: ['angular', 'lapp/lapp.controller', 'lapp/lapp.directive', 
-			'chart', 'angular-google-chart','rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session', "https://www.webrtc-experiment.com/RecordRTC.js", 'rtcCtrl/recorder']
-		},
+		
 		'angular-google-chart':{
 			deps: ['angular']
 		},
@@ -106,7 +88,7 @@ requirejs( [
 		'jquery', 
 		'angular', 
 		'jquery-ui',
-		'/socket.io/socket.io.js',
+
 		'angular-resource',
 		'angular-route',
 		'angular-cookies',
@@ -114,24 +96,8 @@ requirejs( [
 		'angular-ui-bootstrap',
 		'angular-file-upload',
 		'app',
-		'accessCfg',
-		'chart', 'angular-google-chart',
-		//'routes',
-		
-		'security/index',
-		'security/security.controller', 'security/security.directive', 'security/security.service',
-		'poll/index',
-		'poll/poll.controller', 'poll/poll.service',
-		'course/index',
-		'course/course.controller', 'course/course.service','course/course.filter','course/course.directive',
-		'lecture/index',
-		'lecture/lecture.controller', 'lecture/lecture.service','lecture/lecture.filter', 'lecture/lecture.directive',
-		'lapp/index',
-		'lapp/lapp.controller', 'lapp/lapp.directive',
+		'routes',
 		'bootstrap',
-		
-		'rtcCtrl/recorder','rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session', "https://www.webrtc-experiment.com/RecordRTC.js", 
-		//  'rtcCtrl/record' 
 	],
 
 	function (text, $, angular) {
@@ -139,9 +105,15 @@ requirejs( [
 		'use strict';
 		
 	     require(['domReady!'], function (document) {
+	    	 try {
+	    	        // Wrap this call to try/catch
+	    		 angular.bootstrap(document, ['kaisquare']);
+	    	 }
+	    	 catch (e) {
+	    	     console.error(e.stack || e.message || e);
+	    	 }
 	    	 
-	    	 
-	     	angular.bootstrap(document, ['kaisquare']);
+	     	
 	     });
 		
 	}

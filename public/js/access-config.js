@@ -111,4 +111,4 @@
         return accessLevels;
     }
 
-})(typeof exports === 'undefined' ? this['accessCfg'] = {} : exports);
+})(typeof exports === 'undefined' ? this['accessConfig'] = {} : exports);

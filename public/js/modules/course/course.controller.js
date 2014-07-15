@@ -60,11 +60,11 @@ angular.module('course.controller', ['security', 'lecture','ui.bootstrap'])
 angular.module('course.controller')
 .controller('CourseItemCtrl',
 ['$rootScope', '$scope','$state', '$q', '$location','$stateParams','Course','User','$http','Lecture','$modal','security', function($rootScope,$scope, $state,$q, $location, $stateParams,Course,User, $http, Lecture, $modal, security) {
-	$scope.courseAccessLevels = accessCfg.courseAccessLevels;
+	$scope.courseAccessLevels = accessConfig.courseAccessLevels;
 	$scope.course = Course.get({courseId: $stateParams.courseId});
 	$scope.course.usersData = [];
 	$scope.user = security.user;
-	$scope.user.courseUserRole = accessCfg.courseUserRoles.unsubscribed;
+	$scope.user.courseUserRole = accessConfig.courseUserRoles.unsubscribed;
 	$scope.lectureURL = $location.$$absUrl + '/lectures';
 	$scope.courseId = $scope.course._id;
 	$scope.lectures = {};
@@ -122,7 +122,7 @@ angular.module('course.controller')
         }
 		else {
 			$scope.user.courseUserRole = {
-				bitMask: accessCfg.courseUserRoles.subscribed.bitMask
+				bitMask: accessConfig.courseUserRoles.subscribed.bitMask
 			};
 			
 			$scope.course.usersData.push( { user: User.get({userId: $scope.user._id }), role_bitMask: $scope.user.courseUserRole.bitMask});
@@ -149,7 +149,7 @@ angular.module('course.controller')
 	        		$scope.course.usersData.splice(i, 1);
 	          	}
 	      	}
-			$scope.user.courseUserRole = accessCfg.courseUserRoles.unsubscribed;
+			$scope.user.courseUserRole = accessConfig.courseUserRoles.unsubscribed;
 			$scope.updateCourse($scope.course, "Quit Complete!", "success");
 			
 		} else {

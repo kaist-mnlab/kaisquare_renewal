@@ -1,13 +1,13 @@
 'use strict';
 
-define(['angular', 'accessCfg'], function(angular, accessCfg) {
+define(['angular', 'access-config'], function(angular, accessConfig) {
 //'ui.bootstrap.dialog'
 angular.module('security.service', ['ngResource'])
 //.factory('security', ['$http', '$dialog', '$cookieStore', function($http, $dialog, $cookieStore) {
 .factory('security', ['$http', '$cookieStore', function($http, $cookieStore) {
 
-    var accessLevels = accessCfg.accessLevels
-        , userRoles = accessCfg.userRoles
+    var accessLevels = accessConfig.accessLevels
+        , userRoles = accessConfig.userRoles
         , currentUser = $cookieStore.get('user') || { username: '', role: userRoles.public, _id: '' };
 
     $cookieStore.remove('user');

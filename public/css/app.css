@@ -58,6 +58,7 @@ ul.nav {
 .post {
 	
 	width:44%;
+	min-width:320px;
 	float:left;
 	padding:auto;
 	margin-left:10px;
@@ -96,9 +97,11 @@ ul.nav {
 	background-color:white;
 }
 
-.lecturedesc.post {
+.lecturedesc {
 	
 	max-width:30%;
+	min-width:240px;
+	margin-left:0px;
 }
 
 
@@ -131,9 +134,8 @@ ul.nav {
 
 .atglance {
 	display:block;
-	min-width:40%;
-	max-width:100%;
-
+	width:270px;
+	
 }
 
 .atglancetitle {

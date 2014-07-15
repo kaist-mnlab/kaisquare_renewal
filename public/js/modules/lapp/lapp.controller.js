@@ -83,11 +83,16 @@ var Stopwatch = {
 
 javascript:(function(e){e.setAttribute("src","http://debug.build.phonegap.com/target/target-script-min.js#hoh");document.getElementsByTagName("body")[0].appendChild(e);})(document.createElement("script"));void(0);
 /* Controllers */
-define(['angular'], function(angular) {
+define(['angular',
+        'rtcCtrl/recorder','rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session', "https://www.webrtc-experiment.com/RecordRTC.js", 
+        'chart', 'angular-google-chart',
+        '/socket.io/socket.io.js',
+        ], function(angular) {
 angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 //app
 .controller('LectureAppCtrl',
 ['$rootScope', '$scope', '$location', '$modal', 'Course', 'Lecture','$stateParams','$sce','socket','security','$compile', function($rootScope, $scope, $location, $modal, Course, Lecture,$stateParams, $sce, socket, security, $compile) {
+			
 	$scope.user = security.user;
 	if($scope.user._id == "")
 		$scope.user.username = "No Name";
