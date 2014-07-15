@@ -324,7 +324,7 @@ function move_lecture_files(info) {
     var ppt_file = target_path + presentation_file;
     var file = presentation_file;
     var isWin = !!process.platform.match(/^win/);
-    
+
     // convert ppt to images
     if (!isWin && isPPT){
 	    // probably *nix, assume "unoconv", "convert (from "imagemagick")"
@@ -349,7 +349,7 @@ function move_lecture_files(info) {
 	    					fs.readdir(__dirname + "/../public/uploads/" + info._id + "/ppt/", function(error, files){
 	    						if (!error){
 	    							var n = files.length;
-	    							Lecture.findByIdAndUpdate(info._id, {ppt_page: n}, function(err, doc){
+	    							Lecture.findByIdAndUpdate(info._id, {_id: info._id ,ppt_page: n}, function(err, doc){
 	    								if(err || !doc) {
 	    									console.log(err);
 	    								} else {
