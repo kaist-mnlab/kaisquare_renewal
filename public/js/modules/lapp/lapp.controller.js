@@ -715,7 +715,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			slide.attr('src', ppt + pageNumber + fileType);
 			scope.moveLeft = function(){
 				if(pageNumber == startNumber){
-					pageNumber = maxNumber;
+					pageNumber = maxNumber - 1;
 				}else{
 					pageNumber -= 1;
 				}
