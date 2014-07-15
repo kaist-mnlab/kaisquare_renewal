@@ -234,7 +234,6 @@ var routes = [
     	httpMethod: 'POST',
     	middleware: [function(req, res){
     		console.log("POST: CREATELECTURE");
-    		//console.log(req.body);
     		move_lecture_files(req.body);
     		res.json({success:true});
     		console.log("POST: CREATELECTURE END")
@@ -275,21 +274,6 @@ function move_uploaded_file(file) {
     		return file.name;
     	}
     });
-    /*
-    console.log('->> tmp_path: ' + tmp_path );
-    console.log('->> target_path: ' + target_path );
-      
-    fs.rename(tmp_path, target_path, function(err){
-        if(err) {
-        	console.log(err);
-        }
-        
-        console.log('->> file_path: ' + file.name)
-        console.log('->> upload done');
-        
-        return file.name;
-    });
-    */	
 }
 
 function move_lecture_files(info) {

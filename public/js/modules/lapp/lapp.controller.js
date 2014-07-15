@@ -803,14 +803,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				delete o.pen;
 			}
 			function drawAll(strokes){
-				/*
-				var i = (strokes.trace[strokes.clearPoint].time < time)? strokes.clearPoint : 0;
-				for (; i < strokes.length; i++){
-					var stroke = strokes.trace[i].stroke;
-					if (strokes.trace[i].time > time) break;
-					drawTrace(stroke);
-				}
-				*/
 				for (var i = strokes.clearPoint; i < strokes.length; ++i){
 					var stroke = strokes.trace[i].stroke;
 					if (stroke.strokeStyle == "clear"){
@@ -956,15 +948,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				ctx.stroke();
 			}
 			function drawAllTrace(strokes, time) {
-				/*
-				var i = (strokes.trace[strokes.clearPoint].time < time)? strokes.clearPoint : 0;
-				for (; i < strokes.length; i++){
-					var stroke = strokes.trace[i].stroke;
-					if (strokes.trace[i].time > time) break;
-					drawTrace(stroke);
-				}
-				*/
-				
 				for (var i in strokes){
 					var stroke = strokes[i].stroke;
 					if (strokes[i].time > time) break;
