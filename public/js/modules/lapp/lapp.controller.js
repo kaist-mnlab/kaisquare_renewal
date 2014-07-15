@@ -92,7 +92,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 //app
 .controller('LectureAppCtrl',
 ['$rootScope', '$scope', '$location', '$modal', 'Course', 'Lecture','$stateParams','$sce','socket','security','$compile', function($rootScope, $scope, $location, $modal, Course, Lecture,$stateParams, $sce, socket, security, $compile) {
-			
+	$scope.location = $location;
 	$scope.user = security.user;
 	if($scope.user._id == "")
 		$scope.user.username = "No Name";
@@ -678,8 +678,10 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 })
 .directive('lappPresentation', function(){
 	return {
-		link: function(scope, element, attrs){	
-			var ppt = "http://210.107.129.38:6789/uploads/53c181df19d549fc34c063fd/Test1/";
+		link: function(scope, element, attrs){
+			var url = scope.location;
+			var ppt = "http://" + url.$$host + ":" + url.$$port + "/uploads/" + scope.lectureId + "/ppt/";
+			
 			var fileType = ".png";
 
 			var startNumber = 1;
