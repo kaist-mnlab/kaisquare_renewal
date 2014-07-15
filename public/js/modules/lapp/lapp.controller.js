@@ -685,7 +685,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			var fileType = ".png";
 
 			var startNumber = 1;
-			var maxNumber = 10;
+			var maxNumber = scope.lecture.ppt_page;
 			var pageNumber = startNumber;
 			
 			var slide = $(element[0])[0].children[1];
