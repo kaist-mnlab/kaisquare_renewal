@@ -326,7 +326,8 @@ function move_lecture_files(info) {
     	file_mkdir(target_path + "ppt/");
 	    var exec = require('child_process').exec;
 	    
-	    var command = "unoconv -f pdf " + ppt_file + " && convert " + file.substring(0, file.lastIndexOf(".")) + ".pdf " + "./ppt/" + "%d.png";
+	    var command = "unoconv -f pdf " + ppt_file + " && convert " + file.substring(0, file.lastIndexOf(".")) + ".pdf" + " ./ppt/" + "%d.png";
+	    console.log(command);
 	    var encode_finished = false;
 	    var child = exec(command, function (error){
 	    				encode_finished = true;
@@ -336,7 +337,7 @@ function move_lecture_files(info) {
 	    		            console.log('Signal received: ' + error.signal);
 	    		            
 	    				} else {
-	    					
+	    					console.log("ppt conversion is finished");
 	    				}
 	    			});
     }else {
