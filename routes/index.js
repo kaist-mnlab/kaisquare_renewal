@@ -346,9 +346,8 @@ function move_lecture_files(info) {
 	    				} else {
 	    					console.log("ppt conversion is finished");
 	    				    
-	    					fs.readdir(__dirname + "/../public/uploads/53c181df19d549fc34c063fd/ppt/", function(error, files){
+	    					fs.readdir(__dirname + "/../public/uploads/" + info._id + "/ppt/", function(error, files){
 	    						if (!error){
-	    							console.log(files);
 	    							var n = files.length;
 	    							Lecture.findByIdAndUpdate(info._id, {ppt_page: n}, function(err, doc){
 	    								if(err || !doc) {
