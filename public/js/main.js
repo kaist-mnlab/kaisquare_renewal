@@ -25,7 +25,7 @@ requirejs.config({
 		'rtcCtrl': 'rtcCtrl',
 		
 		'domReady': '../lib/require/domReady',
-		'chart': '../lib/chart/chart',
+		'chart': '../lib/chart/Chart',
 		'angular-google-chart': '../lib/angular-google-chart/ng-google-chart',
 		'bootstrap': '//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min',
 		
