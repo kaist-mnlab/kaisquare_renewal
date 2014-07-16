@@ -92,7 +92,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 //app
 .controller('LectureAppCtrl',
 ['$rootScope', '$scope', '$location', '$modal', 'Course', 'Lecture','$stateParams','$sce','socket','security','$compile', function($rootScope, $scope, $location, $modal, Course, Lecture,$stateParams, $sce, socket, security, $compile) {
-			
+	$scope.location = $location;
 	$scope.user = security.user;
 	if($scope.user._id == "")
 		$scope.user.username = "No Name";
@@ -146,7 +146,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
     	var data = { src: $scope.user._id,
     			     lecture: $scope.lecture._id,
     			   };
-    			   
+    	
     	$scope.course = Course.get( {courseId: $scope.lecture.course});
 		
 		$scope.course.$promise.then(function() {
@@ -392,10 +392,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 		    	}
 		    }
 	    	
-	    	$scope.attendance = data;// = user;
-	    	
-	    	
-	    	
+	    	$scope.attendance = data;// = user;    	
 	    });
 
 	    socket.on('connected',function(){
@@ -678,12 +675,25 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 })
 .directive('lappPresentation', function(){
 	return {
-		link: function(scope, element, attrs){	
-			var ppt = "http://210.107.129.38:6789/uploads/53c181df19d549fc34c063fd/Test1/";
+		link: function(scope, element, attrs){
+			var url = scope.location;
+			var ppt = "http://" + url.$$host + ":" + url.$$port + "/uploads/" + scope.lectureId + "/ppt/";
+			
 			var fileType = ".png";
 
-			var startNumber = 1;
-			var maxNumber = 10;
+			var startNumber = 0;
+			var maxNumber = scope.lecture.ppt_page;
+
+			scope.lecture.$promise.then(function(){
+				maxNumber = scope.lecture.ppt_page;
+				console.log(maxNumber);
+				for (var i = startNumber; i < maxNumber; i++){
+					penTrace[i] = {};
+					penTrace[i].clearPoint = 0;
+					penTrace[i].trace = [];
+				}
+			});
+
 			var pageNumber = startNumber;
 			
 			var slide = $(element[0])[0].children[1];
@@ -691,10 +701,21 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			var ctx = canvas.getContext('2d');
 			
 			var slide = $(slide);
+			
+			var stopwatch = scope.stopwatch;
+			var eventTrace = [];
+			var penTrace = {};
+			
+			for (var i = startNumber; i < maxNumber; i++){
+				penTrace[i] = {};
+				penTrace[i].clearPoint = 0;
+				penTrace[i].trace = [];
+			}
+			
 			slide.attr('src', ppt + pageNumber + fileType);
 			scope.moveLeft = function(){
 				if(pageNumber == startNumber){
-					pageNumber = maxNumber;
+					pageNumber = maxNumber - 1;
 				}else{
 					pageNumber -= 1;
 				}
@@ -706,7 +727,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				drawAll(penTrace[pageNumber]);
 			}
 			scope.moveRight = function(){
-				if(pageNumber == maxNumber){
+				if(pageNumber == maxNumber - 1){
 					pageNumber = startNumber;
 				}else{
 					pageNumber += 1;
@@ -718,17 +739,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				
 				drawAll(penTrace[pageNumber]);
 			}
-			
-			var stopwatch = scope.stopwatch;
-			var eventTrace = [];
-			var penTrace = {};
-			for (var i = startNumber; i <= maxNumber; i++){
-				penTrace[i] = {};
-				
-				penTrace[i].clearPoint = 0;
-				penTrace[i].trace = [];
-			}
-			
 			var canvas = $(canvas);
 			var socket = scope.socket;
 			
@@ -793,14 +803,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				delete o.pen;
 			}
 			function drawAll(strokes){
-				/*
-				var i = (strokes.trace[strokes.clearPoint].time < time)? strokes.clearPoint : 0;
-				for (; i < strokes.length; i++){
-					var stroke = strokes.trace[i].stroke;
-					if (strokes.trace[i].time > time) break;
-					drawTrace(stroke);
-				}
-				*/
 				for (var i = strokes.clearPoint; i < strokes.length; ++i){
 					var stroke = strokes.trace[i].stroke;
 					if (stroke.strokeStyle == "clear"){
@@ -884,7 +886,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				}
 			});
 			
-			
 			// for replay
 			var traceLog = [];
 			var tracer = null;
@@ -947,15 +948,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				ctx.stroke();
 			}
 			function drawAllTrace(strokes, time) {
-				/*
-				var i = (strokes.trace[strokes.clearPoint].time < time)? strokes.clearPoint : 0;
-				for (; i < strokes.length; i++){
-					var stroke = strokes.trace[i].stroke;
-					if (strokes.trace[i].time > time) break;
-					drawTrace(stroke);
-				}
-				*/
-				
 				for (var i in strokes){
 					var stroke = strokes[i].stroke;
 					if (strokes[i].time > time) break;
@@ -967,13 +959,11 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			scope.presentationReset = function (){
 				eventTrace = [];
 				penTrace = {};
-				for (var i = startNumber; i <= maxNumber; i++){
+				for (var i = startNumber; i < maxNumber; i++){
 					penTrace[i] = {};
-					
 					penTrace[i].clearPoint = 0;
 					penTrace[i].trace = [];
 				}
-
 				ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 				slide.attr('src', ppt + startNumber + fileType);
 				pptLog(startNumber);
@@ -989,6 +979,24 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 		}
 	}
 })
+/*
+.directive('pptPopup', ['$window, $compile', 
+	function($window, $compile){
+		return {
+			restirct: 'EA',
+			link: function($scope, $element, attr){
+				$element.on('$destroy', function(){
+					$scope.window.close();
+				});
+			},
+			controller: function($scope, $element){
+				$scope.window = $window.open('', '_blank');
+				angular.element($scope.window.document.body)
+					   .append($compile($element.contents())($scope));
+			}
+		}
+	}])
+	*/
 ;
 
 angular.module('lapp.controller')

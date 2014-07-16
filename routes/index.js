@@ -14,14 +14,13 @@ var courseCtrl = require('../controllers/courseCtrl');
 var lectureCtrl = require('../controllers/lectureCtrl');
 var fs = require('fs');
 
+var LectureSchema = require('../models/Lecture.js').LectureSchema;
+var Lecture = mongoose.model('lectures', LectureSchema);
+
 // Main application view
 index = function(req, res) {
 	res.render('index');
 };
-
-
-
-
 
 var routes = [
 
@@ -234,10 +233,10 @@ var routes = [
     	path: '/createLecture',
     	httpMethod: 'POST',
     	middleware: [function(req, res){
-    		console.log("POST: CREATELECTURE")
-    		console.log(req.body);
+    		console.log("POST: CREATELECTURE");
     		move_lecture_files(req.body);
     		res.json({success:true});
+    		console.log("POST: CREATELECTURE END")
     	}],
     },
     
@@ -275,21 +274,6 @@ function move_uploaded_file(file) {
     		return file.name;
     	}
     });
-    /*
-    console.log('->> tmp_path: ' + tmp_path );
-    console.log('->> target_path: ' + target_path );
-      
-    fs.rename(tmp_path, target_path, function(err){
-        if(err) {
-        	console.log(err);
-        }
-        
-        console.log('->> file_path: ' + file.name)
-        console.log('->> upload done');
-        
-        return file.name;
-    });
-    */	
 }
 
 function move_lecture_files(info) {
@@ -299,19 +283,71 @@ function move_lecture_files(info) {
     file_mkdir(target_path);
     
     // vod
-    var vod_file_name = info.vod_url.replace(/^.*[\\\/]/, '');
-    file_move(tmp_path + vod_file_name, target_path + vod_file_name, function(err){});
-    
-    // presentation
-    var presentation_file_path = info.presentation_url.replace(/^.*[\\\/]/, '');
-    file_move(tmp_path + presentation_file_path, target_path + presentation_file_path, function(err){});
+    if (info.status == 0){
+    	var vod_file = info.vod_url.replace(/^.*[\\\/]/, '');
+    	if (vod_file != ''){
+    		console.log("vod");
+    		file_move(tmp_path + vod_file, target_path + vod_file, function(err){});
+    	}
+    }
     
     // material
     for(var i in info.material_url){
-    	var material_file_name = info.material_url[i].url.replace(/^.*[\\\/]/, '');
-    	file_move(tmp_path + material_file_name, target_path + material_file_name, function(err){});
+    	var material_file = info.material_url[i].url.replace(/^.*[\\\/]/, '');
+    	file_move(tmp_path + material_file, target_path + material_file, function(err){});
     }
 
+    // presentation
+    var presentation_file = info.presentation_url.replace(/^.*[\\\/]/, '');
+    console.log("presentation_file: " + presentation_file);
+    
+    var isPPT = (presentation_file != '');
+    if (isPPT)
+    	file_move(tmp_path + presentation_file, target_path + presentation_file, function(err){});
+    
+    var ppt_file = target_path + presentation_file;
+    var file = presentation_file;
+    var isWin = !!process.platform.match(/^win/);
+
+    // convert ppt to images
+    if (!isWin && isPPT){
+	    // probably *nix, assume "unoconv", "convert (from "imagemagick")"
+    	// apt-get install unoconv & imagemagick
+    	
+    	file_mkdir(target_path + "ppt/");
+	    var exec = require('child_process').exec;
+	    
+	    var command = "unoconv -f pdf " + ppt_file + " && convert " + target_path + file.substring(0, file.lastIndexOf(".")) + ".pdf " + target_path + "ppt/" + "%d.png";
+	    console.log(command);
+	    var encode_finished = false;
+	    var child = exec(command, function (error){
+	    				encode_finished = true;
+	    				if(error){
+	    		            console.log(error.stack);
+	    		            console.log('Error code: ' + error.code);
+	    		            console.log('Signal received: ' + error.signal);
+	    		            
+	    				} else {
+	    					console.log("ppt conversion is finished");
+	    				    
+	    					fs.readdir(__dirname + "/../public/uploads/" + info._id + "/ppt/", function(error, files){
+	    						if (!error){
+	    							var n = files.length;
+	    							console.log(n);
+	    							Lecture.findByIdAndUpdate(info._id, {ppt_page: n}, function(err, doc){
+	    								if(err || !doc) {
+	    									console.log(err);
+	    								} else {
+	    									console.log("update the # of ppt_page");
+	    								}	
+	    							});
+	    						}else{
+	    							console.log(error);
+	    						}
+	    					});
+	    				}
+	    			});
+    }
 }
 function file_mkdir(path, callback){
     fs.mkdir(path, function(e){
@@ -328,6 +364,7 @@ function file_move(origin_path, target_path, callback){
       
     fs.rename(origin_path, target_path, function(err){
         if(err) {
+        	console.log("file_move: err");
         	console.log(err);
         }
         console.log('->> move done');

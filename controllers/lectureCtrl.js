@@ -48,12 +48,13 @@ module.exports = {
 							 date: reqBody.date,
 							 course: reqBody.course,
 							 vod_url: reqBody.vod_url,
+							 ppt_page: reqBody.ppt_page,
 							 duration: reqBody.duration,
 							 presentation_url: reqBody.presentation_url,
 							 material_url: reqBody.material_url
 							 };
-
-		console.log(req.files);
+		
+		console.log("lectureCtrl.create: " + req.files);
 		
 		
 		// Create Course model from built up Course object
@@ -64,7 +65,8 @@ module.exports = {
 		if(reqBody._id === undefined){
 			lecture.save(function(err, doc) {
 				if(err || !doc) {
-					throw 'Error';
+					console.log(err);
+					//throw 'new Error';
 				} else {
 					res.json(doc);
 				}		
@@ -72,7 +74,8 @@ module.exports = {
 		} else {
 			Lecture.findByIdAndUpdate(reqBody._id , lectureObj, function(err, doc) {
 				if(err || !doc) {
-					throw 'Error';
+					console.log(err);
+					//throw 'update Error';
 				} else {
 					res.json(doc);
 				}		
@@ -84,7 +87,8 @@ module.exports = {
 	delete : function(req, res) {
 		Lecture.findByIdAndRemove(req.query.id, function(err, doc) {
 				if(err || !doc) {
-					throw 'Error';
+					console.log(err);
+					//throw 'Error';
 				} else {
 					res.json(doc);
 				}		

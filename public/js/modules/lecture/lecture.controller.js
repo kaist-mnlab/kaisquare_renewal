@@ -97,9 +97,12 @@ angular.module('lecture.controller')
 		title: '',
 		description: '',
 		status: 0,
+		duration: 0,
+		ppt_page: 0,
 		course: course._id,
 		vod_url: '',
-		material_url: []
+		material_url: [],
+		presentation_url: ''
 	};
 	console.info("fileupload: debug");
 	
@@ -160,7 +163,7 @@ angular.module('lecture.controller')
     });
 
     uploader.bind('progress', function (event, item, progress) {
-        console.info('Progress: ' + progress, item);
+        //console.info('Progress: ' + progress, item);
     });
 
     uploader.bind('success', function (event, xhr, item, response) {
@@ -181,8 +184,15 @@ angular.module('lecture.controller')
         var base_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/temp/";
 //        $scope.lecture.vod_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/temp/" + item.file.name;
         console.log($location.$$absUrl + " " + $location.$$url);
-        var vod = $("#lectureVoDFile").attr("value").replace(/^.*[\\\/]/, '');
-        var presentation = $("#lecturePresentationFile").attr("value").replace(/^.*[\\\/]/, '');
+        var vod = "";
+        if ($scope.lecture.status == 0)
+        	vod = $("#lectureVoDFile").attr("value").replace(/^.*[\\\/]/, '');
+        var presentation = "";
+        try{
+        	presentation = $("#lecturePresentationFile").attr("value").replace(/^.*[\\\/]/, '');
+        }catch(err){
+        	
+        }
         
         if (vod == item.file.name){
         	$scope.lecture.vod_url = base_url + item.file.name;
@@ -208,13 +218,12 @@ angular.module('lecture.controller')
     });
 
     uploader.bind('progressall', function (event, progress) {
-        console.info('Total progress: ' + progress);
+        //console.info('Total progress: ' + progress);
     });
 
 	$scope.createLecture = function() {
 		var lecture = $scope.lecture;
 		console.log(lecture);
-		
 		if(lecture.title.length > 0) {
 		
 			var newLecture = new Lecture(lecture);
@@ -222,19 +231,22 @@ angular.module('lecture.controller')
 			newLecture.$save(function(p, resp) {
 				if(!p.error) {
 					// If there is no error, redirect to the main view
+					console.log("p");
 					console.log(p);
-					var url_data = {_id: p._id, vod_url: p.vod_url, presentation_url: p.presentation_url, material_url: p.material_url};
+					var url_data = {_id: p._id, status: p.status, vod_url: p.vod_url, presentation_url: p.presentation_url, material_url: p.material_url};
 					
 					$http.post('/createLecture', url_data).success(function(resp){
 						try{
 							var base_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/" + p._id + "/";
-							p.vod_url = base_url + p.vod_url.replace(/^.*[\\\/]/, '');
+							if (p.status == 0)
+								p.vod_url = base_url + p.vod_url.replace(/^.*[\\\/]/, '');
 							p.presentation_url = base_url + p.presentation_url.replace(/^.*[\\\/]/, '');
 							for (var i in p.material_url){
 								p.material_url[i].url = base_url + p.material_url[i].url.replace(/^.*[\\\/]/, '');
 							}
 							p.$save(function(q, resp){
 								if(!q.error){
+									console.log("q");
 									$modalInstance.close();
 								}
 								else{
