@@ -9,6 +9,10 @@ form(role="form", data-ng-submit="raiseQuestion()")
 		.form-group
 			label(for="raiseQuestionFile") File Upload
 			input#raiseQuestionFile.form-control(type="file" data-ng-file-select )
+		.form-group
+			label(for="voice") Voice
+			button#voice.btn.btn-success.small_font(type="button", data-ng-click="")
+				| Listen My Voice!
 	.modal-footer   
 		button.btn.btn-primary.pull-right(type="submit", data-ng-click="close()") 
 			| Raise Question!
