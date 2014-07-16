@@ -320,6 +320,35 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			});
 		}
 		
+		$scope.raise_question = function() {
+			//modal
+			var dlg = null;
+			dlg = $modal.open({
+					templateUrl: 'lapp/question',
+					controller: 'RaiseQuestionCtrl',
+					resolve: {
+						lecture: function() {
+							return $scope.lecture;
+						},
+						course: function() {
+							return $scope.course;
+						},
+						thisUserCtrl: function(){
+							return $scope.thisUserCtrl;
+						},
+						user: function(){
+							return $scope.user;
+						}
+					}
+				});
+				
+			dlg.result.then(function (question) {
+				alert(question.text);
+			}, function() {
+				console.log("Dismissed");
+			});
+		}
+		
 		socket.on('receiveQuiz', function(data){
 			console.log(data);
 			$scope.quiz = data;
@@ -1046,6 +1075,94 @@ angular.module('lapp.controller')
 		}
 		quizChoice.splice(number-1, 1);
 	}
+}]);
+
+
+angular.module('lapp.controller')
+.controller('RaiseQuestionCtrl',
+['$rootScope', '$scope', '$location', '$modal', '$modalInstance', 'Course', 'Lecture','$stateParams','$sce','socket', 'security','user', 'lecture', 'course', 'thisUserCtrl', '$fileUploader', 'XSRF_TOKEN', '$http', function($rootScope, $scope, $location, $modal, $modalInstance, Course, Lecture,$stateParams, $sce, socket, security, user, lecture,course, thisUserCtrl, $fileUploader, csrf_token, $http) {
+
+	//TODO : Send question to server, receive function for lecturere
+	//Refer QuizQuestionCtrl
+	$scope.question = { text: '',
+				  }
+	
+	//File uploader
+	var uploader = $scope.uploader = $fileUploader.create({
+        scope: $scope,                          // to automatically update the html. Default: $rootScope
+        url: '/fileUpload',
+        formData: [
+            { key: 'value' }
+        ],
+        headers: 
+                  {'X-CSRF-TOKEN': csrf_token
+        },
+       
+        filters: [
+            function (item) {                    // first user filter
+                console.info('File extension Filter');
+                //TODO : Filter
+            }
+        ]
+    });
+	
+	uploader.bind('afteraddingfile', function (event, item) {
+        console.info('After adding a file', item);
+    });
+
+    uploader.bind('whenaddingfilefailed', function (event, item) {
+        console.info('When adding a file failed', item);
+    });
+
+    uploader.bind('afteraddingall', function (event, items) {
+        console.info('After adding all files', items);
+    });
+
+    uploader.bind('beforeupload', function (event, item) {
+        console.info('Before upload', item);
+    });
+
+    uploader.bind('progress', function (event, item, progress) {
+        //console.info('Progress: ' + progress, item);
+    });
+
+    uploader.bind('success', function (event, xhr, item, response) {
+        console.info('Success', xhr, item, response);
+    });
+
+    uploader.bind('cancel', function (event, xhr, item) {
+        console.info('Cancel', xhr, item);
+    });
+
+    uploader.bind('error', function (event, xhr, item, response) {
+        console.info('Error', xhr, item, response);
+    });
+
+    uploader.bind('complete', function (event, xhr, item, response) {
+        console.info('Complete', xhr, item, response);
+        console.log(item);
+        var base_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/temp/";
+//        $scope.lecture.vod_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/temp/" + item.file.name;
+        console.log($location.$$absUrl + " " + $location.$$url);
+        
+
+    });
+
+    uploader.bind('progressall', function (event, progress) {
+        //console.info('Total progress: ' + progress);
+    });
+	
+	
+	$scope.lecture = lecture;
+	$scope.raiseQuestion = function(){
+		//TODO : send file
+	
+		$modalInstance.close($scope.question);
+	}
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
+	
 }]);
 		
 });

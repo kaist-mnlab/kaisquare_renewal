@@ -39,6 +39,8 @@ div#content(data-ng-switch on="thisUserCtrl")
 			div#studentCtrl(data-ng-switch-default)
 				button#q_button.btn.btn-primary.q_button.big_font(type="button", data-ng-click="send_q()")
 					| Q
+				button#q_button.btn.btn-primary.q_button(type="button", data-ng-click="raise_question()")
+					| Question
 				div#live_question
 					div#qustion_msg(data-ng-model="quiz")
 						label() {{quiz.question}}
