@@ -127,7 +127,7 @@ function merge(socket, data) {
         ifMac(socket, data);
     }
 
-    readFfmpeOutput(data.audioName, socket);
+    //readFfmpeOutput(data.audioName, socket);
 }
 
 var ffmpeg_finished = false;
@@ -175,7 +175,7 @@ function ifMac(socket, data) {
         exec = require('child_process').exec;
     //child_process = require('child_process');
 
-    var command = "ffmpeg -i " + videoFile + " -i " + audioFile + " -map 0:0 -map 1:0 " + mergedFile + '  1> ffmpeg-output/%4.txt 2>&1';
+    var command = "ffmpeg -i " + videoFile + " -i " + audioFile + " -map 0:0 -map 1:0 " + mergedFile + '  1> ./public/ffmpeg-output/'+data.audioName.split('.')[0]+'.txt 2>&1';
 
     var child = exec(command, function (error) {
         if (error) {

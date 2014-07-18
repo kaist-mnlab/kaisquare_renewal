@@ -5,12 +5,11 @@ function CreateSession(stream, option) {
 	this.iceServer = option.iceServers || { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] };
 	this.pcs = {};
 	this.signaling = io.connect();
-	this.signaling.session = this;
-	this.signaling.on('created', this.created);
-	this.signaling.on('joined', this.joined);
-	this.signaling.on('closed', this.closed);
-	this.signaling.on('message', this.getMessage);
-	this.signaling.on('log', this.log);
+	this.signaling.on('created', this.created.bind(this));
+	this.signaling.on('joined', this.joined.bind(this));
+	this.signaling.on('closed', this.closed.bind(this));
+	this.signaling.on('message', this.getMessage.bind(this));
+	this.signaling.on('log', this.log.bind(this));
 	this.gid = option.gid;
 	this.uid = option.uid;
 	this.option = option;
@@ -23,10 +22,10 @@ CreateSession.prototype = {
 	},
 	created: function (socket_id) {
 	    console.log('Room is created!');
-		this.session.pcs.socket_id = socket_id;
+		this.pcs.socket_id = socket_id;
 	},
 	joined: function (msg) {
-		var session = this.session;
+		var session = this;
 		var pc = session.pcs[msg.socket_id] = new RTCPeerConnection(session.iceServer);
 		pc.socket_id = msg.socket_id;
 		pc.onicecandidate = handleIceCandidate;
@@ -66,8 +65,8 @@ CreateSession.prototype = {
 	},
 	closed: function (message) {
 	    console.log('close ' + message);
-	    delete this.session.pcs[message.sid];
-	    !!this.session.onSessionClosed && this.session.onSessionClosed({ sid: message.sid, uid: message.uid });
+	    delete this.pcs[message.sid];
+	    !!this.onSessionClosed && this.onSessionClosed({ sid: message.sid, uid: message.uid });
 	},
 	sendMessage: function (type, dest, msg) {
 		message = { type: type, src: this.pcs.socket_id, dest: dest, msg: msg };
@@ -77,7 +76,7 @@ CreateSession.prototype = {
 		console.log('Client received message:', message);
 		
 		if (message.type === 'answer') {
-		    this.session.pcs[message.src].setRemoteDescription(new RTCSessionDescription(message.msg), function () {
+		    this.pcs[message.src].setRemoteDescription(new RTCSessionDescription(message.msg), function () {
 		        console.log('setRemoteDescription');
 		    });
 		}
@@ -86,7 +85,7 @@ CreateSession.prototype = {
 				sdpMLineIndex: message.msg.label,
 				candidate: message.msg.candidate
 			});
-			this.session.pcs[message.src].addIceCandidate(candidate);
+			this.pcs[message.src].addIceCandidate(candidate, function(){ console.log("ice candidate added!"); }, function(){ console.log("ice candidate add fail!")});
 		}
 	},
 	log: function (array) {

@@ -1,5 +1,6 @@
 oauth.cfg
 /tmp/
-public/uploads/Scean1.mp4
 public/uploads
+public/ffmpeg-output
 /node_modules/
+sftp-config.json

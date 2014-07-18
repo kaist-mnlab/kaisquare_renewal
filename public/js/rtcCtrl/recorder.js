@@ -4,8 +4,7 @@ function Recorder(stream, option) {
     this.option = option;
     this.recordVideoSeparately = !!navigator.webkitGetUserMedia;
     this.socketio = io.connect();
-    this.socketio.record = this;
-    this.socketio.on('merged', this.merged);
+    this.socketio.on('merged', this.merged.bind(this));
 };
 
 Recorder.prototype = {
@@ -82,7 +81,6 @@ Recorder.prototype = {
         });
     },
     merged: function (fileName) {
-        var recoder = this.recorder;
         //When the procedure for merging audio and video is successful, The url of video is returned.
         var href = (location.href.split('/').pop().length
                 ? location.href.replace(location.href.split('/').pop(), '')
@@ -92,7 +90,7 @@ Recorder.prototype = {
         href = href + '../uploads/' + fileName;
 
         console.log('got file ' + href);
-        !!recorder.onRecordCompleted && recorder.onRecordCompleted(href);
+        !!this.onRecordCompleted && this.onRecordCompleted(href);
         //videoElement.src = href;
         //videoElement.play();
     }

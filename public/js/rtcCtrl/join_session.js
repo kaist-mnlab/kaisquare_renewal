@@ -4,9 +4,9 @@ function JoinSession(option) {
 	this.iceServer = option.iceServers || { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] };
 	this.signaling = io.connect();
 	this.signaling.session = this;
-	this.signaling.on('joined', this.joined);
-	this.signaling.on('created', this.created);
-	this.signaling.on('message', this.getMessage);
+	this.signaling.on('joined', this.joined.bind(this));
+	this.signaling.on('created', this.created.bind(this));
+	this.signaling.on('message', this.getMessage.bind(this));
 	this.signaling.on('log', this.log);
 	this.uid = option.uid;
 	this.gid = option.gid;
@@ -19,7 +19,7 @@ JoinSession.prototype = {
 		return this;
 	},
 	joined: function (socket_id) {
-		var session = this.session;
+		var session = this;
 		var pc = session.pc = new RTCPeerConnection(session.iceServer);
 		pc.socket_id = socket_id;
 		if (typeof session.localStream != 'undefined')
@@ -46,7 +46,7 @@ JoinSession.prototype = {
 	},
 	created: function (creator_sid) {
 	    console.log('Room is created! ' + creator_sid);
-	    this.emit('join', { gid: this.session.gid, uid: this.session.uid });
+	    this.emit('join', { gid: this.gid, uid: this.uid });
 	},
 	sendMessage: function (type, msg) {
 		message = { type: type, src: this.pc.socket_id.join, dest: this.pc.socket_id.create, msg: msg };
@@ -54,7 +54,7 @@ JoinSession.prototype = {
 	},
 	getMessage: function (message) {
 		console.log('Client received message:', message);
-		var session = this.session;
+		var session = this;
 		var pc = session.pc;
 		if (message.type === 'offer') {
 			console.log('get offerd');
@@ -73,7 +73,7 @@ JoinSession.prototype = {
 				sdpMLineIndex: message.msg.label,
 				candidate: message.msg.candidate
 			});
-			pc.addIceCandidate(candidate, function(){}, function(){});
+			pc.addIceCandidate(candidate, function(){ console.log("ice candidate added!"); }, function(){ console.log("ice candidate add fail!")});
 		}
 	},
 	log: function (array) {
