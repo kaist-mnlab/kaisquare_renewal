@@ -1,6 +1,4 @@
-var node_static = require('node-static');
 var http = require('http');
-var file = new (node_static.Server)();
 
 var io;
 

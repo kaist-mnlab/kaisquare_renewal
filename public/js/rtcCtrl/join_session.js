@@ -46,7 +46,7 @@ JoinSession.prototype = {
 	},
 	created: function (creator_sid) {
 	    console.log('Room is created! ' + creator_sid);
-	    this.emit('join', { gid: this.gid, uid: this.uid });
+	    this.signaling.emit('join', { gid: this.gid, uid: this.uid });
 	},
 	sendMessage: function (type, msg) {
 		message = { type: type, src: this.pc.socket_id.join, dest: this.pc.socket_id.create, msg: msg };

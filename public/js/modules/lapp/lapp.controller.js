@@ -101,9 +101,9 @@ define(['angular',
 	$scope.chat_log = [];
 	$scope.chat_message = "";
 	$scope.course = null;
-	$scope.thisUserCtrl = 0;
+	$scope.thisUserCtrl = -1;
 
-	$scope.isMobile = 0;
+	$scope.isMobile = (navigator.userAgent.match("Android") || navigator.userAgent.match("iPhone"))?1:0;
 
 	$scope.socket = socket;
 	$scope.currentTime = 0;
@@ -117,8 +117,6 @@ define(['angular',
 	// Attendance
 	$scope.attendance = [];
 
-	if (navigator.userAgent.match("Android") || navigator.userAgent.match("iPhone"))
-		$scope.isMobile = 1;
 
 	$scope.trustSrc = function (src) {
 		return $sce.trustAsResourceUrl(src);
@@ -315,12 +313,11 @@ define(['angular',
 			}, function () {
 				console.log("Dismissed");
 			});
-		}
+		};
 
 		$scope.raise_question = function () {
 			//modal
-			var dlg = null;
-			dlg = $modal.open({
+			var dlg = $modal.open({
 				templateUrl: 'lapp/question',
 				controller: 'RaiseQuestionCtrl',
 				resolve: {
@@ -344,7 +341,11 @@ define(['angular',
 			}, function () {
 				console.log("Dismissed");
 			});
-		}
+		};
+
+		$scope.record_question = function () {
+			console.log('test');
+		};
 
 		socket.on('receiveQuiz', function (data) {
 			console.log(data);
@@ -454,6 +455,9 @@ define(['angular',
 
 		},
 		link: function (scope, element, attrs) {
+			if (scope.thisUserCtrl !== 8)
+				return;
+
 			var constraints = {
 				video: {
 					mandatory: {
@@ -465,6 +469,7 @@ define(['angular',
 			};
 			getUserMedia(constraints, handleUserMedia, handleUserMediaError);
 			var videoElement = $('#local').attr({ 'width': 320, 'height': 240 }).get(0);
+			videoElement.muted = true;
 			var session, recorder;
 			function handleUserMedia(stream) {
 				//attachMediaStream($('#local').attr({'width':  640, 'height': 480}).get(0), stream);
@@ -495,7 +500,9 @@ define(['angular',
 					var uidthumb = $('#' + event.uid + '_thumb')[0];
 					if (typeof uidthumb !== 'undefined')
 						uidthumb.children[0].remove();
-					attachMediaStream($('<video></video>').attr({ 'id': event.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': event.uid }).appendTo('#' + event.uid + '_thumb').get(0), event.stream);
+					var videoElement = $('<video></video>').attr({ 'id': event.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': event.uid, 'muted': 'muted' }).appendTo('#' + event.uid + '_thumb').get(0);
+					videoElement.muted = true;
+					attachMediaStream(videoElement, event.stream);
 					scope.$parent.studentScreen[event.uid] = { 'socket_id': event.socket_id, 'uid': event.uid, 'stream': event.stream };
 				}
 			};
@@ -534,6 +541,9 @@ define(['angular',
 
 		},
 		link: function (scope, element, attrs) {
+			if (scope.thisUserCtrl !== 2)
+				return;
+
 			var constraints = {
 				video: {
 					mandatory: {
@@ -541,13 +551,11 @@ define(['angular',
 						minHeight: 480
 					}
 				},
-				audio: false
+				audio: true
 			};
 			getUserMedia(constraints, handleUserMedia, handleUserMediaError);
 			var session;
-
 			function handleUserMedia(stream) {
-				attachMediaStream($('#local').get(0), stream);
 				session = new JoinSession({ gid: scope.$parent.lectureId, uid: scope.$parent.user._id, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
 				session.onSessionJoined = onSessionJoined;
 				session.start();
