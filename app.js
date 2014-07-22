@@ -10,7 +10,9 @@ var express = require('express.io'),
 	RedisStore = require('connect-redis')(session),
 	
 	passport = require('passport');
-	
+
+
+
 // Connect to MongoDB using Mongoose
 var mongoose = require('mongoose');
 var db;
@@ -52,7 +54,7 @@ var sessionKey = exports.sessionKey = "kaisquare";
 
 
 var app = exports.app = express();
-var port = exports.port = +process.argv[2] || process.env.PORT || 6789; 
+var port = exports.port = +process.argv[2] || process.env.PORT || 6789;
 
 app.configure(function() {
 	app.set('port', port);
