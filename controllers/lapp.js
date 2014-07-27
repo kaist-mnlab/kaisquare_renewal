@@ -57,6 +57,10 @@ module.exports = {
 					if(lecture.duration !== undefined) {
 						lectures[lectureId].duration = lecture.duration;
 					}
+					lectures[lectureId].status = lecture.status;
+					if (lecture.status == 0){
+						socket.emit('initPpt', lecture.ppt_event_log);
+					}
 				}
 			
 				while(lectures[lectureId].qs.length > 0) lectures[lectureId].qs.pop();
@@ -80,9 +84,6 @@ module.exports = {
 					socket.emit('startLecture', lectures[lectureId].startAt, lectures[lectureId].lapTime);
 				}
 			}); 
-			
-			
-			
 		});
 		
 		socket.on('startLecture', function(time) {
@@ -91,6 +92,13 @@ module.exports = {
 			lectures[socketRoom[socket.id].lectureId].startAt = time.startAt;
 			lectures[socketRoom[socket.id].lectureId].lapTime = time.lapTime;
 			lectures[socketRoom[socket.id].lectureId].isLectureStarted = 'true';
+			
+			// set as "live"
+			Lecture.findByIdAndUpdate(socketRoom[socket.id].lectureId, {status: 1}, function(err, doc){
+				if (!doc || err){
+					console.log(err);
+				}
+			});
 			
 			io.sockets.in(socketRoom[socket.id].lectureId).emit('startLecture', time.startAt, time.lapTime);
 		});
@@ -107,6 +115,14 @@ module.exports = {
 			io.sockets.in(socketRoom[socket.id].lectureId).emit('stopLecture', time.startAt, time.lapTime);
 			
 			//saving
+			// set as "vod"
+			Lecture.findByIdAndUpdate(socketRoom[socket.id].lectureId, {status: 0}, function(err, doc){
+				if (!doc || err){
+					console.log(err);
+				}else {
+					console.log(doc);
+				}
+			});
 		}); 
 		
 		socket.on('liveTimeUpdate', function(time){

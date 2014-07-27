@@ -24,7 +24,7 @@ Recorder.prototype = {
 
         recorder.recordAudio.startRecording();
     },
-    stop: function () {
+    stop: function (data) {
         // stop audio recorder
         var recorder = this;
         recorder.recordVideoSeparately && recorder.recordAudio.stopRecording(function () {
@@ -37,6 +37,8 @@ Recorder.prototype = {
                     // get video data-URL
                     recorder.recordVideo.getDataURL(function (videoDataURL) {
                         var files = {
+                        	lectureId: data.lectureId,
+                        	base_url: data.base_url,
                             audio: {
                                 //name: fileName + '.wav',
                                 type: recorder.recordAudio.getBlob().type || 'audio/wav',

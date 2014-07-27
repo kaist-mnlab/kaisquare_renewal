@@ -14,7 +14,10 @@ var url = require("url"),
 
 var session_creator = {};
 
+var mongoose = require('mongoose');
+var LectureSchema = require('../models/Lecture.js').LectureSchema;
 
+var Lecture = mongoose.model('lectures', LectureSchema);
 
 module.exports = {
 	index : function(sio) {
@@ -142,8 +145,9 @@ function ifWin(socket, data) {
     // if a "directory" has space in its name; below command will fail
     // e.g. "c:\\dir name\\uploads" will fail.
     // it must be like this: "c:\\dir-name\\uploads"
-    var command = merger + ', ' + videoFile + " " + audioFile + " " + mergedFile + ' ' + data.audioName.split('.')[0] + '';
+    var command = merger + " \"" + videoFile + "\" \"" + audioFile + "\" \"" + mergedFile + "\" \""  + data.audioName.split('.')[0] + "\" ";
 	console.log("command", command);
+
     var cmd = exec(command, function (error) {
         if (error) {
             console.log(error.stack);
@@ -162,6 +166,7 @@ function ifWin(socket, data) {
             //            setTimeout(function () {
             //                fs.unlink(mergedFile);
             //            }, 60 * 1000);
+
         }
     });
 }

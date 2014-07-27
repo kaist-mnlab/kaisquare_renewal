@@ -98,6 +98,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 		$scope.user.username = "No Name";
 	$scope.lectureId = $stateParams.lectureId;
 	$scope.lecture = Lecture.get( {lectureId: $stateParams.lectureId } );
+
 	$scope.chat_log = [];
 	$scope.chat_message = "";
 	$scope.course = null;
@@ -116,6 +117,9 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 	
 	// Attendance
 	$scope.attendance = [];
+	
+	// ppt event
+
 	
 	if (navigator.userAgent.match("Android") || navigator.userAgent.match("iPhone"))
 		$scope.isMobile = 1;
@@ -142,6 +146,8 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
     	Stopwatch.text = ($('#timer'));
     	$scope.stopwatch = Stopwatch;
     	$scope.stopwatch.init(socket);
+    	
+    	console.log($scope.lecture.vod_url);
     	
     	var data = { src: $scope.user._id,
     			     lecture: $scope.lecture._id,
@@ -213,17 +219,24 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			//$scope.stopwatch.setTime(time.time);
 			$scope.stopwatch.stop();
 			try{
-				recorder.stop();
+				//recorder.stop($scope.lectureId);
 			}catch(err){}
 			
 		});
 		
 		$scope.start_lecture = function() {
 			//start timer
-			$scope.stopwatch.start();	
+			$scope.stopwatch.start();
+			
 			//set lecture "LIVE"
-			
-			
+			$scope.lecture.status = 1;
+			/*
+			Lecture.findByIdAndUpdate($scope.lecture._id, $scope.lecture, function(err, doc){
+				if (!doc || err){
+					console.log(err);
+				}
+			});
+			*/
 			//broadcast to "lecture start"
 			//with recording logic
 			socket.emit('startLecture', {startAt: $scope.stopwatch.startAt, lapTime: $scope.stopwatch.lapTime});
@@ -254,9 +267,9 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			//stop timer
 			$scope.stopwatch.stop();
 			$scope.stopwatch.reset();
+			
 			//set lecture "VOD"
-			
-			
+
 			$("#lecture_start").attr("disabled", false);
 			$("#lecture_stop").attr("disabled", true);
 			
@@ -264,7 +277,11 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			//with stopping recording logic and storing
 			socket.emit('stopLecture', {time: $scope.stopwatch.time()});
 			try{
-				recorder.stop();
+				var data = {};
+				data.lectureId = $scope.lectureId;
+				data.base_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/";
+			
+				recorder.stop(data);
 			}catch(err){}
 			
 			$scope.presentationSave();
@@ -480,14 +497,14 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			
 			function onRecordCompleted(href) {
                 videoElement.src = href;
-                
+                console.log(href);
+                console.log(scope);
                 //Turn it to VOD
 				var lecture = scope.$parent.lecture;
 				lecture.duration = scope.$parent.stopwatch.time();
 				lecture.status = 0;
 				lecture.vod_url = href;
-				
-				
+
 				lecture.$save(function(p, resp) {
 					if(!p.error) {
 						// If there is no error, redirect to the main view
@@ -546,9 +563,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 					width = 320;
 					height = 240;
 				}
-			
-				
-			
 			    attachMediaStream($('#remote').attr({ 'width': width, 'height': height }).get(0), event.stream);
 			}
 
@@ -567,15 +581,21 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 	// currentTime of Video 
 	return {
 		controller: function($scope, $element){
-			$scope.$parent.duration = $element[0].duration;
-			$scope.onTimeUpdate = function(){
+			var s = $scope.$parent.$parent.$parent;
+			s.duration = $element[0].duration;
+			s.vodElement = $element[0];
+			s.onTimeUpdate = function(){
 				// using $parent to access $scope in controller
-				$scope.$parent.currentTime = $element[0].currentTime;
+				s.currentTime = $element[0].currentTime * 1000;
 				$scope.$apply();
 			}
 		},
 		link: function(scope, element, attrs){
 			element.bind('timeupdate', scope.onTimeUpdate);
+			element.bind('play', scope.pptPlay);
+			element.bind('pause',scope.pptPause);
+			element.bind('stop', scope.pptStop);
+			element.bind('seeked', scope.pptSeeked);
 		}
 	}
 })
@@ -675,6 +695,9 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 })
 .directive('lappPresentation', function(){
 	return {
+		controller: function($scope, $element){
+
+		},
 		link: function(scope, element, attrs){
 			var url = scope.location;
 			var ppt = "http://" + url.$$host + ":" + url.$$port + "/uploads/" + scope.lectureId + "/ppt/";
@@ -682,17 +705,8 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			var fileType = ".png";
 
 			var startNumber = 0;
-			var maxNumber = scope.lecture.ppt_page;
+			var maxNumber = 0;
 
-			scope.lecture.$promise.then(function(){
-				maxNumber = scope.lecture.ppt_page;
-				console.log(maxNumber);
-				for (var i = startNumber; i < maxNumber; i++){
-					penTrace[i] = {};
-					penTrace[i].clearPoint = 0;
-					penTrace[i].trace = [];
-				}
-			});
 
 			var pageNumber = startNumber;
 			
@@ -706,12 +720,20 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			var eventTrace = [];
 			var penTrace = {};
 			
-			for (var i = startNumber; i < maxNumber; i++){
-				penTrace[i] = {};
-				penTrace[i].clearPoint = 0;
-				penTrace[i].trace = [];
-			}
-			
+			scope.lecture.$promise.then(function(){
+				maxNumber = scope.lecture.ppt_page;
+				if (maxNumber === undefined || maxNumber == 0){
+					maxNumber = 10;
+				}
+				console.log(maxNumber);
+				
+				for (var i = startNumber; i < maxNumber; i++){
+					penTrace[i] = {};
+					penTrace[i].clearPoint = 0;
+					penTrace[i].trace = [];
+				}
+			});
+
 			slide.attr('src', ppt + pageNumber + fileType);
 			scope.moveLeft = function(){
 				if(pageNumber == startNumber){
@@ -936,6 +958,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 					clearTimeout(tracer);
 				}
 			}
+			
 			function drawTrace (stroke){
 				if (stroke.strokeStyle == "clear"){
 					ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
@@ -953,7 +976,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 					if (strokes[i].time > time) break;
 					drawTrace(stroke);
 				}
-
 			}
 			
 			scope.presentationReset = function (){
@@ -974,7 +996,61 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				log.eventTrace = eventTrace;
 				angular.toJson(log);
 				console.log(angular.toJson(log));
-				socket.emit('pptSave', log);
+				socket.emit('pptSave', angular.toJson(log));
+			}
+			
+			// vod ppt play
+			var pptEvents = [];
+			var pptLog;
+			var pptPages = maxNumber;
+			var p = 0;
+			var logTracer;
+			
+			scope.lecture.$promise.then(function(){
+				if(scope.lecture.status == 0){
+			    	pptLog = angular.fromJson(scope.lecture.ppt_event_log);
+			    	
+			    	pptEvents = [];
+					for (var i in pptLog.penTrace){
+						pptEvents = pptEvents.concat(pptLog.penTrace[i].trace);
+					}
+					pptEvents = pptEvents.concat(pptLog.eventTrace);
+					pptEvents.sort(function(a, b){return a.time - b.time});
+					p = 0;
+				}
+			});
+			function pptLogTrace(){
+				//console.log(p);
+				var event = pptEvents[p++];
+				if (event.type == "stroke"){
+					drawTrace(event.stroke);
+				}else if (event.type == "ppt"){
+					ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
+					slide.attr('src', ppt + event.page + fileType);
+					drawAllTrace(pptLog.penTrace[event.page].trace, event.time);
+				}
+				if (p < pptEvents.length){
+					logTracer = setTimeout(pptLogTrace, pptEvents[p].time - pptEvents[p - 1].time);
+				}else{
+					clearTimeout(logTracer);
+				}
+			}
+			scope.pptPlay = function(){
+				logTracer = setTimeout(pptLogTrace, pptEvents[p].time - scope.currentTime);
+			}
+			scope.pptPause = function(){
+				clearTimeout(logTracer);
+			}
+			scope.pptStop = function(){
+				clearTimeout(logTracer);
+				p = 0;
+				ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
+			}
+			scope.pptSeeked = function(){
+				p = 0;
+				while(pptEvents[p+1].time < scope.currentTime){
+					p++;
+				}
 			}
 		}
 	}
