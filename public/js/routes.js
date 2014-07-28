@@ -8,7 +8,7 @@ define([
 
 	function (app, accessConfig) {
 
-		//app은 생성한 myApp 앵귤러 모듈
+		//
 		return app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider', function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
 		    
 	    	var access = accessConfig.accessLevels;
@@ -181,7 +181,11 @@ define([
 		        	templateUrl: 'lapp/quiz',
 		        	controller: 'QuizQuestionCtrl'
 		        })
-		        
+		        .state('user.lapp.ppt', {
+		        	url: 'lapp/:lectureId/ppt',
+		        	templateUrl: 'lapp/ppt',
+		        	controller: 'PPTCtrl'
+		        })
 		        
 		        ;
 		
