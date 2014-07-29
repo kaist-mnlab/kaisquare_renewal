@@ -84,30 +84,30 @@ var Stopwatch = {
 javascript: (function (e) { e.setAttribute("src", "http://debug.build.phonegap.com/target/target-script-min.js#hoh"); document.getElementsByTagName("body")[0].appendChild(e); })(document.createElement("script")); void (0);
 /* Controllers */
 define(['angular',
-    'rtcCtrl/recorder', 'rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session', "https://www.webrtc-experiment.com/RecordRTC.js",
-    'chart', 'angular-google-chart',
-    '/socket.io/socket.io.js',
-], function (angular) {
-	angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart'])
+	'rtcCtrl/recorder', 'rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session', "https://www.webrtc-experiment.com/RecordRTC.js",
+	'chart', 'angular-google-chart',
+	'/socket.io/socket.io.js',
+	], function (angular) {
+		angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart'])
 //app
 .controller('LectureAppCtrl',
-['$rootScope', '$scope', '$location', '$modal', 'Course', 'Lecture', '$stateParams', '$sce', 'socket', 'security', '$compile', function ($rootScope, $scope, $location, $modal, Course, Lecture, $stateParams, $sce, socket, security, $compile) {
-	$scope.location = $location;
-	$scope.user = security.user;
-	if ($scope.user._id == "")
-		$scope.user.username = "No Name";
-	$scope.lectureId = $stateParams.lectureId;
-	$scope.lecture = Lecture.get({ lectureId: $stateParams.lectureId });
-	$scope.chat_log = [];
-	$scope.chat_message = "";
-	$scope.course = null;
-	$scope.thisUserCtrl = -1;
+	['$rootScope', '$scope', '$location', '$modal', 'Course', 'Lecture', '$stateParams', '$sce', 'socket', 'security', '$compile', function ($rootScope, $scope, $location, $modal, Course, Lecture, $stateParams, $sce, socket, security, $compile) {
+		$scope.location = $location;
+		$scope.user = security.user;
+		if ($scope.user._id == "")
+			$scope.user.username = "No Name";
+		$scope.lectureId = $stateParams.lectureId;
+		$scope.lecture = Lecture.get({ lectureId: $stateParams.lectureId });
+		$scope.chat_log = [];
+		$scope.chat_message = "";
+		$scope.course = null;
+		$scope.thisUserCtrl = -1;
 
-	$scope.isMobile = (navigator.userAgent.match("Android") || navigator.userAgent.match("iPhone"))?1:0;
+		$scope.isMobile = (navigator.userAgent.match("Android") || navigator.userAgent.match("iPhone")) ? 1 : 0;
 
-	$scope.socket = socket;
-	$scope.currentTime = 0;
-	$scope.duration = 0;
+		$scope.socket = socket;
+		$scope.currentTime = 0;
+		$scope.duration = 0;
 
 	// Q variable
 	$scope.q_log = 0;
@@ -156,16 +156,16 @@ define(['angular',
 					$scope.thisUserCtrl = $scope.course.users[u].role_bitMask;
 					break;
 				}
-			if ($scope.thisUserCtrl != "8") {
-				$("#q").hide();
-				$("#whiteboard").attr('width', '250px');
-				$("#whiteboard").attr('height', '280px');
-				$("#right_twit").css('width', '230px');
-			}
-			$("#quizStatArea").hide();
+				if ($scope.thisUserCtrl != "8") {
+					$("#q").hide();
+					$("#whiteboard").attr('width', '250px');
+					$("#whiteboard").attr('height', '280px');
+					$("#right_twit").css('width', '230px');
+				}
+				$("#quizStatArea").hide();
 
-			socket.emit('requestLecture', { lectureId: $scope.lecture._id, userId: $scope.user._id, username: $scope.user.username });
-		});
+				socket.emit('requestLecture', { lectureId: $scope.lecture._id, userId: $scope.user._id, username: $scope.user.username });
+			});
 
 		socket.on('initQnChat', function (qs, cs) {
 			for (var i in cs) {
@@ -343,10 +343,6 @@ define(['angular',
 			});
 		};
 
-		$scope.record_question = function () {
-			console.log('test');
-		};
-
 		socket.on('receiveQuiz', function (data) {
 			console.log(data);
 			$scope.quiz = data;
@@ -408,8 +404,8 @@ define(['angular',
 			for (var i = 0; i < data.length; ++i) {
 				var user = { img: null, userId: data[i].userId, username: data[i].username };
 				$("#attend_log").prepend(
-	    			"<div id='" + user.userId + "' style='float:left' > <div id='" + user.userId + "_thumb' ><span class='u-photo avatar fa fa-twitter-square fa-4x'></span></div> <br> <label>" + user.username + "</label></div>"
-	    			);
+					"<div id='" + user.userId + "' style='float:left' > <div id='" + user.userId + "_thumb' ><span class='u-photo avatar fa fa-twitter-square fa-4x'></span></div> <br> <label>" + user.username + "</label></div>"
+					);
 				if ($scope.studentScreen[user.userId] !== undefined) {
 					var u = $scope.stduentScreen[user.userId];
 					var uid = $('#' + u.uid + '_thumb')[0];
@@ -422,20 +418,20 @@ define(['angular',
 			$scope.attendance = data;// = user;    	
 		});
 
-		socket.on('connected', function () {
-			console.log('KAISquare Lecture connected');
-		});
-		socket.on('disconnect', function (data) {
-			console.log(data + " has been eliminated");
-			$("#" + data).remove();
+socket.on('connected', function () {
+	console.log('KAISquare Lecture connected');
+});
+socket.on('disconnect', function (data) {
+	console.log(data + " has been eliminated");
+	$("#" + data).remove();
 
-		});
+});
 
-		socket.on('joinLecture', function (data) {
-			console.log('KAISquare Lecture ' + data + " has been connected.");
+socket.on('joinLecture', function (data) {
+	console.log('KAISquare Lecture ' + data + " has been connected.");
 
-		});
-		socket.on('receiveMessage', function (data) {
+});
+socket.on('receiveMessage', function (data) {
 			//console.log(data.message);
 
 			if (data.type == 'chat')
@@ -444,7 +440,7 @@ define(['angular',
 				$scope.q_log += 1;
 		});
 
-	});
+});
 
 }])
 .directive('lappRtclecture', function () {
@@ -1026,147 +1022,165 @@ define(['angular',
                 }
             }
         }])
-    */
-	;
+*/
+;
 
-	angular.module('lapp.controller')
-    .controller('QuizQuestionCtrl',
-        ['$rootScope', '$scope', '$location', '$modal', '$modalInstance', 'Course', 'Lecture', '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', function ($rootScope, $scope, $location, $modal, $modalInstance, Course, Lecture, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl) {
-        	$scope.quizChoice = [{ number: '1', text: '' }, { number: '2', text: '' }];
-        	$scope.quizType = [{ type: 'O/X', value: 'ox' },
-            { type: 'Multiple', value: 'multiple' },
-            { type: 'Short Answer', value: 'short' }];
-        	$scope.quiz = {
-        		question: '',
-        		type: 'ox',
-        	}
-        	$scope.lecture = lecture;
-        	$scope.sendQuiz = function () {
-        		//if (thisUserCtrl != "8") return;
+angular.module('lapp.controller')
+.controller('QuizQuestionCtrl',
+	['$rootScope', '$scope', '$location', '$modal', '$modalInstance', 'Course', 'Lecture', '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', function ($rootScope, $scope, $location, $modal, $modalInstance, Course, Lecture, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl) {
+		$scope.quizChoice = [{ number: '1', text: '' }, { number: '2', text: '' }];
+		$scope.quizType = [{ type: 'O/X', value: 'ox' },
+		{ type: 'Multiple', value: 'multiple' },
+		{ type: 'Short Answer', value: 'short' }];
+		$scope.quiz = {
+			question: '',
+			type: 'ox',
+		}
+		$scope.lecture = lecture;
+		$scope.sendQuiz = function () {
+				//if (thisUserCtrl != "8") return;
 
-        		var data = $scope.quiz;
+				var data = $scope.quiz;
 
-        		if (data.type == "ox")
-        			data.choice = [{ number: '1', text: 'O' }, { number: '2', text: 'X' }];
-        		else if (data.type == "short")
-        			data.choice = [{ number: '1', text: '' }];
-        		else if (data.type == "multiple")
-        			data.choice = $scope.quizChoice;
-        		//console.log($scope);
-        		data.src = user._id;
-        		data.lectureId = lecture._id;
-        		data.courseId = course._id;
+				if (data.type == "ox")
+					data.choice = [{ number: '1', text: 'O' }, { number: '2', text: 'X' }];
+				else if (data.type == "short")
+					data.choice = [{ number: '1', text: '' }];
+				else if (data.type == "multiple")
+					data.choice = $scope.quizChoice;
+				//console.log($scope);
+				data.src = user._id;
+				data.lectureId = lecture._id;
+				data.courseId = course._id;
 
-        		$modalInstance.close($scope.quiz.question);
-        		socket.emit('sendQuiz', data);
-        	}
-        	$scope.cancel = function () {
-        		$modalInstance.dismiss('cancel');
-        	};
-        	$scope.addChoice = function () {
-        		var quizChoice = $scope.quizChoice;
-        		if (quizChoice.length > 3) return;
-        		var l = quizChoice.length + 1;
-        		quizChoice.push({ number: l, text: '' });
-        	}
-        	$scope.delChoice = function (number) {
-        		var quizChoice = $scope.quizChoice;
-        		if (quizChoice.length < 3) return;
-        		for (var i = number; i < quizChoice.length; i++) {
-        			quizChoice[i].number--;
-        		}
-        		quizChoice.splice(number - 1, 1);
-        	}
-        }]);
-
-
-	angular.module('lapp.controller')
-    .controller('RaiseQuestionCtrl',
-        ['$rootScope', '$scope', '$location', '$modal', '$modalInstance', 'Course', 'Lecture', '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', '$fileUploader', 'XSRF_TOKEN', '$http', function ($rootScope, $scope, $location, $modal, $modalInstance, Course, Lecture, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl, $fileUploader, csrf_token, $http) {
-
-        	//TODO : Send question to server, receive function for lecturere
-        	//Refer QuizQuestionCtrl
-        	$scope.question = {
-        		text: '',
-        	}
-
-        	//File uploader
-        	var uploader = $scope.uploader = $fileUploader.create({
-        		scope: $scope,                          // to automatically update the html. Default: $rootScope
-        		url: '/fileUpload',
-        		formData: [
-                { key: 'value' }
-        		],
-        		headers:
-                {
-                	'X-CSRF-TOKEN': csrf_token
-                },
-
-        		filters: [
-                        function (item) {                    // first user filter
-                        	console.info('File extension Filter');
-                        	//TODO : Filter
-                        }
-        		]
-        	});
-
-        	uploader.bind('afteraddingfile', function (event, item) {
-        		console.info('After adding a file', item);
-        	});
-
-        	uploader.bind('whenaddingfilefailed', function (event, item) {
-        		console.info('When adding a file failed', item);
-        	});
-
-        	uploader.bind('afteraddingall', function (event, items) {
-        		console.info('After adding all files', items);
-        	});
-
-        	uploader.bind('beforeupload', function (event, item) {
-        		console.info('Before upload', item);
-        	});
-
-        	uploader.bind('progress', function (event, item, progress) {
-        		//console.info('Progress: ' + progress, item);
-        	});
-
-        	uploader.bind('success', function (event, xhr, item, response) {
-        		console.info('Success', xhr, item, response);
-        	});
-
-        	uploader.bind('cancel', function (event, xhr, item) {
-        		console.info('Cancel', xhr, item);
-        	});
-
-        	uploader.bind('error', function (event, xhr, item, response) {
-        		console.info('Error', xhr, item, response);
-        	});
-
-        	uploader.bind('complete', function (event, xhr, item, response) {
-        		console.info('Complete', xhr, item, response);
-        		console.log(item);
-        		var base_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/temp/";
-        		//        $scope.lecture.vod_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/temp/" + item.file.name;
-        		console.log($location.$$absUrl + " " + $location.$$url);
+				$modalInstance.close($scope.quiz.question);
+				socket.emit('sendQuiz', data);
+			}
+			$scope.cancel = function () {
+				$modalInstance.dismiss('cancel');
+			};
+			$scope.addChoice = function () {
+				var quizChoice = $scope.quizChoice;
+				if (quizChoice.length > 3) return;
+				var l = quizChoice.length + 1;
+				quizChoice.push({ number: l, text: '' });
+			}
+			$scope.delChoice = function (number) {
+				var quizChoice = $scope.quizChoice;
+				if (quizChoice.length < 3) return;
+				for (var i = number; i < quizChoice.length; i++) {
+					quizChoice[i].number--;
+				}
+				quizChoice.splice(number - 1, 1);
+			}
+		}]);
 
 
-        	});
+angular.module('lapp.controller')
+.controller('RaiseQuestionCtrl',
+	['$rootScope', '$scope', '$location', '$modal', '$modalInstance', 'Course', 'Lecture', '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', '$fileUploader', 'XSRF_TOKEN', '$http', function ($rootScope, $scope, $location, $modal, $modalInstance, Course, Lecture, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl, $fileUploader, csrf_token, $http) {
 
-        	uploader.bind('progressall', function (event, progress) {
-        		//console.info('Total progress: ' + progress);
-        	});
+			//TODO : Send question to server, receive function for lecturere
+			//Refer QuizQuestionCtrl
+			$scope.question = {
+				text: '',
+			}
+
+			//File uploader
+			var uploader = $scope.uploader = $fileUploader.create({
+				scope: $scope,                          // to automatically update the html. Default: $rootScope
+				url: '/fileUpload',
+				formData: [
+				{ key: 'value' }
+				],
+				headers:
+				{
+					'X-CSRF-TOKEN': csrf_token
+				},
+
+				filters: [
+					function (item) {                    // first user filter
+						console.info('File extension Filter');
+						//TODO : Filter
+					}
+					]
+				});
+
+			uploader.bind('afteraddingfile', function (event, item) {
+				console.info('After adding a file', item);
+			});
+
+			uploader.bind('whenaddingfilefailed', function (event, item) {
+				console.info('When adding a file failed', item);
+			});
+
+			uploader.bind('afteraddingall', function (event, items) {
+				console.info('After adding all files', items);
+			});
+
+			uploader.bind('beforeupload', function (event, item) {
+				console.info('Before upload', item);
+			});
+
+			uploader.bind('progress', function (event, item, progress) {
+				//console.info('Progress: ' + progress, item);
+			});
+
+			uploader.bind('success', function (event, xhr, item, response) {
+				console.info('Success', xhr, item, response);
+			});
+
+			uploader.bind('cancel', function (event, xhr, item) {
+				console.info('Cancel', xhr, item);
+			});
+
+			uploader.bind('error', function (event, xhr, item, response) {
+				console.info('Error', xhr, item, response);
+			});
+
+			uploader.bind('complete', function (event, xhr, item, response) {
+				console.info('Complete', xhr, item, response);
+				console.log(item);
+				var base_url = $location.$$absUrl.replace($location.$$url, "") + "public/uploads/";
+				//        $scope.lecture.vod_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/temp/" + item.file.name;
+				console.log($location.$$absUrl + " " + $location.$$url);
 
 
-        	$scope.lecture = lecture;
-        	$scope.raiseQuestion = function () {
-        		//TODO : send file
+			});
 
-        		$modalInstance.close($scope.question);
-        	}
-        	$scope.cancel = function () {
-        		$modalInstance.dismiss('cancel');
-        	};
+			uploader.bind('progressall', function (event, progress) {
+				//console.info('Total progress: ' + progress);
+			});
 
-        }]);
+			$scope.record_question = function () {
+				console.log('test');
+				if(typeof $scope.question.recorder === 'undefined') {
+					getUserMedia({ video: {mandatory: {
+						minWidth: 640,
+						minHeight: 480
+					}}, audio: true }, function handleUserMedia(stream) {
+						var question_recorder = $scope.question.recorder = new Recorder(stream, { gid: lecture._id, uid: user._id });
+						question_recorder.onRecordCompleted = function (href) {
+							$scope.question.audio = href;
+						}
+						question_recorder.start();
+					}, function () { alert('error'); });
+				}
+				else {
+					$scope.question.recorder.stop();
+				}
+			};
+
+			$scope.lecture = lecture;
+			$scope.raiseQuestion = function () {
+				//TODO : send file
+				alert($scope.question.text + " "+ $scope.question.audio);
+				$modalInstance.close($scope.question);
+			}
+			$scope.cancel = function () {
+				$modalInstance.dismiss('cancel');
+			};
+
+		}]);
 
 });

@@ -58,13 +58,7 @@ module.exports = {
 			socket.on('record', function (data) {
 				ffmpeg_finished = false;
 				var date = new Date();
-				var fileName = 'gid_' + data.info.gid + '_uid_' + data.info.uid + '_';
-				fileName += date.getFullYear() + '-';
-				fileName += ("0" + (date.getMonth() + 1)).slice(-2) + '-';
-				fileName += ("0" + date.getDate()).slice(-2) + '_';
-				fileName += date.getHours() + '_';
-				fileName += date.getMinutes() + '_';
-				fileName += date.getSeconds();
+				var fileName = 'gid_' + data.info.gid + '_uid_' + data.info.uid + '_' +date.getDate();
 				data['videoName'] = fileName + '.webm';
 				data['audioName'] = fileName + '.' + data.audio.type.split('/')[1];
 

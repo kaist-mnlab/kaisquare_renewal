@@ -63,7 +63,7 @@ Recorder.prototype = {
         // stop audio recorder
         !this.recordVideoSeparately && recordAudio.stopRecording(function () {
             // get audio data-URL
-            recordAudio.getDataURL(function (audioDataURL) {
+            recorder.recordAudio.getDataURL(function (audioDataURL) {
                 var files = {
                     audio: {
                         //name: fileName + '.webm',
