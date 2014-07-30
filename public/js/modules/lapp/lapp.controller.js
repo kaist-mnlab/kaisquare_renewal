@@ -87,27 +87,27 @@ define(['angular',
 	'rtcCtrl/recorder', 'rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session', "https://www.webrtc-experiment.com/RecordRTC.js",
 	'chart', 'angular-google-chart',
 	'/socket.io/socket.io.js',
-	], function (angular) {
-		angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart'])
+], function (angular) {
+	angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart'])
 //app
 .controller('LectureAppCtrl',
-	['$rootScope', '$scope', '$location', '$modal', 'Course', 'Lecture', '$stateParams', '$sce', 'socket', 'security', '$compile', function ($rootScope, $scope, $location, $modal, Course, Lecture, $stateParams, $sce, socket, security, $compile) {
-		$scope.location = $location;
-		$scope.user = security.user;
-		if ($scope.user._id == "")
-			$scope.user.username = "No Name";
-		$scope.lectureId = $stateParams.lectureId;
-		$scope.lecture = Lecture.get({ lectureId: $stateParams.lectureId });
-		$scope.chat_log = [];
-		$scope.chat_message = "";
-		$scope.course = null;
-		$scope.thisUserCtrl = -1;
+['$rootScope', '$scope', '$location', '$modal', 'Course', 'Lecture', '$stateParams', '$sce', 'socket', 'security', '$compile', function ($rootScope, $scope, $location, $modal, Course, Lecture, $stateParams, $sce, socket, security, $compile) {
+	$scope.location = $location;
+	$scope.user = security.user;
+	if ($scope.user._id == "")
+		$scope.user.username = "No Name";
+	$scope.lectureId = $stateParams.lectureId;
+	$scope.lecture = Lecture.get({ lectureId: $stateParams.lectureId });
+	$scope.chat_log = [];
+	$scope.chat_message = "";
+	$scope.course = null;
+	$scope.thisUserCtrl = -1;
 
-		$scope.isMobile = (navigator.userAgent.match("Android") || navigator.userAgent.match("iPhone")) ? 1 : 0;
+	$scope.isMobile = (navigator.userAgent.match("Android") || navigator.userAgent.match("iPhone")) ? 1 : 0;
 
-		$scope.socket = socket;
-		$scope.currentTime = 0;
-		$scope.duration = 0;
+	$scope.socket = socket;
+	$scope.currentTime = 0;
+	$scope.duration = 0;
 
 	// Q variable
 	$scope.q_log = 0;
@@ -117,6 +117,7 @@ define(['angular',
 	// Attendance
 	$scope.attendance = [];
 
+	$scope.question_list = [{text:'a', image:'b', audio:'c'}];
 
 	$scope.trustSrc = function (src) {
 		return $sce.trustAsResourceUrl(src);
@@ -156,16 +157,16 @@ define(['angular',
 					$scope.thisUserCtrl = $scope.course.users[u].role_bitMask;
 					break;
 				}
-				if ($scope.thisUserCtrl != "8") {
-					$("#q").hide();
-					$("#whiteboard").attr('width', '250px');
-					$("#whiteboard").attr('height', '280px');
-					$("#right_twit").css('width', '230px');
-				}
-				$("#quizStatArea").hide();
+			if ($scope.thisUserCtrl != "8") {
+				$("#q").hide();
+				$("#whiteboard").attr('width', '250px');
+				$("#whiteboard").attr('height', '280px');
+				$("#right_twit").css('width', '230px');
+			}
+			$("#quizStatArea").hide();
 
-				socket.emit('requestLecture', { lectureId: $scope.lecture._id, userId: $scope.user._id, username: $scope.user.username });
-			});
+			socket.emit('requestLecture', { lectureId: $scope.lecture._id, userId: $scope.user._id, username: $scope.user.username });
+		});
 
 		socket.on('initQnChat', function (qs, cs) {
 			for (var i in cs) {
@@ -198,7 +199,6 @@ define(['angular',
 			$scope.stopwatch.setTime(s, l);
 
 			$scope.stopwatch.start();
-
 		});
 
 		socket.on('pauseLecture', function (s, l) {
@@ -337,7 +337,7 @@ define(['angular',
 			});
 
 			dlg.result.then(function (question) {
-				alert(question.text);
+				
 			}, function () {
 				console.log("Dismissed");
 			});
@@ -418,20 +418,20 @@ define(['angular',
 			$scope.attendance = data;// = user;    	
 		});
 
-socket.on('connected', function () {
-	console.log('KAISquare Lecture connected');
-});
-socket.on('disconnect', function (data) {
-	console.log(data + " has been eliminated");
-	$("#" + data).remove();
+		socket.on('connected', function () {
+			console.log('KAISquare Lecture connected');
+		});
+		socket.on('disconnect', function (data) {
+			console.log(data + " has been eliminated");
+			$("#" + data).remove();
 
-});
+		});
 
-socket.on('joinLecture', function (data) {
-	console.log('KAISquare Lecture ' + data + " has been connected.");
-
-});
-socket.on('receiveMessage', function (data) {
+		socket.on('joinLecture', function (data) {
+			console.log('KAISquare Lecture ' + data + " has been connected.");
+			socket.emit('reloadQuestions');
+		});
+		socket.on('receiveMessage', function (data) {
 			//console.log(data.message);
 
 			if (data.type == 'chat')
@@ -440,7 +440,11 @@ socket.on('receiveMessage', function (data) {
 				$scope.q_log += 1;
 		});
 
-});
+		socket.on('updateQuestions', function (data) {
+			console.log(data);
+			$scope.question_list = data;
+		});
+	});
 
 }])
 .directive('lappRtclecture', function () {
@@ -466,7 +470,7 @@ socket.on('receiveMessage', function (data) {
 			getUserMedia(constraints, handleUserMedia, handleUserMediaError);
 			var videoElement = $('#local').attr({ 'width': 320, 'height': 240 }).get(0);
 			videoElement.muted = true;
-			var session, recorder;
+			var recorder;
 			function handleUserMedia(stream) {
 				//attachMediaStream($('#local').attr({'width':  640, 'height': 480}).get(0), stream);
 				//attachMediaStream($('#local').attr({'width':  320, 'height': 240}).get(0), stream);
@@ -474,13 +478,13 @@ socket.on('receiveMessage', function (data) {
 
 				//startRecording.disabled = false;
 				videoElement.src = window.URL.createObjectURL(stream);
-				recorder = window.recorder = new Recorder(stream, { gid: scope.$parent.lectureId, uid: scope.$parent.user._id });
+				recorder = new Recorder(stream, { gid: scope.$parent.lectureId, uid: scope.$parent.user._id, vidio:true });
 				recorder.onRecordCompleted = onRecordCompleted;
-				session = new CreateSession(stream, { gid: scope.$parent.lectureId, uid: scope.$parent.user._id, width: 640, height: 480, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+				scope.session = new CreateSession(stream, { gid: scope.$parent.lectureId, uid: scope.$parent.user._id, width: 640, height: 480, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
 
-				session.onSessionJoined = onSessionJoined;
-				session.onSessionClosed = onSessionClosed;
-				session.start();
+				scope.session.onSessionJoined = onSessionJoined;
+				scope.session.onSessionClosed = onSessionClosed;
+				scope.session.start();
 			};
 
 			function handleUserMediaError(error) {
@@ -552,14 +556,14 @@ socket.on('receiveMessage', function (data) {
 			getUserMedia(constraints, handleUserMedia, handleUserMediaError);
 			var session;
 			function handleUserMedia(stream) {
-				session = new JoinSession({ gid: scope.$parent.lectureId, uid: scope.$parent.user._id, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+				scope.$parent.lecture.session = session = new JoinSession({ gid: scope.$parent.lectureId, uid: scope.$parent.user._id, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
 				session.onSessionJoined = onSessionJoined;
 				session.start();
 			};
 
 			function handleUserMediaError(error) {
 				//alert('Access to lecture without media!');
-				session = new JoinSession({ gid: scope.$parent.lectureId, uid: scope.$parent.user._id, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+				scope.$parent.lecture.session = session = new JoinSession({ gid: scope.$parent.lectureId, uid: scope.$parent.user._id, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
 				session.onSessionJoined = onSessionJoined;
 				session.start();
 			};
@@ -578,8 +582,8 @@ socket.on('receiveMessage', function (data) {
 			}
 
 			$(window).bind("beforeunload", function (event) {
-				if (session != null)
-					session.close();
+				if (scope.$parent.lecture.session != null)
+					scope.$parent.lecture.session.close();
 			});
 		}
 	}
@@ -1023,21 +1027,21 @@ socket.on('receiveMessage', function (data) {
             }
         }])
 */
-;
+	;
 
-angular.module('lapp.controller')
-.controller('QuizQuestionCtrl',
-	['$rootScope', '$scope', '$location', '$modal', '$modalInstance', 'Course', 'Lecture', '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', function ($rootScope, $scope, $location, $modal, $modalInstance, Course, Lecture, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl) {
-		$scope.quizChoice = [{ number: '1', text: '' }, { number: '2', text: '' }];
-		$scope.quizType = [{ type: 'O/X', value: 'ox' },
-		{ type: 'Multiple', value: 'multiple' },
-		{ type: 'Short Answer', value: 'short' }];
-		$scope.quiz = {
-			question: '',
-			type: 'ox',
-		}
-		$scope.lecture = lecture;
-		$scope.sendQuiz = function () {
+	angular.module('lapp.controller')
+	.controller('QuizQuestionCtrl',
+		['$rootScope', '$scope', '$location', '$modal', '$modalInstance', 'Course', 'Lecture', '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', function ($rootScope, $scope, $location, $modal, $modalInstance, Course, Lecture, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl) {
+			$scope.quizChoice = [{ number: '1', text: '' }, { number: '2', text: '' }];
+			$scope.quizType = [{ type: 'O/X', value: 'ox' },
+			{ type: 'Multiple', value: 'multiple' },
+			{ type: 'Short Answer', value: 'short' }];
+			$scope.quiz = {
+				question: '',
+				type: 'ox',
+			}
+			$scope.lecture = lecture;
+			$scope.sendQuiz = function () {
 				//if (thisUserCtrl != "8") return;
 
 				var data = $scope.quiz;
@@ -1076,9 +1080,9 @@ angular.module('lapp.controller')
 		}]);
 
 
-angular.module('lapp.controller')
-.controller('RaiseQuestionCtrl',
-	['$rootScope', '$scope', '$location', '$modal', '$modalInstance', 'Course', 'Lecture', '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', '$fileUploader', 'XSRF_TOKEN', '$http', function ($rootScope, $scope, $location, $modal, $modalInstance, Course, Lecture, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl, $fileUploader, csrf_token, $http) {
+	angular.module('lapp.controller')
+	.controller('RaiseQuestionCtrl',
+		['$rootScope', '$scope', '$location', '$modal', '$modalInstance', 'Course', 'Lecture', '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', '$fileUploader', 'XSRF_TOKEN', '$http', function ($rootScope, $scope, $location, $modal, $modalInstance, Course, Lecture, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl, $fileUploader, csrf_token, $http) {
 
 			//TODO : Send question to server, receive function for lecturere
 			//Refer QuizQuestionCtrl
@@ -1102,9 +1106,10 @@ angular.module('lapp.controller')
 					function (item) {                    // first user filter
 						console.info('File extension Filter');
 						//TODO : Filter
+						return true;
 					}
-					]
-				});
+				]
+			});
 
 			uploader.bind('afteraddingfile', function (event, item) {
 				console.info('After adding a file', item);
@@ -1116,6 +1121,7 @@ angular.module('lapp.controller')
 
 			uploader.bind('afteraddingall', function (event, items) {
 				console.info('After adding all files', items);
+				uploader.uploadAll();
 			});
 
 			uploader.bind('beforeupload', function (event, item) {
@@ -1140,12 +1146,7 @@ angular.module('lapp.controller')
 
 			uploader.bind('complete', function (event, xhr, item, response) {
 				console.info('Complete', xhr, item, response);
-				console.log(item);
-				var base_url = $location.$$absUrl.replace($location.$$url, "") + "public/uploads/";
-				//        $scope.lecture.vod_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/temp/" + item.file.name;
-				console.log($location.$$absUrl + " " + $location.$$url);
-
-
+				$scope.question.image = '../uploads/temp/' + item.file.name;
 			});
 
 			uploader.bind('progressall', function (event, progress) {
@@ -1154,29 +1155,29 @@ angular.module('lapp.controller')
 
 			$scope.record_question = function () {
 				console.log('test');
-				if(typeof $scope.question.recorder === 'undefined') {
-					getUserMedia({ video: {mandatory: {
-						minWidth: 640,
-						minHeight: 480
-					}}, audio: true }, function handleUserMedia(stream) {
-						var question_recorder = $scope.question.recorder = new Recorder(stream, { gid: lecture._id, uid: user._id });
-						question_recorder.onRecordCompleted = function (href) {
-							$scope.question.audio = href;
-						}
-						question_recorder.start();
-					}, function () { alert('error'); });
+				if (typeof $scope.recorder === 'undefined') {
+				 	console.log(lecture.session);
+					$scope.recorder = new Recorder(lecture.session.localStream, { gid: lecture._id, uid: user._id, video:false});
+					$scope.recorder.start();
+					$scope.recorder.onRecordCompleted = function(href) {
+						console.log(href);
+						$scope.question.audio = href;
+					};
 				}
 				else {
-					$scope.question.recorder.stop();
+					$scope.recorder.stop();
+					console.log('stop');
 				}
 			};
 
 			$scope.lecture = lecture;
 			$scope.raiseQuestion = function () {
 				//TODO : send file
-				alert($scope.question.text + " "+ $scope.question.audio);
+				
+				socket.emit('raiseQuestion', { text: $scope.question.text, image: $scope.question.image, audio: $scope.question.audio });
 				$modalInstance.close($scope.question);
 			}
+
 			$scope.cancel = function () {
 				$modalInstance.dismiss('cancel');
 			};

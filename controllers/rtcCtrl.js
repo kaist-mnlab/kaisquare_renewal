@@ -88,9 +88,11 @@ module.exports = {
              * chrome의 경우 audio와 video가  record 시 각각 .wav와 .webm따로 생성되기때문에 이 두 element를 server에서 merge과정이 필요함.
              */
 			socket.on('record', function (data) {
+
 				ffmpeg_finished = false;
 				var date = new Date();
-				var fileName = 'gid_' + data.info.gid + '_uid_' + data.info.uid + '_' +date.getDate();
+				var fileName = 'gid_' + data.info.gid + '_uid_' + data.info.uid + '_' +date.getTime();
+				console.log(fileName);
 				data['videoName'] = fileName + '.webm';
 				data['audioName'] = fileName + '.' + data.audio.type.split('/')[1];
 

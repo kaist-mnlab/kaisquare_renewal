@@ -100,5 +100,24 @@ div#content(data-ng-switch on="thisUserCtrl")
 	#q(data-ng-switch-when="8")
 		div#q_log()
 			div#q_chart(google-chart chart="q_chart")
+		table#question_list(border="1")
+			tr.questions(ng-repeat="question in question_list", border='1px')
+				th.q_text
+					| Text Question
+				th.q_image
+					| Image Ref
+				th.q_audio
+					| Audio Question
+				th.q_user
+					| User
+			tr.questions(ng-repeat="question in question_list", border='1px')
+				td.q_text
+					| {{question.text}}
+				td.q_image
+					img(ng-src="{{question.image}}", style="width:200px; height:150px;")
+				td.q_audio
+					audio(controls, src="{{question.audio}}")
+				td.q_user
+					| {{question.userId}}
 			//canvas#chart(width="1080", height="150")
 	//div(ppt-popup style="display:none")
