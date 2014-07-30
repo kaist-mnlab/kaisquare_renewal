@@ -234,8 +234,11 @@ module.exports = {
 		});
 		socket.on('pptSave', function(log){
 			lectureObj.ppt_event_log = log;
+			var saveLectureObj = lectureObj;
+			delete saveLectureObj._id
 			
-			Lecture.findByIdAndUpdate(lectureObj._id , lectureObj, function(err, doc){
+			
+			Lecture.findByIdAndUpdate(lectureObj._id , saveLectureObj, function(err, doc){
 				if(err){
 					console.log(err);
 				}
