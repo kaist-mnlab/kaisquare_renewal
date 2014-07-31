@@ -32,6 +32,13 @@ module.exports = {
 		
 		socket.emit('connected');
 		
+		socket.on('listenLecture', function(Id){
+			console.log("listening socket joined to " + Id);
+			socket.join(Id);
+			socketRoom[socket.id] = {lectureId: Id, userId: "listener"};
+			
+		});
+		
 		socket.on('requestLecture', function(Id) {
 			var lectureId = Id.lectureId;
 			var userId = Id.userId;
@@ -40,7 +47,7 @@ module.exports = {
 			socketRoom[socket.id] = {lectureId: lectureId, userId: userId};
 			
 			if( lectures[lectureId] === undefined){
-				lectures[lectureId] = {startAt: 0, lapTime: 0, isLectureStarted: 'false', attendee: []};
+				lectures[lectureId] = {startAt: 0, lapTime: 0, duration:0, isLectureStarted: 'false', attendee: []};
 				lectures[lectureId].qs = [];
 				lectures[lectureId].cs = [];
 			}
@@ -230,17 +237,27 @@ module.exports = {
 		
 		//ppt
 		socket.on('pptEvent', function(event){
+			if(event.time < 0)
+				event.time = lectures[socketRoom[socket.id].lectureId].duration;
 			io.sockets.in(socketRoom[socket.id].lectureId).emit('pptEvent', event);
 		});
 		socket.on('pptSave', function(log){
+			
 			lectureObj.ppt_event_log = log;
 			var saveLectureObj = lectureObj;
-			delete saveLectureObj._id
+			delete saveLectureObj._id;
+			
+			console.log(saveLectureObj);
 			
 			
-			Lecture.findByIdAndUpdate(lectureObj._id , saveLectureObj, function(err, doc){
+			Lecture.findByIdAndUpdate(socketRoom[socket.id].lectureId , saveLectureObj, function(err, doc){
+				
 				if(err){
+					console.log("error!");
 					console.log(err);
+				} else {
+					console.log("save!");
+					console.log(doc)
 				}
 			});
 		});

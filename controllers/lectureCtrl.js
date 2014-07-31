@@ -51,7 +51,8 @@ module.exports = {
 							 ppt_page: reqBody.ppt_page,
 							 duration: reqBody.duration,
 							 presentation_url: reqBody.presentation_url,
-							 material_url: reqBody.material_url
+							 material_url: reqBody.material_url,
+							 ppt_event_log: reqBody.ppt_event_log,
 							 };
 		
 		console.log("lectureCtrl.create: " + req.files);

@@ -9,21 +9,23 @@ define(['angular', '/socket.io/socket.io.js'], function(angular) {
 		$scope.location = $location;
 		$scope.lectureId = $stateParams.lectureId;
 		$scope.lecture = lectureService.getLecture();
-		//$scope.lecture = Lecture.get( {lectureId: $stateParams.lectureId } );
 		$scope.user = security.user;
 		$scope.socket = socket;
-	
-	
+		$scope.stopwatch = lectureService.getStopwatch();
+		
 	}])
 
 	.directive('lappPresentation', function(){
 		return {
+			scope:false,
 			controller: function($scope, $element){
 	
 			},
 			link: function(scope, element, attrs){
 				$("#topwrapper").remove();
 				$("div.container").css({margin:0, padding:0});
+				
+				console.log(scope);
 				
 				var url = scope.location;
 				var ppt = "http://" + url.$$host + ":" + url.$$port + "/uploads/" + scope.lectureId + "/ppt/";
@@ -40,9 +42,14 @@ define(['angular', '/socket.io/socket.io.js'], function(angular) {
 				var canvas = $(element[0])[0].children[2];
 				var ctx = canvas.getContext('2d');
 				
+				var dbPPTWidth = 320;
+				var dbPPTHeight = 240;
+				
 				slide.width = canvas.width = $(window).width();
 				slide.height = canvas.height =  $(window).height()-100;
 				
+				var widthScale = slide.width/dbPPTWidth;
+				var heightScale = slide.height/dbPPTHeight;
 				
 				var slide = $(slide);
 				
@@ -54,7 +61,7 @@ define(['angular', '/socket.io/socket.io.js'], function(angular) {
 				if (maxNumber === undefined || maxNumber == 0){
 					maxNumber = 10;
 				}
-				console.log(maxNumber);
+				
 				
 				for (var i = startNumber; i < maxNumber; i++){
 					penTrace[i] = {};
@@ -124,7 +131,16 @@ define(['angular', '/socket.io/socket.io.js'], function(angular) {
 					var o = new Object();
 					o.type = "stroke";
 					o.stroke = stroke;
-					o.time = stopwatch.time();
+					
+					//stroke scaling
+					o.stroke = {lastX: o.stroke.lastX / widthScale, 
+							  lastY: o.stroke.lastY / heightScale, 
+							  currentX: o.stroke.currentX / widthScale, 
+							  currentY: o.stroke.currentY / heightScale,
+							  strokeStyle: ctx.strokeStyle};
+					
+					//o.time = stopwatch.time();
+					o.time = -1;
 					if (stroke.strokeColor == "clear"){
 						penTrace[pageNumber].clearPoint = penTrace[pageNumber].length;
 					}
@@ -139,7 +155,8 @@ define(['angular', '/socket.io/socket.io.js'], function(angular) {
 					var o = new Object();
 					o.type = "ppt";
 					o.page = page;
-					o.time = stopwatch.time();
+					//o.time = stopwatch.time();
+					o.time = -1;
 					eventTrace.push(o);
 					
 					// need to optimize
@@ -184,6 +201,7 @@ define(['angular', '/socket.io/socket.io.js'], function(angular) {
 					if (color == "clear"){
 						var stroke = {strokeStyle: color};
 						penLog(stroke);
+						
 						socket.emit('pptEvent', stroke);
 						ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 					}
@@ -227,10 +245,13 @@ define(['angular', '/socket.io/socket.io.js'], function(angular) {
 				canvas.bind('mouseout', function(event){
 					isDrawing = false;
 				});
-				
-				console.log(socket);
-				
+				socket.on('connected',function(){
+					console.log('KAISquare Lecture connected');
+					socket.emit('listenLecture',  scope.lectureId);
+			    	
+				});
 				socket.on('pptEvent', function(event){
+					//console.log("pptEvent");
 					if (event.type == "stroke"){
 						drawTrace(event.stroke);
 					}else if (event.type == "ppt"){
@@ -297,8 +318,8 @@ define(['angular', '/socket.io/socket.io.js'], function(angular) {
 						return;
 					}
 					ctx.beginPath();
-					ctx.moveTo(stroke.lastX, stroke.lastY);
-					ctx.lineTo(stroke.currentX, stroke.currentY);
+					ctx.moveTo(stroke.lastX * widthScale, stroke.lastY * heightScale);
+					ctx.lineTo(stroke.currentX * widthScale, stroke.currentY * heightScale);
 					ctx.strokeStyle = stroke.strokeStyle;
 					ctx.stroke();
 				}

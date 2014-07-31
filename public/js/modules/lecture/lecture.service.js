@@ -18,6 +18,7 @@ angular.module('lecture.service', ['ngResource', 'security'])
 	})
 	.factory('lectureService', ['$cookieStore',function($cookieStore){
 		var lecture = $cookieStore.get('currentLecture') || {};
+		var stopwatch = $cookieStore.get('stopwatch') || {};
 		//$cookieStore.remove('currentLecture');
 		return {
 			setLecture: function(l){
@@ -26,6 +27,13 @@ angular.module('lecture.service', ['ngResource', 'security'])
 			},
 			getLecture: function(){
 				return lecture;
+			},
+			setStopwatch: function(s){
+				stopwatch = s;
+				//$cookieStore.put('stopwatch', stopwatch);
+			},
+			getStopwatch: function(){
+				return stopwatch;
 			}
 		}
 		

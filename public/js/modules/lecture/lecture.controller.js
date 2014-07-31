@@ -98,6 +98,7 @@ angular.module('lecture.controller')
 		status: 0,
 		duration: 0,
 		ppt_page: 0,
+		ppt_event_log: "",
 		course: course._id,
 		vod_url: '',
 		material_url: [],
