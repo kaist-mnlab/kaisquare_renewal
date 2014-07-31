@@ -176,13 +176,18 @@ define([
 		            templateUrl: 'lecture/edit',
 		            controller: 'LectureNewCtrl'
 		        })
+		        .state('user.lapp', {
+		            url: '/lapp/:lectureId',
+		            templateUrl: 'lapp',
+		            controller: 'LectureAppCtrl'
+		        })
 		        .state('user.lapp.quiz', {
 		        	url: 'lapp/:lectureId',
 		        	templateUrl: 'lapp/quiz',
 		        	controller: 'QuizQuestionCtrl'
 		        })
-		        .state('user.lapp.ppt', {
-		        	url: 'lapp/:lectureId/ppt',
+		        .state('user.ppt', {
+		        	url: '/ppt/:lectureId',
 		        	templateUrl: 'lapp/ppt',
 		        	controller: 'PPTCtrl'
 		        })

@@ -86,12 +86,13 @@ javascript:(function(e){e.setAttribute("src","http://debug.build.phonegap.com/ta
 define(['angular',
         'rtcCtrl/recorder','rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session', "https://www.webrtc-experiment.com/RecordRTC.js", 
         'chart', 'angular-google-chart',
+		
         '/socket.io/socket.io.js',
         ], function(angular) {
 angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 //app
 .controller('LectureAppCtrl',
-['$rootScope', '$scope', '$location', '$modal', 'Course', 'Lecture','$stateParams','$sce','socket','security','$compile', function($rootScope, $scope, $location, $modal, Course, Lecture,$stateParams, $sce, socket, security, $compile) {
+['$rootScope', '$scope', '$location', '$modal', 'Course', 'Lecture','$stateParams','$sce','socket','security','$compile','lectureService', function($rootScope, $scope, $location, $modal, Course, Lecture,$stateParams, $sce, socket, security, $compile, lectureService) {
 	$scope.location = $location;
 	$scope.user = security.user;
 	if($scope.user._id == "")
@@ -105,7 +106,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 	$scope.thisUserCtrl = 0;
 	
 	$scope.isMobile = 0;
-	
+
 	$scope.socket = socket;
 	$scope.currentTime = 0;
 	$scope.duration = 0;
@@ -143,6 +144,8 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 	});
 		
     $scope.lecture.$promise.then( function() {
+    	lectureService.setLecture($scope.lecture);
+    	console.log(lectureService.getLecture());
     	Stopwatch.text = ($('#timer'));
     	$scope.stopwatch = Stopwatch;
     	$scope.stopwatch.init(socket);
@@ -247,7 +250,26 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			$("#lecture_start").attr("disabled", true);
 			$("#lecture_stop").attr("disabled", false);
 			
+			//Let's pop it up
+			
+			//Checking if presentation is ready or not
+			var isPPTReady = true;
+			var winObj;
+			var ppt_url = $location.$$absUrl.replace("lapp", "ppt");
+			var popup_name = "Slides";
+			var specs = "fullscreen=yes, menubar=no, status=no, titlebar=no, location=no";
+			
+			//Popup window location and size modulation
+			
+			
+			if(isPPTReady) {
+			
+				winObj = window.open( ppt_url, popup_name , specs);
+				winObj.focus();
+				
+			}
 			$scope.presentationReset();
+			
 			
 		};
 		
@@ -898,6 +920,8 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 				isDrawing = false;
 			});
 			
+			console.log(socket);
+			
 			socket.on('pptEvent', function(event){
 				if (event.type == "stroke"){
 					drawTrace(event.stroke);
@@ -1055,7 +1079,6 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 		}
 	}
 })
-/*
 .directive('pptPopup', function(){
 	return {
 		restirct: 'EA',
@@ -1065,13 +1088,14 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			});
 		},
 		controller: function($scope, $element){
-			$scope.window = $window.open('', '_blank');
+			var ppt_url = $location.$$absUrl.replace("lapp", "ppt");
+			$scope.window = $window.open(ppt_url, '_blank');
 			angular.element($scope.window.document.body)
 				   .append($compile($element.contents())($scope));
 		}
 	}
 })
-*/
+
 
 ;
 
@@ -1126,8 +1150,15 @@ angular.module('lapp.controller')
 
 angular.module('lapp.controller')
 .controller('PPTCtrl', 
-[function(){
-	
+[ '$scope', '$stateParams', '$location', 'Lecture','lectureService','socket','security', function($scope,$stateParams,$location, Lecture, lectureService,socket, security){
+	$("#topwrapper").remove();
+	$scope.location = $location;
+	$scope.lectureId = $stateParams.lectureId;
+	$scope.lecture = Lecture.get( {lectureId: $stateParams.lectureId } );
+	$scope.user = security.user;
+	$scope.socket = socket;
+
+
 }]);
 		
 });

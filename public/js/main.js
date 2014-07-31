@@ -78,6 +78,9 @@ requirejs.config({
 		'bootstrap':{
 			deps:['jquery'],
 		},
+		'jquery-popup': {
+			deps: ['jquery'] 
+		},
 	}
 });
 
@@ -88,7 +91,7 @@ requirejs( [
 		'jquery', 
 		'angular', 
 		'jquery-ui',
-
+		
 		'angular-resource',
 		'angular-route',
 		'angular-cookies',

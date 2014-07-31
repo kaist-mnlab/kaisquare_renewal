@@ -18,7 +18,7 @@ html(lang='en')
 			}				        
 
 	body(data-ng-cloak)
-		.top-wrapper
+		div#topwrapper.top-wrapper
 			.navbar(data-ng-controller="NavCtrl")
 				.navbar-header
 					a.navbar-brand(href='/')
@@ -55,7 +55,6 @@ html(lang='en')
 		.container(data-ui-view)
 
 		script(data-main='/js/main' src='/lib/require/require.js')
-		//script(src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js')  
 		// Partial views... Load up front to make transitions smoother
 		script(type="text/ng-template", id="404")
 			include partials/404
