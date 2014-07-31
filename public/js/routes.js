@@ -28,7 +28,7 @@ define([
 		        })
 		        .state('public.lapp', {
 		            url: '/lapp/:lectureId',
-		            templateUrl: 'lapp',
+		            templateUrl: '/partials/lapp',
 		            controller: 'LectureAppCtrl'
 		        })
 		        .state('public.home', {
@@ -39,21 +39,6 @@ define([
 		            url: '/introduction',
 		            templateUrl: 'introduction',
 		        })
-		        .state('public.polls', {
-		            url: '/polls/',
-		            templateUrl: 'poll/list',
-		            controller: 'PollListCtrl'
-		        })
-		        .state('public.new', {
-		            url: '/polls/new',
-		            templateUrl: 'poll/new',
-		            controller: 'PollNewCtrl'
-		        })
-		        .state('public.poll', {
-		            url: '/polls/poll/:pollId',
-		            templateUrl: 'poll/item',
-		            controller: 'PollItemCtrl'
-		        })
 		        .state('public.courses', {
 		        	abstract: true,
 		            url: '/courses/',
@@ -62,12 +47,12 @@ define([
 		        })
 		        .state('public.courses.index', {
 		            url: '',
-		            templateUrl: 'course/index',
+		            templateUrl: '/partials/course/index',
 		            controller: 'CourseListCtrl'
 		        })
 		        .state('public.courses.show', {
 		            url: 'course/:courseId',
-		            templateUrl: 'course/show',
+		            templateUrl: '/partials/course/show',
 		            controller: 'CourseItemCtrl'
 		        })
 		        .state('public.lectures', {
@@ -78,7 +63,7 @@ define([
 		        })
 		        .state('public.lectures.index', {
 		            url: '',
-		            templateUrl: 'lecture/index',
+		            templateUrl: '/partials/lecture/index',
 		            controller: 'LectureListCtrl'
 		        })
 		        .state('public.lectures.show', {
@@ -151,44 +136,44 @@ define([
 		        })
 		        .state('user.courses.new', {
 		            url: 'new/',
-		            templateUrl: 'course/new',
+		            templateUrl: '/partials/course/new',
 		            controller: 'CourseNewCtrl'
 		        })
 		        .state('user.courses.edit', {
 		            url: 'course/:courseId/edit',
-		            templateUrl: 'course/edit',
+		            templateUrl: '/partials/course/edit',
 		            controller: 'CourseNewCtrl'
 		        })
 		        .state('user.lectures', {
 		        	abstract: true,
 		            url: '/lectures/',
 		            //url: '/lectures/new',
-		            templateUrl: 'lecture/layout',
+		            templateUrl: '/partials/lecture/layout',
 		            //controller: 'CourseListCtrl'
 		        })
 		        .state('user.lectures.new', {
 		            url: 'new/',
-		            templateUrl: 'lecture/new',
+		            templateUrl: '/partials/lecture/new',
 		            controller: 'LectureNewCtrl'
 		        })
 		        .state('user.lectures.edit', {
 		            url: 'lecture/:lectureId/edit',
-		            templateUrl: 'lecture/edit',
+		            templateUrl: '/partials/lecture/edit',
 		            controller: 'LectureNewCtrl'
 		        })
 		        .state('user.lapp', {
 		            url: '/lapp/:lectureId',
-		            templateUrl: 'lapp',
+		            templateUrl: '/partials/lapp',
 		            controller: 'LectureAppCtrl'
 		        })
 		        .state('user.lapp.quiz', {
 		        	url: 'lapp/:lectureId',
-		        	templateUrl: 'lapp/quiz',
+		        	templateUrl: '/partials/lapp/quiz',
 		        	controller: 'QuizQuestionCtrl'
 		        })
 		        .state('user.ppt', {
 		        	url: '/ppt/:lectureId',
-		        	templateUrl: 'lapp/ppt',
+		        	templateUrl: '/partials/lapp/ppt',
 		        	controller: 'PPTCtrl'
 		        })
 		        
