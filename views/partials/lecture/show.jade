@@ -4,7 +4,7 @@
 .modal-body
 	div.lectureinfo
 		div.lecturethumb
-			img.thumbnail(src="/thumb/{{lecture.title}}.jpg")
+			img.thumbnail(fallback-src="/thumb/KAIST.jpg", src="/thumb/{{lecture.title}}.jpg")
 		div.atglance.well
 			p.atglancetitle
 				| Lecture At Glance
@@ -27,15 +27,15 @@
 					strong(data-ng-switch-when="0")
 						span.glyphicon.glyphicon-play-circle
 						|   VoD
-						br
-						| {{lecture.vod_url}}    
+						//br
+						//| {{lecture.vod_url}}    
 .modal-footer
 	.lecturedetail.well(data-ng-controller="CourseItemCtrl", data-ng-switch="lecture.status")
 		a.btn.btn-warning(data-ng-click="launchEdit()", data-course-access-level='courseAccessLevels.tutor')
 			i.icon-edit.icon-white Edit
 		a.btn.btn-danger(type='submit', data-ng-click='deleteLecture()', data-course-access-level='courseAccessLevels.tutor')
 			i.icon-remove.icon-white Delete
-		a.btn.btn-primary(data-ng-click="view()", data-course-access-level='courseAccessLevels.tutor', data-ng-switch-when="1")
-			i.icon-edit.icon-white Start Lecture
+		//a.btn.btn-primary(data-ng-click="view()", data-course-access-level='courseAccessLevels.tutor', data-ng-switch-when="1")
+		//	i.icon-edit.icon-white Start Lecture
 		a.btn.btn-success(data-ng-click="view()", data-course-access-level='courseAccessLevels.public')
 			i.icon-edit.icon-white View

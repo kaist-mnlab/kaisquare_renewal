@@ -18,7 +18,7 @@ div(data-ng-switch="lectures.length")
 		div.lecturedesc.post.content.well
 			a(data-ng-click="launchLecture(lecture._id)")
 				//img.thumbnail(src="/thumb/{{$index+1}}.jpg")
-				img.lecture.thumbnail(src="/thumb/{{lecture.title}}.jpg")
+				img.lecture.thumbnail(fallback-src="/thumb/KAIST.jpg",src="/thumb/{{lecture.title}}.jpg")
 			div.well.lecturedesc.post-desc
 				p.content.title
 					a(data-ng-click="launchLecture(lecture._id)")

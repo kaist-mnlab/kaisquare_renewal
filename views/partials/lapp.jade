@@ -80,7 +80,7 @@ div#content(data-ng-switch="thisUserCtrl")
 		div#kaisqr_presentation(lapp-presentation data-ng-switch="thisUserCtrl")
 			label
 				| PPT
-			img#slide(width="320px" height="240px")
+			img#slide(width="320px", height="240px", fallback-src="/thumb/KAIST.jpg")
 			canvas#slide_pen(width="320px" height="240px")
 			div#presentation_controller(data-ng-switch-when="8")
 				i.fa.fa-arrow-circle-left.fa-3x(ng-click="moveLeft()")

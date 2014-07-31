@@ -2,7 +2,7 @@
 div
 	div#popup_slide(lapp-presentation, data-ng-switch="thisUserCtrl")
 		div
-		img#slide(width="320px", height="240px")
+		img#slide(width="320px", height="240px", fallback-src="/thumb/KAIST.jpg",  data-ng-src)
 		canvas#slide_pen(width="320px" height="240px")
 		div#presentation_controller
 			i.fa.fa-arrow-circle-left.fa-3x(ng-click="moveLeft()")

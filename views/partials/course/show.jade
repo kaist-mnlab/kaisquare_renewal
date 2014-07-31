@@ -17,7 +17,7 @@ accordion(close-others="false")
 	accordion-group(heading="Information", is-open="true")
 		div.lectureinfo
 			div.lecturethumb.floatleft
-				img.thumbnail(src="/thumb/{{course.title}}.jpg")
+				img.thumbnail(fallback-src="/thumb/KAIST.jpg",src="/thumb/{{course.title}}.jpg")
 			div.atglance.well.floatleft
 				p.atglancetitle
 					| Course At Glance

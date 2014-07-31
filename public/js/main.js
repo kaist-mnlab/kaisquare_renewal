@@ -118,8 +118,9 @@ requirejs( [
 		
 	     require(['domReady!'], function (document) {
 	    	 try {
-	    	        // Wrap this call to try/catch
+	    	     
 	    		 angular.bootstrap(document, ['kaisquare']);
+	    		 
 	    	 }
 	    	 catch (e) {
 	    	     console.error(e.stack || e.message || e);

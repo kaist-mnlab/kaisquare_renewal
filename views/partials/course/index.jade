@@ -18,7 +18,7 @@ div(data-ng-switch="courses.length")
 		div.post.content.well
 			a(href="/courses/course/{{course._id}}")
 				//img.thumbnail(src="/thumb/{{$index+1}}.jpg")
-				img.course.thumbnail(src="/thumb/{{course.title}}.jpg")
+				img.course.thumbnail(fallback-src="/thumb/KAIST.jpg",src="/thumb/{{course.title}}.jpg")
 			div.well.post-desc
 				p.content.title
 					a(href="/courses/course/{{course._id}}")
