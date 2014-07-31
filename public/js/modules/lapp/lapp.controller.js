@@ -541,7 +541,7 @@ angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart' ])
 			var session;
 
 			function handleUserMedia(stream) {
-				attachMediaStream($('#local').get(0), stream);
+				//attachMediaStream($('#local').get(0), stream);
 				session = new JoinSession({ gid: scope.$parent.lectureId, uid: scope.$parent.user._id, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
 				session.onSessionJoined = onSessionJoined;
 			    session.start();
