@@ -119,6 +119,8 @@ define(['angular',
 
 	$scope.question_list = [{text:'a', image:'b', audio:'c'}];
 
+	$scope.session = {};
+
 	$scope.trustSrc = function (src) {
 		return $sce.trustAsResourceUrl(src);
 	}
@@ -332,6 +334,9 @@ define(['angular',
 					},
 					user: function () {
 						return $scope.user;
+					}, 
+					session: function () {
+						return $scope.session;
 					}
 				}
 			});
@@ -547,7 +552,7 @@ define(['angular',
 			var constraints = {
 				video: {
 					mandatory: {
-						minWidth: 640,
+						minWidth: 720,
 						minHeight: 480
 					}
 				},
@@ -556,14 +561,14 @@ define(['angular',
 			getUserMedia(constraints, handleUserMedia, handleUserMediaError);
 			var session;
 			function handleUserMedia(stream) {
-				scope.$parent.lecture.session = session = new JoinSession({ gid: scope.$parent.lectureId, uid: scope.$parent.user._id, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+				scope.$parent.session.session = session = new JoinSession({ gid: scope.$parent.lectureId, uid: scope.$parent.user._id, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
 				session.onSessionJoined = onSessionJoined;
 				session.start();
 			};
 
 			function handleUserMediaError(error) {
 				//alert('Access to lecture without media!');
-				scope.$parent.lecture.session = session = new JoinSession({ gid: scope.$parent.lectureId, uid: scope.$parent.user._id, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+				scope.$parent.session.session = session = new JoinSession({ gid: scope.$parent.lectureId, uid: scope.$parent.user._id, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
 				session.onSessionJoined = onSessionJoined;
 				session.start();
 			};
@@ -582,8 +587,8 @@ define(['angular',
 			}
 
 			$(window).bind("beforeunload", function (event) {
-				if (scope.$parent.lecture.session != null)
-					scope.$parent.lecture.session.close();
+				if (session != null)
+					session.close();
 			});
 		}
 	}
@@ -1082,7 +1087,7 @@ define(['angular',
 
 	angular.module('lapp.controller')
 	.controller('RaiseQuestionCtrl',
-		['$rootScope', '$scope', '$location', '$modal', '$modalInstance', 'Course', 'Lecture', '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', '$fileUploader', 'XSRF_TOKEN', '$http', function ($rootScope, $scope, $location, $modal, $modalInstance, Course, Lecture, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl, $fileUploader, csrf_token, $http) {
+		['$rootScope', '$scope', '$location', '$modal', '$modalInstance', 'Course', 'Lecture', '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', '$fileUploader', 'XSRF_TOKEN', '$http', 'session', function ($rootScope, $scope, $location, $modal, $modalInstance, Course, Lecture, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl, $fileUploader, csrf_token, $http, session) {
 
 			//TODO : Send question to server, receive function for lecturere
 			//Refer QuizQuestionCtrl
@@ -1156,8 +1161,8 @@ define(['angular',
 			$scope.record_question = function () {
 				console.log('test');
 				if (typeof $scope.recorder === 'undefined') {
-				 	console.log(lecture.session);
-					$scope.recorder = new Recorder(lecture.session.localStream, { gid: lecture._id, uid: user._id, video:false});
+				 	console.log(session.session);
+					$scope.recorder = new Recorder(session.session.localStream, { gid: lecture._id, uid: user._id, video:false});
 					$scope.recorder.start();
 					$scope.recorder.onRecordCompleted = function(href) {
 						console.log(href);
