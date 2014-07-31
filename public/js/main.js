@@ -16,6 +16,7 @@ requirejs.config({
 		'angular-ui-bootstrap':'../lib/angular/ui-bootstrap-tpls-0.10.0.min',
 		'angular-file-upload':'../lib/angular/angular-file-upload.min',
 		'library': '../lib',
+		'ocLazyLoad': '../lib/ocLazyLoad',
 		
 		'poll': 'modules/poll',
 		'security': 'modules/security',
@@ -65,9 +66,7 @@ requirejs.config({
 			deps:['jquery'],
 			exports:'accessConfig'
 		},
-		'app':{
-			deps:['angular']
-		},
+		
 		'auth':{
 			deps:['angular']
 		},
@@ -81,16 +80,23 @@ requirejs.config({
 		'jquery-popup': {
 			deps: ['jquery'] 
 		},
+		'ocLazyLoad': ['angular'],
+		'app':{
+			deps:['ocLazyLoad']
+		},
+		'lapp': ['course', 'lecture'],
 	}
 });
 
 
 
 requirejs( [
+            
 		'text', 
 		'jquery', 
 		'angular', 
 		'jquery-ui',
+		'app',
 		
 		'angular-resource',
 		'angular-route',
@@ -98,9 +104,12 @@ requirejs( [
 		'angular-ui-router',
 		'angular-ui-bootstrap',
 		'angular-file-upload',
-		'app',
+		
 		'routes',
+		'ocLazyLoad',
 		'bootstrap',
+	
+       
 	],
 
 	function (text, $, angular) {

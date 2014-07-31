@@ -24,19 +24,5 @@ angular.module('lapp.service', ['ngResource'])
 	    }
 		};
 	})
-	.factory('lectureService', function(){
-		var lecture = {};
-		
-		return {
-			getLecture: function(){
-				return lecture;
-			},
-			setLecture: function(l){
-				lecture = l;
-				console.log(l);
-			}
-			
-		}
-	});
 	
 });

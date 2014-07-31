@@ -20,7 +20,7 @@
 					| {{lecture.date}}
 
 			p
-				div(data-ng-switch on="lecture.status")
+				div(data-ng-switch="lecture.status")
 					strong(data-ng-switch-when="1")
 						span.glyphicon.glyphicon-facetime-video
 						|   Live
@@ -30,7 +30,7 @@
 						br
 						| {{lecture.vod_url}}    
 .modal-footer
-	.lecturedetail.well(data-ng-controller="CourseItemCtrl", data-ng-switch on="lecture.status")
+	.lecturedetail.well(data-ng-controller="CourseItemCtrl", data-ng-switch="lecture.status")
 		a.btn.btn-warning(data-ng-click="launchEdit()", data-course-access-level='courseAccessLevels.tutor')
 			i.icon-edit.icon-white Edit
 		a.btn.btn-danger(type='submit', data-ng-click='deleteLecture()', data-course-access-level='courseAccessLevels.tutor')

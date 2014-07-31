@@ -15,7 +15,22 @@ angular.module('lecture.service', ['ngResource', 'security'])
 	
 		
 		
-	});
+	})
+	.factory('lectureService', ['$cookieStore',function($cookieStore){
+		var lecture = $cookieStore.get('currentLecture') || {};
+		//$cookieStore.remove('currentLecture');
+		return {
+			setLecture: function(l){
+				lecture = l;
+				$cookieStore.put('currentLecture', lecture);
+			},
+			getLecture: function(){
+				return lecture;
+			}
+		}
+		
+		
+	}]);
 	
 	
 	

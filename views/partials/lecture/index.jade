@@ -11,7 +11,7 @@
 	.col-xs-12
 		hr
 
-div(data-ng-switch, on="lectures.length")
+div(data-ng-switch="lectures.length")
 	div(data-ng-switch-when="0")
 		| No lecture in databases. Would you like to create one?
 	div(data-ng-repeat="lecture in lectures | filter:query")
@@ -31,7 +31,7 @@ div(data-ng-switch, on="lectures.length")
 				p.content.tutor
 					strong
 						| Lecture Type
-					div(data-ng-switch, on="lecture.status")
+					div(data-ng-switch="lecture.status")
 						div(data-ng-switch-when="1")
 							| Live
 						div(data-ng-switch-when="0")

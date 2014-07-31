@@ -34,14 +34,14 @@ accordion(close-others="false")
 				p
 					strong.atglacesmalltitle
 						| Tutors
-					div(data-ng-switch, on="course.users.length", data-course-user-list)
+					div(data-ng-switch="course.users.length", data-course-user-list)
 						ul(data-ng-switch-when="0")
 							| There's no tutor!!!
 						ul(data-ng-switch-default)
 							li(data-ng-repeat="user in course.usersData | adminFilter")
 								| {{user.user.username}}
 				strong.atglacesmalltitle
-					div(data-ng-switch, on="course.hidden")
+					div(data-ng-switch="course.hidden")
 						p(data-ng-switch-when="true")
 							span.glyphicon.glyphicon-eye-close
 							|   Hidden
@@ -52,6 +52,7 @@ accordion(close-others="false")
 
 	accordion-group(heading="Lectures", is-open="true")
 		#lectureContent.container(lecture-nav)
+		//#lectureContent.container(oc-lazy-load="lazyLoadParams")
 	div( data-course-access-level='courseAccessLevels.tutor')
 		accordion-group(heading="Students", is-open="true")
 			div()

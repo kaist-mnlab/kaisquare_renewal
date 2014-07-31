@@ -24,6 +24,20 @@ angular.module('course.service', ['ngResource', 'security'])
 		
 		return resource;	
 			
-	}]);
+	}])
+		.factory('currentCourse', function(){
+		var course;
+		
+		return {
+			setCourse: function(c){
+				course = c;
+			},
+			getCourse: function(){
+				return course;
+			}
+		}
+		
+		
+	});
 		
 });

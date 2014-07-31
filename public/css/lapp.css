@@ -285,6 +285,9 @@ border-top-right-radius: 4px 4px;
 	width:320px;
 	height:300px;
 }
+#popup_slide{
+	position:relative;	
+}
 #slide {
 	position:relative;
 }

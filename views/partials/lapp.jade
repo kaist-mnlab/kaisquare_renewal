@@ -7,20 +7,20 @@ link(href="/css/mobile_lapp.css" rel="stylesheet" type="text/css" media="only sc
 //script(src="https://www.google.com/jsapi")
 //<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
-div#content(data-ng-switch on="thisUserCtrl")
+div#content(data-ng-switch="thisUserCtrl")
 	#timer
-	#left_video(data-ng-switch on="thisUserCtrl")
-		div#v(data-ng-switch on="isMobile")
-			div#video(data-ng-switch-when="0" data-ng-switch on="thisUserCtrl")
-				div.tutorVideo(data-ng-switch-when="8" data-ng-switch on="lecture.status")
+	#left_video(data-ng-switch="thisUserCtrl")
+		div#v(data-ng-switch="isMobile")
+			div#video(data-ng-switch-when="0" data-ng-switch="thisUserCtrl")
+				div.tutorVideo(data-ng-switch-when="8" data-ng-switch="lecture.status")
 					video#local(data-ng-switch-when="1", lapp-rtclecture, width="320px", height="240px", autoplay, preload, controls, src="{{trustSrc(lecture.vod_url)}}")
 					video(data-ng-switch-when="0", lapp-video, width="320px", height="240px", autoplay, preload, controls, src="{{trustSrc(lecture.vod_url)}}")
-				div.studentVideo(data-ng-switch-default data-ng-switch on="lecture.status")
+				div.studentVideo(data-ng-switch-default data-ng-switch="lecture.status")
 					div(data-ng-switch-when="1", lapp-rtcstudent)
 						video#remote(autoplay="autoplay")
 						video#local(autoplay="autoplay", style="visibility:hidden;")
 					video#vod(data-ng-switch-when="0", lapp-video, width="640px",height="480px",autoplay,preload,controls,src="{{trustSrc(lecture.vod_url)}}")
-		#util(data-ng-switch on="thisUserCtrl")
+		#util(data-ng-switch="thisUserCtrl")
 			div#tutorCtrl(data-ng-switch-when="8")
 				div#lecture_ctrl()
 					button#lecture_start.btn.btn-success.small_font(type="button", data-ng-click="start_lecture()")
@@ -36,7 +36,7 @@ div#content(data-ng-switch on="thisUserCtrl")
 				div#live_question
 					div#qustion_msg(data-ng-model="quiz")
 						label() {{quiz.question}}
-						div(data-ng-switch on="quiz.type")
+						div(data-ng-switch="quiz.type")
 							div(data-ng-switch-default)
 								button.btn(type="button", ng-repeat="b in quiz.choice", data-ng-click="quiz_ans_send(b.number)")
 									| {{b.text}}
@@ -77,7 +77,7 @@ div#content(data-ng-switch on="thisUserCtrl")
 			div#colors(ng-repeat="color in canvasStrokeColor")
 				span(ng-click="selectColor(color.color)" style="float:left; margin-left:5px; margin-right: 5px;")
 					| {{color.color}}
-		div#kaisqr_presentation(lapp-presentation data-ng-switch on="thisUserCtrl")
+		div#kaisqr_presentation(lapp-presentation data-ng-switch="thisUserCtrl")
 			label
 				| PPT
 			img#slide(width="320px" height="240px")

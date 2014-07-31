@@ -26,7 +26,7 @@ form(role="form", data-ng-submit="createLecture()", data-ng-file-drop)
 					| LIVE
 				button.btn.btn-primary(type="button", data-ng-model="lecture.status", btn-radio="0")
 					| VOD
-		div(data-ng-switch on="lecture.status")
+		div(data-ng-switch="lecture.status")
 			div(data-ng-switch-when="0")
 				.form-group(ng-mouseenter="updateFlag(1)")
 					label(for="lectureVoDFile") Video File Upload

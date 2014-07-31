@@ -11,9 +11,9 @@
 	.col-xs-12
 		hr
 		
-div(data-ng-switch, on="courses.length")
+div(data-ng-switch="courses.length")
 	div(data-ng-switch-when="0")
-		| No course in databases. Would you like to create one?
+		| No course in databases. Would you like to create one? 	{{courses.length}}
 	div(data-ng-repeat="course in courses | filter:query")
 		div.post.content.well
 			a(href="/courses/course/{{course._id}}")

@@ -1,8 +1,8 @@
 //div#ppt_popup(ppt-popup)
 div
-	div#kaisqr_presentation(lapp-presentation data-ng-switch on="thisUserCtrl")
+	div#popup_slide(lapp-presentation, data-ng-switch="thisUserCtrl")
 		div
-		img#slide(width="320px" height="240px")
+		img#slide(width="320px", height="240px")
 		canvas#slide_pen(width="320px" height="240px")
 		div#presentation_controller
 			i.fa.fa-arrow-circle-left.fa-3x(ng-click="moveLeft()")
@@ -10,5 +10,5 @@ div
 			i.fa.fa-repeat.fa-3x(ng-click="presentationReplay()")
 			i.fa.fa-trash-o.fa-3x(ng-click="presentationReset()")
 			div#colors(ng-repeat="color in presentationPenColor")
-				span(ng-click="presentationSelectColor(color.color)" style="float:left; margin-left:5px; margin-right: 5px;")
+				span(ng-click="presentationSelectColor(color.color)", style="float:left; margin-left:5px; margin-right: 5px;")
 					| {{color.color}}
