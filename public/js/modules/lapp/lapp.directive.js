@@ -46,12 +46,12 @@ define(['angular'], function(angular) {
 					session.onSessionClosed = onSessionClosed;
 					session.start();
 				};
-	
+
 				function handleUserMediaError(error) {
 					alert('Unable to access user media' );
 					console.log(error);
 				};
-	
+
 				function onSessionJoined(event) {
 					if( typeof event.uid !== 'undefined' && event.uid !== parentScope.user._id ){
 						console.log("onsessionjoined_lecture");
@@ -62,7 +62,7 @@ define(['angular'], function(angular) {
 						attachMediaStream($('<video></video>').attr({ 'id': event.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': event.uid, 'muted': 'muted' }).appendTo('#attend_log').get(0), event.stream);
 					}
 				};
-	
+
 				function onSessionClosed(event) {
 					console.log('onSessionClosed');
 					parentScope.studentScreen[event.uid] = null;
@@ -70,17 +70,17 @@ define(['angular'], function(angular) {
 				};
 				
 				function onRecordCompleted(href) {
-	                videoElement.src = href;
-	                console.log(href);
-	                console.log(scope);
+					videoElement.src = href;
+					console.log(href);
+					console.log(scope);
 	                //Turn it to VOD
-					var lecture = parentScope.lecture;
-					lecture.duration = parentScope.stopwatch.time();
-					lecture.status = 0;
-					lecture.vod_url = href;
-	
-					lecture.$save(function(p, resp) {
-						if(!p.error) {
+	                var lecture = parentScope.lecture;
+	                lecture.duration = parentScope.stopwatch.time();
+	                lecture.status = 0;
+	                lecture.vod_url = href;
+
+	                lecture.$save(function(p, resp) {
+	                	if(!p.error) {
 							// If there is no error, redirect to the main view
 							console.log("lecture update complete!");
 						} else {
@@ -88,10 +88,17 @@ define(['angular'], function(angular) {
 						}
 					});	
 	            };
-			}
-		}
+	            $(window).bind("beforeunload", function (event) {
+					console.log('state change!');
+					if (typeof parentScope.session.session !== 'undefined') {
+						parentScope.session.session.close();
+						parentScope.session.session = null;
+					}
+				});
+	        }
+	    }
 	})
-	.directive('lappRtcstudent', function(){
+.directive('lappRtcstudent', function(){
 		// http://stackoverflow.com/questions/22164969/angularjs-two-way-binding-videos-currenttime-with-directive
 		// currentTime of Video 
 		return {
@@ -144,14 +151,22 @@ define(['angular'], function(angular) {
 				function onSessionClosed(event) {
 					console.log('강의 종료');
 				};
+
+				$(window).bind("beforeunload", function (event) {
+					console.log('state change!');
+					if (typeof parentScope.session.session !== 'undefined') {
+						parentScope.session.session.close();
+						parentScope.session.session = null;
+					}
+				});
 			}
 		}
 	})
-	.directive('lappCanvas', function(){
-		return {
-			scope: false,
-			restrict: 'A',
-			link: function(scope, element, attrs){
+.directive('lappCanvas', function(){
+	return {
+		scope: false,
+		restrict: 'A',
+		link: function(scope, element, attrs){
 				//console.log($(element[0])[0].children[1]);
 				var parentScope = scope.$parent.$parent;
 				var canvas = $(element[0])[0].children[1];
@@ -186,12 +201,12 @@ define(['angular'], function(angular) {
 				var lastX;
 				var lastY;
 				parentScope.canvasStrokeColor = [{color: 'black'},
-				                           {color: 'red'},
-				                           {color: 'blue'},
-				                           {color: 'green'},
-				                           {color: 'white'},
-				                           {color: 'clear'}
-				                           ];
+				{color: 'red'},
+				{color: 'blue'},
+				{color: 'green'},
+				{color: 'white'},
+				{color: 'clear'}
+				];
 				scope.selectColor = function(color){
 					console.log(color);
 					if (color == "clear"){
@@ -220,17 +235,17 @@ define(['angular'], function(angular) {
 						currentY = point.y;
 						
 						stroke = {lastX: lastX, 
-								  lastY: lastY, 
-								  currentX: currentX, 
-								  currentY: currentY,
-								  strokeStyle: ctx.strokeStyle};
-						
-						draw(stroke);
-						socket.emit('canvasDraw', stroke);
-						lastX = currentX;
-						lastY = currentY;
-					}
-				});
+							lastY: lastY, 
+							currentX: currentX, 
+							currentY: currentY,
+							strokeStyle: ctx.strokeStyle};
+
+							draw(stroke);
+							socket.emit('canvasDraw', stroke);
+							lastX = currentX;
+							lastY = currentY;
+						}
+					});
 				canvas.bind('mouseup', function(event){
 					isDrawing = false;
 				});
@@ -244,122 +259,122 @@ define(['angular'], function(angular) {
 			}
 		}
 	})
-	.directive('lappPresentation', function(){
-		return {
-			restrict: 'A',
-			scope: false,
-			link: function(scope, element, attrs){
-				var parentScope = scope.$parent.$parent;
-				var url = scope.location;
-				var ppt = "http://" + url.$$host + ":" + url.$$port + "/uploads/" + scope.lectureId + "/ppt/";
-				
-				var fileType = ".png";
-	
-				var startNumber = 0;
-				var maxNumber = 0;
-	
-	
-				var pageNumber = startNumber;
-				
-				var slide = $(element[0])[0].children[1];
-				var canvas = $(element[0])[0].children[2];
-				var ctx = canvas.getContext('2d');
-				
-				var slide = $(slide);
-				
-				var stopwatch = scope.stopwatch;
-				var eventTrace = [];
-				var penTrace = {};
-				
-				maxNumber = scope.lecture.ppt_page;
-				if (maxNumber === undefined || maxNumber == 0){
-					maxNumber = 10;
+.directive('lappPresentation', function(){
+	return {
+		restrict: 'A',
+		scope: false,
+		link: function(scope, element, attrs){
+			var parentScope = scope.$parent.$parent;
+			var url = scope.location;
+			var ppt = "http://" + url.$$host + ":" + url.$$port + "/uploads/" + scope.lectureId + "/ppt/";
+
+			var fileType = ".png";
+
+			var startNumber = 0;
+			var maxNumber = 0;
+
+
+			var pageNumber = startNumber;
+
+			var slide = $(element[0])[0].children[1];
+			var canvas = $(element[0])[0].children[2];
+			var ctx = canvas.getContext('2d');
+
+			var slide = $(slide);
+
+			var stopwatch = scope.stopwatch;
+			var eventTrace = [];
+			var penTrace = {};
+
+			maxNumber = scope.lecture.ppt_page;
+			if (maxNumber === undefined || maxNumber == 0){
+				maxNumber = 10;
+			}
+
+			for (var i = startNumber; i < maxNumber; i++){
+				penTrace[i] = {};
+				penTrace[i].clearPoint = 0;
+				penTrace[i].trace = [];
+			}
+
+			slide.attr('src', ppt + pageNumber + fileType);
+			parentScope.moveLeft = function(){
+				if(pageNumber == startNumber){
+					pageNumber = maxNumber - 1;
+				}else{
+					pageNumber -= 1;
 				}
-				
-				for (var i = startNumber; i < maxNumber; i++){
-					penTrace[i] = {};
-					penTrace[i].clearPoint = 0;
-					penTrace[i].trace = [];
-				}
-	
+
+				pptLog(pageNumber);
+				ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 				slide.attr('src', ppt + pageNumber + fileType);
-				parentScope.moveLeft = function(){
-					if(pageNumber == startNumber){
-						pageNumber = maxNumber - 1;
-					}else{
-						pageNumber -= 1;
-					}
-	
-					pptLog(pageNumber);
-					ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
-					slide.attr('src', ppt + pageNumber + fileType);
-					
-					drawAll(penTrace[pageNumber]);
+
+				drawAll(penTrace[pageNumber]);
+			}
+			parentScope.moveRight = function(){
+				if(pageNumber == maxNumber - 1){
+					pageNumber = startNumber;
+				}else{
+					pageNumber += 1;
 				}
-				parentScope.moveRight = function(){
-					if(pageNumber == maxNumber - 1){
-						pageNumber = startNumber;
-					}else{
-						pageNumber += 1;
-					}
-					pptLog(pageNumber);
-					
-					ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
-					slide.attr('src', ppt + pageNumber + fileType);
-					
-					drawAll(penTrace[pageNumber]);
+				pptLog(pageNumber);
+
+				ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
+				slide.attr('src', ppt + pageNumber + fileType);
+
+				drawAll(penTrace[pageNumber]);
+			}
+			var canvas = $(canvas);
+			var socket = scope.socket;
+
+			var isDrawing = false;
+			ctx.lineWidth = 1.0;
+			ctx.miterLimit = 1.0;
+			ctx.strokeStyle = "black";
+
+			function getMousePosition(event){
+				var x, y;
+				if(event.offsetX!==undefined){
+					x = event.offsetX;
+					y = event.offsetY;
+				}else{
+					x = event.layerX - event.currentTarget.offsetLeft;
+					y = event.layerY - event.currentTarget.offsetTop;
 				}
-				var canvas = $(canvas);
-				var socket = scope.socket;
-				
-				var isDrawing = false;
-				ctx.lineWidth = 1.0;
-				ctx.miterLimit = 1.0;
-				ctx.strokeStyle = "black";
-				
-				function getMousePosition(event){
-					var x, y;
-					if(event.offsetX!==undefined){
-						x = event.offsetX;
-						y = event.offsetY;
-					}else{
-						x = event.layerX - event.currentTarget.offsetLeft;
-						y = event.layerY - event.currentTarget.offsetTop;
-					}
-					return {x: x, y: y};
+				return {x: x, y: y};
+			}
+			function draw(stroke){
+				penLog(stroke);
+
+				ctx.moveTo(stroke.lastX, stroke.lastY);
+				ctx.lineTo(stroke.currentX, stroke.currentY);
+				ctx.strokeStyle = stroke.strokeStyle;
+				ctx.stroke();
+			}
+			function penLog(stroke){
+				if (stopwatch === undefined)
+					stopwatch = scope.stopwatch;
+				var o = new Object();
+				o.type = "stroke";
+				o.stroke = stroke;
+				o.time = stopwatch.time();
+				if (stroke.strokeColor == "clear"){
+					penTrace[pageNumber].clearPoint = penTrace[pageNumber].length;
 				}
-				function draw(stroke){
-					penLog(stroke);
-					
-					ctx.moveTo(stroke.lastX, stroke.lastY);
-					ctx.lineTo(stroke.currentX, stroke.currentY);
-					ctx.strokeStyle = stroke.strokeStyle;
-					ctx.stroke();
-				}
-				function penLog(stroke){
-					if (stopwatch === undefined)
-						stopwatch = scope.stopwatch;
-					var o = new Object();
-					o.type = "stroke";
-					o.stroke = stroke;
-					o.time = stopwatch.time();
-					if (stroke.strokeColor == "clear"){
-						penTrace[pageNumber].clearPoint = penTrace[pageNumber].length;
-					}
-					
-					penTrace[pageNumber].trace.push(o);
-					
-					socket.emit('pptEvent', o);
-				}
-				function pptLog(page){
-					if (stopwatch === undefined)
-						stopwatch = scope.stopwatch;
-					var o = new Object();
-					o.type = "ppt";
-					o.page = page;
-					o.time = stopwatch.time();
-					eventTrace.push(o);
-					
+
+				penTrace[pageNumber].trace.push(o);
+
+				socket.emit('pptEvent', o);
+			}
+			function pptLog(page){
+				if (stopwatch === undefined)
+					stopwatch = scope.stopwatch;
+				var o = new Object();
+				o.type = "ppt";
+				o.page = page;
+				o.time = stopwatch.time();
+				eventTrace.push(o);
+
 					// need to optimize
 					if (penTrace[page].clearPoint != 0){
 						//o.pen = penTrace[page].trace[]
@@ -368,7 +383,7 @@ define(['angular'], function(angular) {
 					}else {
 						o.pen = penTrace[page].trace;
 					}
-	
+
 					socket.emit('pptEvent', o);
 					delete o.pen;
 				}
@@ -392,12 +407,12 @@ define(['angular'], function(angular) {
 				var lastX;
 				var lastY;
 				parentScope.presentationPenColor = [{color: 'black'},
-				                           {color: 'red'},
-				                           {color: 'blue'},
-				                           {color: 'green'},
-				                           {color: 'white'},
-				                           {color: 'clear'}
-				                           ];
+				{color: 'red'},
+				{color: 'blue'},
+				{color: 'green'},
+				{color: 'white'},
+				{color: 'clear'}
+				];
 				parentScope.presentationSelectColor = function(color){
 					if (color == "clear"){
 						var stroke = {strokeStyle: color};
@@ -429,16 +444,16 @@ define(['angular'], function(angular) {
 						currentY = point.y;
 						
 						stroke = {lastX: lastX, 
-								  lastY: lastY, 
-								  currentX: currentX, 
-								  currentY: currentY,
-								  strokeStyle: ctx.strokeStyle};
-						
-						draw(stroke);
-						lastX = currentX;
-						lastY = currentY;
-					}
-				});
+							lastY: lastY, 
+							currentX: currentX, 
+							currentY: currentY,
+							strokeStyle: ctx.strokeStyle};
+
+							draw(stroke);
+							lastX = currentX;
+							lastY = currentY;
+						}
+					});
 				canvas.bind('mouseup', function(event){
 					isDrawing = false;
 				});
@@ -555,12 +570,12 @@ define(['angular'], function(angular) {
 				
 				if(scope.lecture.status == 0){	
 					if(scope.lecture.ppt_event_log !== "")
-			    		pptLog = angular.fromJson(scope.lecture.ppt_event_log);
+						pptLog = angular.fromJson(scope.lecture.ppt_event_log);
 					else
 						pptLog = { penTrace: {}};
-			    	
-			    	
-			    	pptEvents = [];
+
+
+					pptEvents = [];
 					for (var i in pptLog.penTrace){
 						pptEvents = pptEvents.concat(pptLog.penTrace[i].trace);
 					}
@@ -568,7 +583,7 @@ define(['angular'], function(angular) {
 					pptEvents.sort(function(a, b){return a.time - b.time});
 					p = 0;
 				}
-			
+
 				function pptLogTrace(){
 					//console.log(p);
 					var event = pptEvents[p++];
@@ -605,7 +620,7 @@ define(['angular'], function(angular) {
 			}
 		}
 	})
-	.directive('lappVideo', function(){
+.directive('lappVideo', function(){
 		// http://stackoverflow.com/questions/22164969/angularjs-two-way-binding-videos-currenttime-with-directive
 		// currentTime of Video 
 		return {
@@ -628,9 +643,9 @@ define(['angular'], function(angular) {
 			}
 		}
 	})
-	;
-	
-	
+;
+
+
 
 	/*
 	.directive('pptPopup', function(){
@@ -649,6 +664,6 @@ define(['angular'], function(angular) {
 			}
 		}
 	})
-	*/
+*/
 
 });

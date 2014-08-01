@@ -171,15 +171,6 @@ define(['angular',
 			}
 		});
 
-		$(window).bind("beforeunload", function (event) {
-			console.log('state change!');
-			if (typeof $scope.session.session !== 'undefined') {
-				$scope.session.session.close();
-				delete $scope.session.session;
-				$scope.session.session = null;
-			}
-		});
-
 		$("#quizStatArea").hide();
 		
 		socket.on('initQnChat', function(qs, cs){
