@@ -46,11 +46,11 @@ div#content(data-ng-switch="thisUserCtrl")
 								button#btn(type="button", data-ng-click="quiz_ans_send(0)")
 									| Send
 		div(data-ng-switch-when="8")
-			accordion-group(heading="Attendance", is-open="true")
+			accordion-group(heading="Attendance", is-open="true", style="display:inline-block; ")
 				#attendance()
 					div#attend_log
 	accordion#right_twit(ng-style="{{stud_chat_css}}", close-others="false")
-		accordion-group(heading="Slides", is-open="true")
+		accordion-group(heading="Slides", is-open="true", style="width:322px; float:left")
 			div#kaisqr_presentation(lapp-presentation, data-ng-switch="thisUserCtrl")
 				label
 				img#slide(width="320px", height="240px", fallback-src="/thumb/KAIST.jpg")
@@ -63,7 +63,7 @@ div#content(data-ng-switch="thisUserCtrl")
 					div#colors(ng-repeat="color in presentationPenColor")
 						span(ng-click="presentationSelectColor(color.color)" style="float:left; margin-left:5px; margin-right: 5px;")
 							| {{color.color}}
-		accordion-group(heading="Social Log", is-open="true")
+		accordion-group(heading="Social Log", is-open="true", style="width:322px; float:left; margin-top:0px")
 			div#chatModule()
 				div#chatArea.chat.root.timeline.ltr.customisable-border.twitter-timeline.twitter-timeline-rendered(data-ng-model="chat_log")
 					div.stream
@@ -85,19 +85,19 @@ div#content(data-ng-switch="thisUserCtrl")
 					input.tweet-box-button#inputMessage(type="text", data-ng-model="chat_message")
 					button#btnChat.btn-send(type="button", data-ng-click="send_chat()")
 						| Send
-		accordion-group(heading="Quiz Results", is-open="true")
-			div#quizStatArea(style="width:250px; height:250px; float:left;")
-				div#quizChart(google-chart chart="quiz_chart")
-		accordion-group(heading="Canvas", is-open="true")
+		accordion-group(heading="Canvas", is-open="true", style="width:322px; float:left; display:inline-block; height: 1%; overflow: hidden;")
 			div#kaisqr_canvas(lapp-canvas)
-				label
-					| Canvas
+				div
 				canvas#whiteboard(width="320px" height="265px")
 				div#colors(ng-repeat="color in canvasStrokeColor")
 					span(ng-click="selectColor(color.color)" style="float:left; margin-left:5px; margin-right: 5px;")
 						| {{color.color}}
-			
-	accordion()
+					
+		accordion-group(heading="Quiz Results", is-open="true", style="width:322px; float:left")
+			div#quizStatArea(style="width:250px; height:285px; float:left;")
+				div#quizChart(google-chart chart="quiz_chart")
+				
+	accordion(close-others="false", style="float:left; clear:both; display:inline-block; zoom:1; *display:inline; ")
 		#q(data-ng-switch-when="8")
 			accordion-group(heading="Q Log", is-open="true")
 				div#q_log()

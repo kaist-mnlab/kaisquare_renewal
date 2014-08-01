@@ -34,7 +34,8 @@ div#content{
 	min-height: 250px;
 }
 #right_twit{
-	float:left;
+	//float:left;
+	overflow:auto;
 	//width:100%;
 	//height:100%;
 	background-color:#ffffff;
@@ -48,9 +49,9 @@ ul#chatList{
 
 div#q{
 	float:left;
-	width:100px;
+	width:100%;
 	max-width:920px;
-	height: 160px;
+	height: 180px;
 	margin-top:5px; 
 	background-color:white;
 }
@@ -75,7 +76,8 @@ footer{
 	height:30px;
 }
 div#kaisqr_canvas {
-	float:none;
+	//float:left;
+	display:inline-block;
 }
 div#video{
 	padding:5px;
@@ -159,11 +161,9 @@ div.stream{
 div.stream::-webkit-scrollbar{
 	display: none;
 }
-div#kaisqr_canvas{
+#kaisqr_canvas{
 	position:relative;
 	float:left;
-	height: 235px;
-	margin-top: 0px;
 	background-color: #ffffff;
 }
 div#kaisqr_canvas canvas {
