@@ -155,12 +155,22 @@ define(['angular',
 				     lecture: $scope.lecture._id,
 				   };
 		
-		if($scope.thisUserCtrl != "8"){			
+		if($scope.thisUserCtrl != "8") {			
 			$("#q").hide();
 			$("#whiteboard").attr('width', '250px');
 			$("#whiteboard").attr('height', '280px');
 			$("#right_twit").css('width', '230px');
 		}
+
+		$scope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
+			console.log('state change!');
+			if (typeof $scope.session.session !== 'undefined') {
+				$scope.session.session.close();
+				delete $scope.session.session;
+				$scope.session.session = null;
+			}
+		});
+
 		$("#quizStatArea").hide();
 		
 		socket.on('initQnChat', function(qs, cs){
@@ -429,27 +439,20 @@ define(['angular',
 			if($scope.thisUserCtrl != "8") 
 				return;
 	
-	    	var attendance = {};
-	    	attendance = angular.element("#attend_log")[0].children;
-	    	for( ; attendance.length > 0; ){
-				attendance[0].remove();
-	    	}
+	   //  	var attendance = {};
+	   //  	attendance = angular.element("#attend_log")[0].children;
+	   //  	for( ; attendance.length > 0; ){
+				// attendance[0].remove();
+	   //  	}
 			
-	    	for( var i = 0; i<data.length; ++i){
-		    	var user = {img: null, userId: data[i].userId, username: data[i].username};
-		    	$("#attend_log").prepend(
-		    		"<div id='" + user.userId + "' style='float:left' > <div id='" + user.userId + "_thumb' ><span class='u-photo avatar fa fa-twitter-square fa-4x'></span></div> <br> <label>" + user.username  + "</label></div>"
-		    	);
-		    	if ($scope.studentScreen[user.userId] !== undefined){
-		    		var u = $scope.stduentScreen[user.userId];
-		    		var uid = $('#'+u.uid+'_thumb')[0];
-		    		if(typeof uid !== 'undefined')
-		    			uid.children[0].remove();
-					attachMediaStream($('<video></video>').attr({ 'id': u.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': u.uid }).appendTo('#'+u.uid+'_thumb').get(0), u.stream);
-		    	}
-		    }
+	   //  	for( var i = 0; i<data.length; ++i){
+		  //   	var user = {img: null, userId: data[i].userId, username: data[i].username};
+		  //   	$("#attend_log").prepend(
+		  //   		"<div id='" + user.userId + "' style='float:left' > <div id='" + user.userId + "_thumb' ><span class='u-photo avatar fa fa-twitter-square fa-4x'></span></div> <br> <label>" + user.username  + "</label></div>"
+		  //   	);
+		  //   }
 	    	
-	    	$scope.attendance = data;// = user;    	
+	    	// $scope.attendance = data;// = user;    	
 	    });
 	
 	    socket.on('connected',function(){
@@ -459,8 +462,7 @@ define(['angular',
 		});
 		socket.on('disconnect',function(data) {
 			console.log(data + " has been eliminated");
-			$("#"+data).remove();
-			
+			//$("#"+data).remove();
 		});
 		
 		socket.on('joinLecture',function(data){
@@ -473,7 +475,11 @@ define(['angular',
 			if(data.type == 'q')
 				$scope.q_log += 1;
 	    });
-	
+
+	    socket.on('updateQuestions', function (data) {
+			console.log(data);
+			$scope.question_list = data;
+		});
 	}])
 	;
 	

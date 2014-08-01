@@ -34,21 +34,17 @@ define(['angular'], function(angular) {
 				getUserMedia(constraints, handleUserMedia, handleUserMediaError);
 				var videoElement = $('#local').attr({'width':  320, 'height': 240}).get(0);
 				videoElement.muted = true;
-				
+				var session;
 				function handleUserMedia(stream) {
-					//attachMediaStream($('#local').attr({'width':  640, 'height': 480}).get(0), stream);
-					//attachMediaStream($('#local').attr({'width':  320, 'height': 240}).get(0), stream);
-					//var session = new CreateSession({ gid: scope.$parent.lectureId, uid: scope.$parent.user._id, width: 640, height: 480, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
-					
 					//startRecording.disabled = false;
 					videoElement.src = window.URL.createObjectURL(stream);
 					scope.recorder = new Recorder(stream, { gid: parentScope.lectureId, uid: parentScope.user._id, vidio:true });
 					scope.recorder.onRecordCompleted = onRecordCompleted;
-					scope.session = new CreateSession(stream, { gid: parentScope.lectureId, uid: parentScope.user._id, width: 640, height: 480, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+					parentScope.session.session = session = new CreateSession(stream, { gid: parentScope.lectureId, uid: parentScope.user._id, socket: parentScope.socket, width: 640, height: 480, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
 
-					scope.session.onSessionJoined = onSessionJoined;
-					scope.session.onSessionClosed = onSessionClosed;
-					scope.session.start();
+					session.onSessionJoined = onSessionJoined;
+					session.onSessionClosed = onSessionClosed;
+					session.start();
 				};
 	
 				function handleUserMediaError(error) {
@@ -57,20 +53,20 @@ define(['angular'], function(angular) {
 				};
 	
 				function onSessionJoined(event) {
-			
 					if( typeof event.uid !== 'undefined' && event.uid !== parentScope.user._id ){
 						console.log("onsessionjoined_lecture");
 						console.log(event);
-						var uidthumb = $('#'+event.uid+'_thumb')[0];
-						if(typeof uidthumb !== 'undefined')
-							uidthumb.children[0].remove();
-						attachMediaStream($('<video></video>').attr({ 'id': event.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': event.uid, 'muted': 'muted' }).appendTo('#'+event.uid+'_thumb').get(0), event.stream);
-						scope.$parent.studentScreen[event.uid] = {'socket_id': event.socket_id, 'uid': event.uid, 'stream': event.stream};
+						// var uidthumb = $('#'+event.uid+'_thumb')[0];
+						// if(typeof uidthumb.children[0] !== 'undefined')
+						// 	uidthumb.children[0].remove();
+						attachMediaStream($('<video></video>').attr({ 'id': event.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': event.uid, 'muted': 'muted' }).appendTo('#attend_log').get(0), event.stream);
 					}
 				};
 	
 				function onSessionClosed(event) {
-					$('#' + event.socket_id).remove();
+					console.log('onSessionClosed');
+					parentScope.studentScreen[event.uid] = null;
+					$('#' + event.sid).remove();
 				};
 				
 				function onRecordCompleted(href) {
@@ -90,11 +86,8 @@ define(['angular'], function(angular) {
 						} else {
 							alert('Could not create course');
 						}
-					});
-					
-					
+					});	
 	            };
-				
 			}
 		}
 	})
@@ -107,6 +100,7 @@ define(['angular'], function(angular) {
 				
 			},
 			link: function(scope, element, attrs){
+				console.log("LINK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				var parentScope = scope.$parent.$parent;
 				var constraints = {
 					video: {
@@ -120,35 +114,36 @@ define(['angular'], function(angular) {
 				getUserMedia(constraints, handleUserMedia, handleUserMediaError);
 				var session;
 				function handleUserMedia(stream) {
-					parentScope.session.session = session = new JoinSession({ gid: parentScope.lectureId, uid: parentScope.user._id, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+					parentScope.session.session = session = new JoinSession({ gid: parentScope.lectureId, uid: parentScope.user._id,  socket: parentScope.socket, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
 					session.onSessionJoined = onSessionJoined;
+					session.onSessionClosed = onSessionClosed;
 					session.start();
 				};
 
 				function handleUserMediaError(error) {
 					//alert('Access to lecture without media!');
-					parentScope.session.session = session = new JoinSession({ gid: parentScope.lectureId, uid: parentScope.user._id, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+					parentScope.session.session = session = new JoinSession({ gid: parentScope.lectureId, uid: parentScope.user._id, socket: parentScope.socket, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
 					session.onSessionJoined = onSessionJoined;
+					session.onSessionClosed = onSessionClosed;
 					session.start();
 				};
 
 				function onSessionJoined(event) {
 					var width = 640;
 					var height = 480;
-					console.log(scope.$parent.isMobile);
+					console.log(parentScope.isMobile);
 
-					if (scope.$parent.isMobile == 1) {
+					if (parentScope.isMobile == 1) {
 						width = 320;
 						height = 240;
 					}
 
 					attachMediaStream($('#remote').attr({ 'width': width, 'height': height }).get(0), event.stream);
-				}
-				//TODO:
-				$(window).bind("beforeunload", function (event) {
-					if (session != null)
-						session.close();
-				});
+				};
+
+				function onSessionClosed(event) {
+					console.log('강의 종료');
+				};
 			}
 		}
 	})
