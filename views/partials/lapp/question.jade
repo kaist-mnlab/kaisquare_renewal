@@ -1,0 +1,20 @@
+.modal-header
+	h1 Question for {{lecture.title}}
+
+form#question_form(role="form", data-ng-submit="raiseQuestion()")
+	.modal-body    
+		.form-group
+			label() Question
+			input#quizQuestion.form-control(type="text", data-ng-model="question.text", value="questionText")
+		.form-group
+			label(for="raiseQuestionFile") File Upload
+			input#file.form-control(type="file" data-ng-file-select )
+		.form-group
+			label(for="voice") Voice
+			button#voice.btn.btn-success.small_font(type="button", data-ng-click="record_question()")
+				| Listen My Voice!
+	.modal-footer   
+		button.btn.btn-primary.pull-right(type="submit", data-ng-click="close()") 
+			| Raise Question!
+		button.btn.btn-danger(type="button", data-ng-click="cancel()")
+			| Cancel
