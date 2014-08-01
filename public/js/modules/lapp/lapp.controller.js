@@ -103,7 +103,7 @@ define(['angular',
 		$scope.course = null;
 		$scope.thisUserCtrl = 0;
 		$scope.thisUserCtrl = security.getThisUserCtrl();
-		$scope.isMobile = 0;
+		$scope.isMobile = (navigator.userAgent.match("Android") || navigator.userAgent.match("iPhone")) ? 1 : 0;
 	
 		$scope.socket = socket;
 		$scope.currentTime = 0;
@@ -117,14 +117,14 @@ define(['angular',
 		// Attendance
 		$scope.attendance = [];
 	
-		// ppt event	
-		if (navigator.userAgent.match("Android") || navigator.userAgent.match("iPhone"))
-			$scope.isMobile = 1;
+		// ppt event
 		$scope.pptEventTrace = [];
 		$scope.pptPenTrace = {};
 		$scope.pptPageTrace = {};
 		
-		
+		$scope.question_list = [];
+		$scope.session = {};
+
 		$scope.trustSrc = function(src) {
 		    return $sce.trustAsResourceUrl(src);
 		}
@@ -344,7 +344,38 @@ define(['angular',
 			}, function() {
 				console.log("Dismissed");
 			});
-		}
+		};
+
+		$scope.raise_question = function () {
+			//modal
+			var dlg = $modal.open({
+				templateUrl: 'lapp/question',
+				controller: 'RaiseQuestionCtrl',
+				resolve: {
+					lecture: function () {
+						return $scope.lecture;
+					},
+					course: function () {
+						return $scope.course;
+					},
+					thisUserCtrl: function () {
+						return $scope.thisUserCtrl;
+					},
+					user: function () {
+						return $scope.user;
+					}, 
+					session: function () {
+						return $scope.session;
+					}
+				}
+			});
+
+			dlg.result.then(function (question) {
+				
+			}, function () {
+				console.log("Dismissed");
+			});
+		};
 		
 		socket.on('receiveQuiz', function(data){
 			console.log(data);
@@ -434,7 +465,7 @@ define(['angular',
 		
 		socket.on('joinLecture',function(data){
 			console.log('KAISquare Lecture Loaded');
-			
+			socket.emit('reloadQuestions');
 		});
 		socket.on('receiveMessage', function(data){
 			if(data.type == 'chat')
@@ -495,5 +526,107 @@ define(['angular',
 		}
 	}]);
 
-		
+	angular.module('lapp.controller')
+	.controller('RaiseQuestionCtrl',
+	['$rootScope', '$scope', '$location', '$modal', '$modalInstance', 'Course', 'Lecture', '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', '$fileUploader', 'XSRF_TOKEN', '$http', 'session', function ($rootScope, $scope, $location, $modal, $modalInstance, Course, Lecture, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl, $fileUploader, csrf_token, $http, session) {
+
+		//TODO : Send question to server, receive function for lecturere
+		//Refer QuizQuestionCtrl
+		$scope.question = {
+			text: '',
+		}
+
+		//File uploader
+		var uploader = $scope.uploader = $fileUploader.create({
+			scope: $scope,                          // to automatically update the html. Default: $rootScope
+			url: '/fileUpload',
+			formData: [
+			{ key: 'value' }
+			],
+			headers:
+			{
+				'X-CSRF-TOKEN': csrf_token
+			},
+
+			filters: [
+				function (item) {                    // first user filter
+					console.info('File extension Filter');
+					//TODO : Filter
+					return true;
+				}
+			]
+		});
+
+		uploader.bind('afteraddingfile', function (event, item) {
+			console.info('After adding a file', item);
+		});
+
+		uploader.bind('whenaddingfilefailed', function (event, item) {
+			console.info('When adding a file failed', item);
+		});
+
+		uploader.bind('afteraddingall', function (event, items) {
+			console.info('After adding all files', items);
+			uploader.uploadAll();
+		});
+
+		uploader.bind('beforeupload', function (event, item) {
+			console.info('Before upload', item);
+		});
+
+		uploader.bind('progress', function (event, item, progress) {
+			//console.info('Progress: ' + progress, item);
+		});
+
+		uploader.bind('success', function (event, xhr, item, response) {
+			console.info('Success', xhr, item, response);
+		});
+
+		uploader.bind('cancel', function (event, xhr, item) {
+			console.info('Cancel', xhr, item);
+		});
+
+		uploader.bind('error', function (event, xhr, item, response) {
+			console.info('Error', xhr, item, response);
+		});
+
+		uploader.bind('complete', function (event, xhr, item, response) {
+			console.info('Complete', xhr, item, response);
+			$scope.question.image = '../uploads/temp/' + item.file.name;
+		});
+
+		uploader.bind('progressall', function (event, progress) {
+			//console.info('Total progress: ' + progress);
+		});
+
+		$scope.record_question = function () {
+			console.log('test');
+			if (typeof $scope.recorder === 'undefined') {
+			 	console.log(session.session);
+				$scope.recorder = new Recorder(session.session.localStream, { gid: lecture._id, uid: user._id, video:false});
+				$scope.recorder.start();
+				$scope.recorder.onRecordCompleted = function(href) {
+					console.log(href);
+					$scope.question.audio = href;
+				};
+			}
+			else {
+				$scope.recorder.stop();
+				console.log('stop');
+			}
+		};
+
+		$scope.lecture = lecture;
+		$scope.raiseQuestion = function () {
+			//TODO : send file
+			
+			socket.emit('raiseQuestion', { text: $scope.question.text, image: $scope.question.image, audio: $scope.question.audio });
+			$modalInstance.close($scope.question);
+		}
+
+		$scope.cancel = function () {
+			$modalInstance.dismiss('cancel');
+		};
+
+	}]);
 });

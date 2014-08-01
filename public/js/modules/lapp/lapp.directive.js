@@ -29,10 +29,11 @@ define(['angular'], function(angular) {
 							minHeight: 480
 						}
 					},
-					audio: 'true'
+					audio: true
 				};
 				getUserMedia(constraints, handleUserMedia, handleUserMediaError);
 				var videoElement = $('#local').attr({'width':  320, 'height': 240}).get(0);
+				videoElement.muted = true;
 				
 				function handleUserMedia(stream) {
 					//attachMediaStream($('#local').attr({'width':  640, 'height': 480}).get(0), stream);
@@ -40,14 +41,14 @@ define(['angular'], function(angular) {
 					//var session = new CreateSession({ gid: scope.$parent.lectureId, uid: scope.$parent.user._id, width: 640, height: 480, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
 					
 					//startRecording.disabled = false;
-	                videoElement.src = window.URL.createObjectURL(stream); 
-					window.recorder = new Recorder(stream, { gid: parentScope.lectureId, uid: parentScope.user._id });
-	                recorder.onRecordCompleted = onRecordCompleted;
-	                window.session = new CreateSession(stream, { gid: parentScope.lectureId, uid: parentScope.user._id, width: 640, height: 480, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
-					
-					session.onSessionJoined = onSessionJoined;
-					session.onSessionClosed = onSessionClosed;
-					session.start();
+					videoElement.src = window.URL.createObjectURL(stream);
+					scope.recorder = new Recorder(stream, { gid: parentScope.lectureId, uid: parentScope.user._id, vidio:true });
+					scope.recorder.onRecordCompleted = onRecordCompleted;
+					scope.session = new CreateSession(stream, { gid: parentScope.lectureId, uid: parentScope.user._id, width: 640, height: 480, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+
+					scope.session.onSessionJoined = onSessionJoined;
+					scope.session.onSessionClosed = onSessionClosed;
+					scope.session.start();
 				};
 	
 				function handleUserMediaError(error) {
@@ -110,48 +111,44 @@ define(['angular'], function(angular) {
 				var constraints = {
 					video: {
 						mandatory: {
-							minWidth: 640,
+							minWidth: 720,
 							minHeight: 480
 						}
 					},
-					audio: 'true'
+					audio: true
 				};
 				getUserMedia(constraints, handleUserMedia, handleUserMediaError);
 				var session;
-	
 				function handleUserMedia(stream) {
-					//attachMediaStream($('#local').get(0), stream);
-					session = new JoinSession({ gid: parentScope.lectureId, uid: parentScope.user._id, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+					parentScope.session.session = session = new JoinSession({ gid: parentScope.lectureId, uid: parentScope.user._id, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
 					session.onSessionJoined = onSessionJoined;
-				    session.start();
+					session.start();
 				};
-	
+
 				function handleUserMediaError(error) {
 					//alert('Access to lecture without media!');
-				    session = new JoinSession({ gid: parentScope.lectureId, uid: parentScope.user._id, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
-				    session.onSessionJoined = onSessionJoined;
-				    session.start();
+					parentScope.session.session = session = new JoinSession({ gid: parentScope.lectureId, uid: parentScope.user._id, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+					session.onSessionJoined = onSessionJoined;
+					session.start();
 				};
-				
+
 				function onSessionJoined(event) {
 					var width = 640;
 					var height = 480;
-					console.log(parentScope.isMobile);
-					
-					if(parentScope.isMobile == 1) {
+					console.log(scope.$parent.isMobile);
+
+					if (scope.$parent.isMobile == 1) {
 						width = 320;
 						height = 240;
 					}
-				    attachMediaStream($('#remote').attr({ 'width': width, 'height': height }).get(0), event.stream);
+
+					attachMediaStream($('#remote').attr({ 'width': width, 'height': height }).get(0), event.stream);
 				}
-	
+				//TODO:
 				$(window).bind("beforeunload", function (event) {
 					if (session != null)
 						session.close();
 				});
-				
-			
-				
 			}
 		}
 	})

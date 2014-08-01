@@ -269,6 +269,11 @@ define([
 		            	}]
 		            }
 		        })
+		        .state('user.lapp.question', {
+		        	url: 'lapp/:lectureId',
+		        	templateUrl: '/partials/lapp/question',
+		        	controller: 'RaiseQuestionCtrl'
+		        })
 		        
 		        ;
 		
