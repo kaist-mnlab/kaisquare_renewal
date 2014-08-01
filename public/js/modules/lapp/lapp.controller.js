@@ -171,6 +171,15 @@ define(['angular',
 			}
 		});
 
+		$(window).bind("beforeunload", function (event) {
+			console.log('state change!');
+			if (typeof $scope.session.session !== 'undefined') {
+				$scope.session.session.close();
+				delete $scope.session.session;
+				$scope.session.session = null;
+			}
+		});
+
 		$("#quizStatArea").hide();
 		
 		socket.on('initQnChat', function(qs, cs){
@@ -539,13 +548,15 @@ define(['angular',
 	angular.module('lapp.controller')
 	.controller('RaiseQuestionCtrl',
 	['$rootScope', '$scope', '$location', '$modal', '$modalInstance',  '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', '$fileUploader', 'XSRF_TOKEN', '$http', 'session', function ($rootScope, $scope, $location, $modal, $modalInstance, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl, $fileUploader, csrf_token, $http, session) {
-
-		//TODO : Send question to server, receive function for lecturere
+		
 		//Refer QuizQuestionCtrl
 		$scope.question = {
 			text: '',
 		}
-
+		$scope.voiceText = "Start Record";
+		$scope.noStream = (typeof session.session.localStream === 'undefined');
+		$scope.nowUpload = false;
+		$scope.recordStatus = 0;
 		//File uploader
 		var uploader = $scope.uploader = $fileUploader.create({
 			scope: $scope,                          // to automatically update the html. Default: $rootScope
@@ -578,6 +589,7 @@ define(['angular',
 		uploader.bind('afteraddingall', function (event, items) {
 			console.info('After adding all files', items);
 			uploader.uploadAll();
+			$scope.nowUpload = true;
 		});
 
 		uploader.bind('beforeupload', function (event, item) {
@@ -602,6 +614,7 @@ define(['angular',
 
 		uploader.bind('complete', function (event, xhr, item, response) {
 			console.info('Complete', xhr, item, response);
+			$scope.nowUpload = false;
 			$scope.question.image = '../uploads/temp/' + item.file.name;
 		});
 
@@ -613,9 +626,15 @@ define(['angular',
 			console.log('test');
 			if (typeof $scope.recorder === 'undefined') {
 			 	console.log(session.session);
+			 	$scope.voiceText = "Stop Record";
+			 	$scope.recordStatus = 1;
 				$scope.recorder = new Recorder(session.session.localStream, { gid: lecture._id, uid: user._id, video:false});
 				$scope.recorder.start();
 				$scope.recorder.onRecordCompleted = function(href) {
+					$scope.recordStatus = 2;
+					$scope.nowUpload = false;
+					$scope.noStream = true;
+					$scope.voiceText = "Record Completed";
 					console.log(href);
 					$scope.question.audio = href;
 				};
@@ -623,13 +642,13 @@ define(['angular',
 			else {
 				$scope.recorder.stop();
 				console.log('stop');
+				$scope.nowUpload = true;
 			}
 		};
 
 		$scope.lecture = lecture;
 		$scope.raiseQuestion = function () {
 			//TODO : send file
-			
 			socket.emit('raiseQuestion', { text: $scope.question.text, image: $scope.question.image, audio: $scope.question.audio });
 			$modalInstance.close($scope.question);
 		}

@@ -300,3 +300,7 @@ border-top-right-radius: 4px 4px;
 	position:relative;
 	top:-240px;
 }
+
+.btn-disabled {
+	disabled:disabled;
+}
