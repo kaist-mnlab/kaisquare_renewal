@@ -91,7 +91,7 @@ define(['angular',
 	angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart', 'lecture.service' ])
 	//app
 	.controller('LectureAppCtrl',
-	['$rootScope', '$scope', '$location', '$modal', '$stateParams','$sce','socket','security','$compile','lectureService', function($rootScope, $scope, $location, $modal, $stateParams, $sce, socket, security, $compile, lectureService) {
+	['$rootScope', '$scope', '$location', '$modal', '$stateParams','$sce','socket','security','$compile','courseService', 'lectureService', function($rootScope, $scope, $location, $modal, $stateParams, $sce, socket, security, $compile, courseService, lectureService) {
 		$scope.location = $location;
 		$scope.user = security.user;
 		if($scope.user._id == "")
@@ -100,7 +100,7 @@ define(['angular',
 		$scope.lecture = lectureService.getLecture();
 		$scope.chat_log = [];
 		$scope.chat_message = "";
-		$scope.course = null;
+		$scope.course = courseService.getCourse();
 		$scope.thisUserCtrl = 0;
 		$scope.thisUserCtrl = security.getThisUserCtrl();
 		$scope.isMobile = (navigator.userAgent.match("Android") || navigator.userAgent.match("iPhone")) ? 1 : 0;
@@ -479,7 +479,7 @@ define(['angular',
 	
 	angular.module('lapp.controller')
 	.controller('QuizQuestionCtrl',
-	['$rootScope', '$scope', '$location', '$modal', '$modalInstance', 'Course', 'Lecture','$stateParams','$sce','socket', 'security','user', 'lecture', 'course', 'thisUserCtrl', function($rootScope, $scope, $location, $modal, $modalInstance, Course, Lecture,$stateParams, $sce, socket, security, user, lecture,course, thisUserCtrl) {
+	['$rootScope', '$scope', '$location', '$modal', '$modalInstance', '$stateParams','$sce','socket', 'security','user', 'lecture', 'course', 'thisUserCtrl', function($rootScope, $scope, $location, $modal, $modalInstance, $stateParams, $sce, socket, security, user, lecture,course, thisUserCtrl) {
 		$scope.quizChoice = [{number:'1', text: ''}, {number:'2', text: ''}];
 		$scope.quizType = [{type:'O/X', value:'ox'},
 		                   {type:'Multiple', value:'multiple'},
@@ -490,6 +490,10 @@ define(['angular',
 		$scope.lecture = lecture;
 		$scope.sendQuiz = function(){
 			//if (thisUserCtrl != "8") return;
+			
+			console.log("sendquiz");
+			console.log(lecture);
+			console.log(course);
 			
 			var data = $scope.quiz;
 			
