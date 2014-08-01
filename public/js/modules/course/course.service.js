@@ -25,12 +25,13 @@ angular.module('course.service', ['ngResource', 'security'])
 		return resource;	
 			
 	}])
-		.factory('currentCourse', function(){
-		var course;
+		.factory('courseService', ['$cookieStore',function($cookieStore){
+		var course = $cookieStore.get('currentCourse') || {};
 		
 		return {
 			setCourse: function(c){
 				course = c;
+				$cookieStore.put('currentCourse', c);
 			},
 			getCourse: function(){
 				return course;
@@ -38,6 +39,6 @@ angular.module('course.service', ['ngResource', 'security'])
 		}
 		
 		
-	});
+	}]);
 		
 });

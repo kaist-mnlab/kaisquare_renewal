@@ -253,7 +253,16 @@ define([
 		        .state('user.lapp.quiz', {
 		        	url: 'lapp/:lectureId',
 		        	templateUrl: '/partials/lapp/quiz',
-		        	controller: 'QuizQuestionCtrl'
+		        	controller: 'QuizQuestionCtrl',
+		        	resolve: {
+		            	loadLapp:['$ocLazyLoad',  function($ocLazyLoad) {
+		            		return $ocLazyLoad.load({
+		            			name: 'lapp',
+		            			files: ['/js/modules/lapp/index.js']
+		            		});
+		            		
+		            	}]
+		            }
 		        })
 		        .state('user.ppt', {
 		        	url: '/ppt/:lectureId',
@@ -263,7 +272,7 @@ define([
 		            	loadLapp:['$ocLazyLoad',  function($ocLazyLoad) {
 		            		return $ocLazyLoad.load({
 		            			name: 'lapp.ppt',
-		            			files: ['/js/modules/lapp/lapp.ppt.js', '/js/modules/lecture/lecture.service.js',  '/js/modules/lapp/lapp.service.js']
+		            			files: ['/js/modules/lapp/lapp.ppt.js', '/js/modules/lecture/lecture.service.js',  '/js/modules/lapp/lapp.service.js', '/js/modules/course/course.service.js',]
 		            		});
 		            		
 		            	}]
@@ -272,7 +281,16 @@ define([
 		        .state('user.lapp.question', {
 		        	url: 'lapp/:lectureId',
 		        	templateUrl: '/partials/lapp/question',
-		        	controller: 'RaiseQuestionCtrl'
+		        	controller: 'RaiseQuestionCtrl',
+		        	resolve: {
+		            	loadLapp:['$ocLazyLoad',  function($ocLazyLoad) {
+		            		return $ocLazyLoad.load({
+		            			name: 'lapp',
+		            			files: ['/js/modules/lapp/index.js']
+		            		});
+		            		
+		            	}]
+		            }
 		        })
 		        
 		        ;

@@ -60,7 +60,7 @@ angular.module('course.controller', ['security', 'lecture','ui.bootstrap'])
 //app
 angular.module('course.controller')
 .controller('CourseItemCtrl',
-['$rootScope', '$scope','$state', '$q', '$location','$stateParams','Course','User','$http','Lecture','$modal','security','currentCourse', function($rootScope,$scope, $state,$q, $location, $stateParams,Course,User, $http, Lecture, $modal, security, currentCourse) {
+['$rootScope', '$scope','$state', '$q', '$location','$stateParams','Course','User','$http','Lecture','$modal','security','courseService', function($rootScope,$scope, $state,$q, $location, $stateParams,Course,User, $http, Lecture, $modal, security, courseService) {
 	$scope.courseAccessLevels = accessConfig.courseAccessLevels;
 	$scope.course = Course.get({courseId: $stateParams.courseId});
 	$scope.course.usersData = [];
@@ -79,7 +79,7 @@ angular.module('course.controller')
 	}	
 	
 	$scope.course.$promise.then(function() {
-		currentCourse.setCourse($scope.course);
+		courseService.setCourse($scope.course);
 		for( var u in $scope.course.users)
 			if($scope.course.users[u].user === $scope.user._id) {
 				security.setThisUserCtrl($scope.course.users[u].role_bitMask);
