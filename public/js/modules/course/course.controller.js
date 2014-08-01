@@ -9,6 +9,7 @@ angular.module('course.controller', ['security', 'lecture','ui.bootstrap'])
 
 	$scope.courses = Course.query();
 	
+	
 	$scope.launch = function(which){
 		
 		var dlg = null;

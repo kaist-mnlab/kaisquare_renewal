@@ -30,6 +30,8 @@ div#content(data-ng-switch="thisUserCtrl")
 					button#quiz.btn.btn-primary.small_font(type="button", data-ng-click="make_quiz()")
 						span.glyphicon.glyphicon-check()
 						| Quiz
+					button#quiz.btn.btn-primary.small_font(type="button", data-ng-click="popup_slides()")
+						| Slides
 			div#studentCtrl(data-ng-switch-default)
 				button#q_button.btn.btn-primary.q_button.big_font(type="button", data-ng-click="send_q()")
 					| Q

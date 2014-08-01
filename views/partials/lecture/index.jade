@@ -1,5 +1,5 @@
-.row(data-ng-controller='NavCtrl')
-	.col-xs-5
+.row
+	.col-xs-5(data-ng-controller='NavCtrl')
 		button.btn.btn-default(data-ng-click="launch('newLecture')", act-nav, data-course-access-level='courseAccessLevels.tutor')
 			span.glyphicon.glyphicon-plus() 
 			| New Lecture

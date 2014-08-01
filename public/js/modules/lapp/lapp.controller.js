@@ -238,23 +238,8 @@ define(['angular',
 			
 			//Let's pop it up
 			
-			//Checking if presentation is ready or not
-			var isPPTReady = true;
-			var winObj;
-			var ppt_url = $location.$$absUrl.replace("lapp", "ppt");
-			var popup_name = "Slides";
-			var specs = "fullscreen=yes, menubar=no, status=no, titlebar=no, location=no";
+			$scope.popup_slides();
 			
-			//Popup window location and size modulation
-			
-			
-			if(isPPTReady) {
-			
-				winObj = window.open( ppt_url, popup_name , specs);
-				winObj.focus();
-				
-			}
-			console.log($scope.$id);
 			$scope.presentationReset();
 			
 			
@@ -345,7 +330,25 @@ define(['angular',
 				console.log("Dismissed");
 			});
 		};
-
+		$scope.popup_slides = function() {
+			//Checking if presentation is ready or not
+			var isPPTReady = true;
+			var winObj;
+			var ppt_url = $location.$$absUrl.replace("lapp", "ppt");
+			var popup_name = "Slides";
+			var specs = "fullscreen=yes, menubar=no, status=no, titlebar=no, location=no";
+			
+			//Popup window location and size modulation
+			
+			
+			if(isPPTReady) {
+			
+				winObj = window.open( ppt_url, popup_name , specs);
+				winObj.focus();
+				
+			}
+			
+		}
 		$scope.raise_question = function () {
 			//modal
 			var dlg = $modal.open({
