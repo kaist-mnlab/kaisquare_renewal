@@ -85,10 +85,10 @@ javascript:(function(e){e.setAttribute("src","http://debug.build.phonegap.com/ta
 /* Controllers */
 define(['angular',
         'rtcCtrl/recorder','rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session', "https://www.webrtc-experiment.com/RecordRTC.js", 
-        'chart', 'angular-google-chart', 'lecture/lecture.service',
+        'chart', 'angular-google-chart', 'lecture/lecture.service', 'course/course.service','angular-file-upload',
         '/socket.io/socket.io.js',
         ], function(angular) {
-	angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart', 'lecture.service' ])
+	angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart', 'angularFileUpload','lecture.service','course.service' ])
 	//app
 	.controller('LectureAppCtrl',
 	['$rootScope', '$scope', '$location', '$modal', '$stateParams','$sce','socket','security','$compile','courseService', 'lectureService', function($rootScope, $scope, $location, $modal, $stateParams, $sce, socket, security, $compile, courseService, lectureService) {
@@ -349,7 +349,7 @@ define(['angular',
 		$scope.raise_question = function () {
 			//modal
 			var dlg = $modal.open({
-				templateUrl: 'lapp/question',
+				templateUrl: '/partials/lapp/question',
 				controller: 'RaiseQuestionCtrl',
 				resolve: {
 					lecture: function () {
@@ -532,7 +532,7 @@ define(['angular',
 
 	angular.module('lapp.controller')
 	.controller('RaiseQuestionCtrl',
-	['$rootScope', '$scope', '$location', '$modal', '$modalInstance', 'Course', 'Lecture', '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', '$fileUploader', 'XSRF_TOKEN', '$http', 'session', function ($rootScope, $scope, $location, $modal, $modalInstance, Course, Lecture, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl, $fileUploader, csrf_token, $http, session) {
+	['$rootScope', '$scope', '$location', '$modal', '$modalInstance',  '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', '$fileUploader', 'XSRF_TOKEN', '$http', 'session', function ($rootScope, $scope, $location, $modal, $modalInstance, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl, $fileUploader, csrf_token, $http, session) {
 
 		//TODO : Send question to server, receive function for lecturere
 		//Refer QuizQuestionCtrl
