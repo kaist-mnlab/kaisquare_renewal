@@ -64,7 +64,7 @@ define(['angular'], function(angular) {
 						var uidthumb = $('#'+event.uid+'_thumb')[0];
 						if(typeof uidthumb !== 'undefined')
 							uidthumb.children[0].remove();
-						attachMediaStream($('<video></video>').attr({ 'id': event.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': event.uid }).appendTo('#'+event.uid+'_thumb').get(0), event.stream);
+						attachMediaStream($('<video></video>').attr({ 'id': event.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': event.uid, 'muted': 'muted' }).appendTo('#'+event.uid+'_thumb').get(0), event.stream);
 						scope.$parent.studentScreen[event.uid] = {'socket_id': event.socket_id, 'uid': event.uid, 'stream': event.stream};
 					}
 				};
