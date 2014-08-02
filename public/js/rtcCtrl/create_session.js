@@ -92,7 +92,7 @@
      */
      close_student: function (message) {
      	var session = this.session;
-     	console.log('close ' + message);
+     	console.log('close ', message, session.pcs);
      	session.pcs[message.sid].close();
      	delete session.pcs[message.sid];
      	!!session.onSessionClosed && session.onSessionClosed({ sid: message.sid, uid: message.uid });
@@ -139,7 +139,7 @@
 
      close: function () {
      	console.log('close_lecturer', this.pcs);
-     	this.signaling.emit('close_lecturer', { gid: this.gid, uid: this.uid });
+     	this.signaling.emit('close_lecturer', { sid:this.socket_id, gid: this.gid, uid: this.uid });
      	this.localStream.stop();
      	for(var key in this.pcs) {
      		this.pcs[key].close();

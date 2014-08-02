@@ -43,7 +43,7 @@
      joined: function (socket_id) {
      	var session = this.session;
      	var pc = session.pc = new RTCPeerConnection(session.iceServer);
-     	pc.socket_id = socket_id;
+     	session.socket_id = socket_id;
      	if (typeof session.localStream != 'undefined')
      		pc.addStream(session.localStream);
      	pc.onaddstream = handleRemoteStreamAdded;
@@ -86,6 +86,7 @@
      	var session = this.session;
      	console.log('close ', message);
      	session.pc.close();
+          delete session.pc;
      	!!session.onSessionClosed && session.onSessionClosed({ sid: message.sid, uid: message.uid });
      },
     /**
@@ -94,7 +95,7 @@
      * @param msg 전달하고자하는 메시지
      */
      sendMessage: function (type, msg) {
-     	message = { type: type, src: this.pc.socket_id.join, dest: this.pc.socket_id.create, msg: msg };
+     	message = { type: type, src: this.socket_id.join, dest: this.socket_id.create, msg: msg };
      	this.signaling.emit('message', message);
      },
     /**
@@ -137,12 +138,7 @@
      */
      close: function () {
      	console.log('close_student', this.signaling);
-          // this.signaling.removeAllListeners('joined');
-          // this.signaling.removeAllListeners('created');
-          // this.signaling.oremoveAllListenersn('close_lecturer');
-          // this.signaling.removeAllListeners('message');
-          // this.signaling.removeAllListeners('log');
-          this.signaling.emit('close_student', { gid: this.gid, uid: this.uid });
+          this.signaling.emit('close_student', { sid: this.socket_id.join, gid: this.gid, uid: this.uid });
           if (typeof this.localStream != 'undefined') {
           	this.localStream.stop();
           }

@@ -142,6 +142,14 @@ define(['angular',
 				});
 			}
 		});
+
+		$(window).bind("unload", function (event) {
+			console.log('state change!');
+			if (typeof $scope.session.session !== 'undefined') {
+				$scope.session.session.close();
+				$scope.session.session = null;
+			}
+		});
 			
 		Stopwatch.text = ($('#timer'));
 		$scope.stopwatch = Stopwatch;

@@ -81,13 +81,13 @@ module.exports = {
              */
             socket.on('close_student', function (msg) {
                 socket.leave('webrtc_'+msg.gid);
-                io.sockets.socket(session_creator[msg.gid]).emit('close_student', { sid: socket.id, uid: msg.uid });
+                io.sockets.socket(session_creator[msg.gid]).emit('close_student', msg);
             });
 
             socket.on('close_lecturer', function (msg) {
                 socket.leave('webrtc_'+msg.gid);
                 session_creator[msg.gid] = null;
-                io.sockets.in('webrtc_'+msg.gid).emit('close_lecturer', { sid: socket.id, uid: msg.uid });
+                io.sockets.in('webrtc_'+msg.gid).emit('close_lecturer', msg);
             });
             /**
              * 강의자의 강의 record에 대한 event를 처리한다.
