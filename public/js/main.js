@@ -8,14 +8,16 @@ requirejs.config({
 		'text': '../lib/require/text', 
 		'jquery': '../lib/jquery/jquery',
 		'jquery-ui': '../lib/jquery/jquery-ui-1.10.2.min',
-		'angular': '../lib/angular/angular',
-		'angular-resource': '../lib/angular/angular-resource',
-		'angular-route': '../lib/angular/angular-route',
-		'angular-cookies':'../lib/angular/angular-cookies',
+		'angular': '../lib/angular/angular.min',
+		'angular-resource': '../lib/angular/angular-resource.min',
+		'angular-route': '../lib/angular/angular-route.min',
+		'angular-cookies':'../lib/angular/angular-cookies.min',
 		'angular-ui-router':'../lib/angular/angular-ui-router.min',
 		'angular-ui-bootstrap':'../lib/angular/ui-bootstrap-tpls-0.10.0.min',
 		'angular-file-upload':'../lib/angular/angular-file-upload.min',
 		'library': '../lib',
+		'ocLazyLoad': '../lib/ocLazyLoad',
+		'bindonce': '../lib/bindonce.min',
 		
 		'poll': 'modules/poll',
 		'security': 'modules/security',
@@ -65,9 +67,7 @@ requirejs.config({
 			deps:['jquery'],
 			exports:'accessConfig'
 		},
-		'app':{
-			deps:['angular']
-		},
+		
 		'auth':{
 			deps:['angular']
 		},
@@ -78,26 +78,41 @@ requirejs.config({
 		'bootstrap':{
 			deps:['jquery'],
 		},
+		'jquery-popup': {
+			deps: ['jquery'] 
+		},
+		'ocLazyLoad': ['angular'],
+		'bindonce': ['angular'],
+		'app':{
+			deps:['ocLazyLoad']
+		},
+		'lapp': ['course', 'lecture'],
 	}
 });
 
 
 
 requirejs( [
+            
 		'text', 
 		'jquery', 
 		'angular', 
 		'jquery-ui',
-
+		'app',
+		
 		'angular-resource',
 		'angular-route',
 		'angular-cookies',
 		'angular-ui-router',
 		'angular-ui-bootstrap',
 		'angular-file-upload',
-		'app',
+		
 		'routes',
+		'ocLazyLoad',
 		'bootstrap',
+		'bindonce',
+	
+       
 	],
 
 	function (text, $, angular) {
@@ -106,8 +121,9 @@ requirejs( [
 		
 	     require(['domReady!'], function (document) {
 	    	 try {
-	    	        // Wrap this call to try/catch
+	    	     
 	    		 angular.bootstrap(document, ['kaisquare']);
+	    		 
 	    	 }
 	    	 catch (e) {
 	    	     console.error(e.stack || e.message || e);

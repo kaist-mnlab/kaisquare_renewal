@@ -7,20 +7,19 @@ link(href="/css/mobile_lapp.css" rel="stylesheet" type="text/css" media="only sc
 //script(src="https://www.google.com/jsapi")
 //<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
-div#content(data-ng-switch on="thisUserCtrl")
+div#content(data-ng-switch="thisUserCtrl")
 	#timer
-	#left_video(data-ng-switch on="thisUserCtrl")
-		div#v(data-ng-switch on="isMobile")
-			div#video(data-ng-switch-when="0" data-ng-switch on="thisUserCtrl")
-				div.tutorVideo(data-ng-switch-when="8" data-ng-switch on="lecture.status")
-					video#local(data-ng-switch-when="1", lapp-rtclecture, width="320px", height="240px", autoplay, preload, controls, src="{{trustSrc(lecture.vod_url)}}")
-					video(data-ng-switch-when="0", lapp-video, width="320px", height="240px", autoplay, preload, controls, src="{{trustSrc(lecture.vod_url)}}")
-				div.studentVideo(data-ng-switch-default data-ng-switch on="lecture.status")
-					div(data-ng-switch-when="1", lapp-rtcstudent)
-						video#remote(autoplay="autoplay")
-						video#local(autoplay="autoplay", style="visibility:hidden;")
-					video#vod(data-ng-switch-when="0", lapp-video, width="640px",height="480px",autoplay,preload,controls,src="{{trustSrc(lecture.vod_url)}}")
-		#util(data-ng-switch on="thisUserCtrl")
+	accordion#left_video(data-ng-switch="thisUserCtrl", close-others="false")
+		div#video(data-ng-switch="thisUserCtrl")
+			div.tutorVideo(data-ng-switch-when="8" data-ng-switch="lecture.status")
+				video#local(data-ng-switch-when="1", lapp-rtclecture, width="320px", height="240px", autoplay, preload, controls, src="{{trustSrc(lecture.vod_url)}}")
+				video(data-ng-switch-when="0", lapp-video, width="320px", height="240px", autoplay, preload, controls, src="{{trustSrc(lecture.vod_url)}}")
+			div.studentVideo(data-ng-switch-default data-ng-switch="lecture.status")
+				div(data-ng-switch-when="1", lapp-rtcstudent)
+					video#remote(autoplay="autoplay")
+				div(data-ng-switch-when="0")
+					video#vod(lapp-video, width="640px",height="480px",autoplay,preload,controls,src="{{trustSrc(lecture.vod_url)}}")
+		#util(data-ng-switch="thisUserCtrl")
 			div#tutorCtrl(data-ng-switch-when="8")
 				div#lecture_ctrl()
 					button#lecture_start.btn.btn-success.small_font(type="button", data-ng-click="start_lecture()")
@@ -30,6 +29,8 @@ div#content(data-ng-switch on="thisUserCtrl")
 					button#quiz.btn.btn-primary.small_font(type="button", data-ng-click="make_quiz()")
 						span.glyphicon.glyphicon-check()
 						| Quiz
+					button#quiz.btn.btn-primary.small_font(type="button", data-ng-click="popup_slides()")
+						| Slides
 			div#studentCtrl(data-ng-switch-default)
 				button#q_button.btn.btn-primary.q_button.big_font(type="button", data-ng-click="send_q()")
 					| Q
@@ -38,7 +39,7 @@ div#content(data-ng-switch on="thisUserCtrl")
 				div#live_question
 					div#qustion_msg(data-ng-model="quiz")
 						label() {{quiz.question}}
-						div(data-ng-switch on="quiz.type")
+						div(data-ng-switch="quiz.type")
 							div(data-ng-switch-default)
 								button.btn(type="button", ng-repeat="b in quiz.choice", data-ng-click="quiz_ans_send(b.number)")
 									| {{b.text}}
@@ -46,73 +47,80 @@ div#content(data-ng-switch on="thisUserCtrl")
 								input(type="text", data-ng-model="quiz_short_ans")
 								button#btn(type="button", data-ng-click="quiz_ans_send(0)")
 									| Send
-		#attendance(data-ng-switch-when="8")
-			div#attend_log()
-	#right_twit(ng-style="{{stud_chat_css}}")
-		div#chatModule()
-			div#chatArea.chat.root.timeline.ltr.customisable-border.twitter-timeline.twitter-timeline-rendered(data-ng-model="chat_log")
-				div.stream
-					ul#chatList
-						li.h-entry.tweet.customisable-border(data-ng-repeat="chat in chat_log")
-							div.header
-								p.dt-updated.permalink(pubdate)
-									| {{chat.time}}
-								div.h-card.p-author()
-									a.u-url.profile()
-										span.u-photo.avatar.fa.fa-twitter-square.fa-4x()
-										span.p-name.customisable-highlight()
-											| {{chat.src_name}} 
-							div.e-entry-content
-								p.e-entry-title
-									| {{chat.message}}
-							div.footer.customisable-border
-			div#inputArea.chat.timeline-footer()
-				input.tweet-box-button#inputMessage(type="text", data-ng-model="chat_message")
-				button#btnChat.btn-send(type="button", data-ng-click="send_chat()")
-					| Send
-		div#quizStatArea(style="width:250px; height:250px; float:left;")
-			div#quizChart(google-chart chart="quiz_chart")
-		div#kaisqr_canvas(lapp-canvas)
-			label
-				| Canvas
-			canvas#whiteboard(width="320px" height="265px")
-			div#colors(ng-repeat="color in canvasStrokeColor")
-				span(ng-click="selectColor(color.color)" style="float:left; margin-left:5px; margin-right: 5px;")
-					| {{color.color}}
-		div#kaisqr_presentation(lapp-presentation data-ng-switch on="thisUserCtrl")
-			label
-				| PPT
-			img#slide(width="320px" height="240px")
-			canvas#slide_pen(width="320px" height="240px")
-			div#presentation_controller(data-ng-switch-when="8")
-				i.fa.fa-arrow-circle-left.fa-3x(ng-click="moveLeft()")
-				i.fa.fa-arrow-circle-right.fa-3x(ng-click="moveRight()")
-				i.fa.fa-repeat.fa-3x(ng-click="presentationReplay()")
-				i.fa.fa-trash-o.fa-3x(ng-click="presentationReset()")
-				div#colors(ng-repeat="color in presentationPenColor")
-					span(ng-click="presentationSelectColor(color.color)" style="float:left; margin-left:5px; margin-right: 5px;")
+		div(data-ng-switch-when="8")
+			accordion-group(heading="Attendance", is-open="true", style="display:inline-block; ")
+				#attendance()
+					div#attend_log
+	accordion#right_twit(ng-style="{{stud_chat_css}}", close-others="false")
+		accordion-group(heading="Slides", is-open="true", style="width:322px; float:left")
+			div#kaisqr_presentation(lapp-presentation, data-ng-switch="thisUserCtrl")
+				label
+				img#slide(width="320px", height="240px", fallback-src="/thumb/KAIST.jpg")
+				canvas#slide_pen(width="320px" height="240px")
+				div#presentation_controller(data-ng-switch-when="8")
+					i.fa.fa-arrow-circle-left.fa-3x(ng-click="moveLeft()")
+					i.fa.fa-arrow-circle-right.fa-3x(ng-click="moveRight()")
+					i.fa.fa-repeat.fa-3x(ng-click="presentationReplay()")
+					i.fa.fa-trash-o.fa-3x(ng-click="presentationReset()")
+					div#colors(ng-repeat="color in presentationPenColor")
+						span(ng-click="presentationSelectColor(color.color)" style="float:left; margin-left:5px; margin-right: 5px;")
+							| {{color.color}}
+		accordion-group(heading="Social Log", is-open="true", style="width:322px; float:left; margin-top:0px")
+			div#chatModule()
+				div#chatArea.chat.root.timeline.ltr.customisable-border.twitter-timeline.twitter-timeline-rendered(data-ng-model="chat_log")
+					div.stream
+						ul#chatList
+							li.h-entry.tweet.customisable-border(data-ng-repeat="chat in chat_log")
+								div.header
+									p.dt-updated.permalink(pubdate)
+										| {{chat.time}}
+									div.h-card.p-author()
+										a.u-url.profile()
+											span.u-photo.avatar.fa.fa-twitter-square.fa-4x()
+											span.p-name.customisable-highlight()
+												| {{chat.src_name}} 
+								div.e-entry-content
+									p.e-entry-title
+										| {{chat.message}}
+								div.footer.customisable-border
+				div#inputArea.chat.timeline-footer()
+					input.tweet-box-button#inputMessage(type="text", data-ng-model="chat_message")
+					button#btnChat.btn-send(type="button", data-ng-click="send_chat()")
+						| Send
+		accordion-group(heading="Canvas", is-open="true", style="width:322px; float:left; display:inline-block; height: 1%; overflow: hidden;")
+			div#kaisqr_canvas(lapp-canvas)
+				div
+				canvas#whiteboard(width="320px" height="265px")
+				div#colors(ng-repeat="color in canvasStrokeColor")
+					span(ng-click="selectColor(color.color)" style="float:left; margin-left:5px; margin-right: 5px;")
 						| {{color.color}}
-	#q(data-ng-switch-when="8")
-		div#q_log()
-			div#q_chart(google-chart chart="q_chart")
-		table#question_list(border="1")
-			tr.questions()
-				th.q_text
-					| Text Question
-				th.q_image
-					| Image Ref
-				th.q_audio
-					| Audio Question
-				th.q_user
-					| User
-			tr.questions(ng-repeat="question in question_list")
-				td.q_text
-					| {{question.text}}
-				td.q_image
-					img(ng-src="{{question.image}}", style="width:200px; height:150px;")
-				td.q_audio
-					audio(controls, src="{{question.audio}}")
-				td.q_user
-					| {{question.userId}}
-			//canvas#chart(width="1080", height="150")
-	//div(ppt-popup style="display:none")
+					
+		accordion-group(heading="Quiz Results", is-open="true", style="width:322px; float:left")
+			div#quizStatArea(style="width:250px; height:285px; float:left;")
+				div#quizChart(google-chart chart="quiz_chart")
+				
+	accordion(close-others="false", style="float:left; clear:both; display:inline-block; zoom:1; *display:inline; ")
+		#q(data-ng-switch-when="8")
+			accordion-group(heading="Q Log", is-open="true")
+				div#q_log()
+					div#q_chart(google-chart chart="q_chart")
+			accordion-group(heading="Question", is-open="true")
+				table#question_list(border="1", width="100%")
+					tr.questions()
+						th.q_text
+							| Text Question
+						th.q_image
+							| Image Ref
+						th.q_audio
+							| Audio Question
+						th.q_user
+							| User
+					tr.questions(ng-repeat="question in question_list")
+						td.q_text
+							| {{question.text}}
+						td.q_image
+							img(ng-src="{{question.image}}", style="width:200px; height:150px;")
+						td.q_audio
+							audio(controls, src="{{question.audio}}")
+						td.q_user
+							| {{question.userId}}

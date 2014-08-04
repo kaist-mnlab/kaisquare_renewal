@@ -16,7 +16,7 @@ form(role="form", data-ng-submit="sendQuiz()")
                 label Short Answer
                 input(type="radio", data-ng-model="quiz.type", name="q", value="short")
         .form-group
-            div(data-ng-switch on="quiz.type")
+            div(data-ng-switch="quiz.type")
                 div(data-ng-switch-when="multiple")
                     label() Choice
                     div(ng-repeat="c in quizChoice")

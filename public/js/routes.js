@@ -28,8 +28,17 @@ define([
 		        })
 		        .state('public.lapp', {
 		            url: '/lapp/:lectureId',
-		            templateUrl: 'lapp',
-		            controller: 'LectureAppCtrl'
+		            templateUrl: '/partials/lapp',
+		            controller: 'LectureAppCtrl',
+		            resolve: {
+		            	loadLapp:['$ocLazyLoad',  function($ocLazyLoad) {
+		            		return $ocLazyLoad.load({
+		            			name: 'lapp',
+		            			files: ['/js/modules/lapp/index.js']
+		            		});
+		            		
+		            	}]
+		            }
 		        })
 		        .state('public.home', {
 		            url: '/',
@@ -39,51 +48,86 @@ define([
 		            url: '/introduction',
 		            templateUrl: 'introduction',
 		        })
-		        .state('public.polls', {
-		            url: '/polls/',
-		            templateUrl: 'poll/list',
-		            controller: 'PollListCtrl'
-		        })
-		        .state('public.new', {
-		            url: '/polls/new',
-		            templateUrl: 'poll/new',
-		            controller: 'PollNewCtrl'
-		        })
-		        .state('public.poll', {
-		            url: '/polls/poll/:pollId',
-		            templateUrl: 'poll/item',
-		            controller: 'PollItemCtrl'
-		        })
 		        .state('public.courses', {
 		        	abstract: true,
 		            url: '/courses/',
 		            templateUrl: 'course/layout',
 		            //controller: 'CourseListCtrl'
+		            resolve: {
+		            	loadCourse:['$ocLazyLoad', function($ocLazyLoad) {
+		            		return $ocLazyLoad.load({
+		            			name: 'course',
+		            			files: ['/js/modules/course/index.js','/js/modules/lecture/index.js']
+		            		});
+		            		
+		            	}]
+		            }
 		        })
 		        .state('public.courses.index', {
 		            url: '',
-		            templateUrl: 'course/index',
-		            controller: 'CourseListCtrl'
+		            templateUrl: '/partials/course/index',
+		            controller: 'CourseListCtrl',
+		            resolve: {
+		            	
+		            	loadLecture:['$ocLazyLoad', function($ocLazyLoad) {
+		            		return $ocLazyLoad.load({
+		            			name: 'lecture',
+		            			files: ['/js/modules/lecture/index.js']
+		            		});
+		            		
+		            	}],
+		            	loadList:['loadLecture', function(loadLecture) {
+		            		
+		            		
+		            	}],
+		            	
+		            	
+		            }
+		            	
 		        })
 		        .state('public.courses.show', {
 		            url: 'course/:courseId',
-		            templateUrl: 'course/show',
-		            controller: 'CourseItemCtrl'
+		            templateUrl: '/partials/course/show',
+		            controller: 'CourseItemCtrl',
+		            
+		            resolve: {
+		            	
+		            	loadLecture:['$ocLazyLoad', function($ocLazyLoad) {
+		            		return $ocLazyLoad.load({
+		            			name: 'lecture',
+		            			files: ['/js/modules/course/index.js', '/js/modules/lecture/index.js']
+		            		});
+		            		
+		            	}],
+		            	loadList:['loadLecture', function(loadLecture) {
+		            		
+		            		
+		            	}],
+		            	
+		            }
 		        })
 		        .state('public.lectures', {
 		        	abstract: true,
 		            url: '/lectures/',
 		            templateUrl: 'lecture/layout',
-		            //controller: 'CourseListCtrl'
+		            resolve: {
+		            	loadLecture:['$ocLazyLoad', function($ocLazyLoad) {
+		            		return $ocLazyLoad.load({
+		            			name: 'lecture',
+		            			files: ['/js/modules/course/index.js', '/js/modules/lecture/index.js']
+		            		});
+		            		
+		            	}]
+		            }
 		        })
 		        .state('public.lectures.index', {
 		            url: '',
-		            templateUrl: 'lecture/index',
+		            templateUrl: '/partials/lecture/index',
 		            controller: 'LectureListCtrl'
 		        })
 		        .state('public.lectures.show', {
 		            url: '/lectures/lecture/:lectureId',
-		            templateUrl: 'lecture/show',
+		            templateUrl: '/partials/lecture/show',
 		            controller: 'LectureItemCtrl'
 		        })
 		   
@@ -147,44 +191,106 @@ define([
 		        	abstract: true,
 		            url: '/courses/',
 		            templateUrl: 'course/layout',
-		            //controller: 'CourseListCtrl'
+		            resolve: {
+		            	loadCourse:['$ocLazyLoad', function($ocLazyLoad) {
+		            		return $ocLazyLoad.load({
+		            			name: 'course',
+		            			files: ['/js/modules/course/index.js', '/js/modules/lecture/index.js']
+		            		});
+		            		
+		            	}]
+		            }
 		        })
 		        .state('user.courses.new', {
 		            url: 'new/',
-		            templateUrl: 'course/new',
+		            templateUrl: '/partials/course/new',
 		            controller: 'CourseNewCtrl'
 		        })
 		        .state('user.courses.edit', {
 		            url: 'course/:courseId/edit',
-		            templateUrl: 'course/edit',
+		            templateUrl: '/partials/course/edit',
 		            controller: 'CourseNewCtrl'
 		        })
 		        .state('user.lectures', {
 		        	abstract: true,
 		            url: '/lectures/',
 		            //url: '/lectures/new',
-		            templateUrl: 'lecture/layout',
-		            //controller: 'CourseListCtrl'
+		            templateUrl: '/partials/lecture/layout',
+		            resolve: {
+		            	loadLecture:['$ocLazyLoad', function($ocLazyLoad) {
+		            		return $ocLazyLoad.load({
+		            			name: 'lecture',
+		            			files: ['/js/modules/course/index.js', '/js/modules/lecture/index.js']
+		            		});
+		            		
+		            	}]
+		            }
 		        })
 		        .state('user.lectures.new', {
 		            url: 'new/',
-		            templateUrl: 'lecture/new',
+		            templateUrl: '/partials/lecture/new',
 		            controller: 'LectureNewCtrl'
 		        })
 		        .state('user.lectures.edit', {
 		            url: 'lecture/:lectureId/edit',
-		            templateUrl: 'lecture/edit',
+		            templateUrl: '/partials/lecture/edit',
 		            controller: 'LectureNewCtrl'
+		        })
+		        .state('user.lapp', {
+		            url: '/lapp/:lectureId',
+		            templateUrl: '/partials/lapp',
+		            controller: 'LectureAppCtrl',
+		            resolve: {
+		            	loadLapp:['$ocLazyLoad',  function($ocLazyLoad) {
+		            		return $ocLazyLoad.load({
+		            			name: 'lapp',
+		            			files: ['/js/modules/lapp/index.js']
+		            		});
+		            		
+		            	}]
+		            }
 		        })
 		        .state('user.lapp.quiz', {
 		        	url: 'lapp/:lectureId',
-		        	templateUrl: 'lapp/quiz',
-		        	controller: 'QuizQuestionCtrl'
+		        	templateUrl: '/partials/lapp/quiz',
+		        	controller: 'QuizQuestionCtrl',
+		        	resolve: {
+		            	loadLapp:['$ocLazyLoad',  function($ocLazyLoad) {
+		            		return $ocLazyLoad.load({
+		            			name: 'lapp',
+		            			files: ['/js/modules/lapp/index.js']
+		            		});
+		            		
+		            	}]
+		            }
 		        })
-		        .state('user.lapp.ppt', {
-		        	url: 'lapp/:lectureId/ppt',
-		        	templateUrl: 'lapp/ppt',
-		        	controller: 'PPTCtrl'
+		        .state('user.ppt', {
+		        	url: '/ppt/:lectureId',
+		        	templateUrl: '/partials/lapp/ppt',
+		        	controller: 'PPTCtrl',
+		        	resolve: {
+		            	loadLapp:['$ocLazyLoad',  function($ocLazyLoad) {
+		            		return $ocLazyLoad.load({
+		            			name: 'lapp.ppt',
+		            			files: ['/js/modules/lapp/lapp.ppt.js', '/js/modules/lecture/lecture.service.js',  '/js/modules/lapp/lapp.service.js', '/js/modules/course/course.service.js',]
+		            		});
+		            		
+		            	}]
+		            }
+		        })
+		        .state('user.lapp.question', {
+		        	url: 'lapp/:lectureId',
+		        	templateUrl: '/partials/lapp/question',
+		        	controller: 'RaiseQuestionCtrl',
+		        	resolve: {
+		            	loadLapp:['$ocLazyLoad',  function($ocLazyLoad) {
+		            		return $ocLazyLoad.load({
+		            			name: 'lapp',
+		            			files: ['/js/modules/lapp/index.js']
+		            		});
+		            		
+		            	}]
+		            }
 		        })
 		        
 		        ;

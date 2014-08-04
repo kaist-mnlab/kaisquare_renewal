@@ -1,7 +1,7 @@
 'use strict';
 
 /* Controllers */
-define(['angular'], function(angular) {
+define(['angular', 'angular-file-upload'], function(angular) {
 angular.module('lecture.controller', ['security', 'ui.bootstrap' , 'angularFileUpload'])
 //app
 .controller('LectureListCtrl',
@@ -23,21 +23,20 @@ angular.module('lecture.controller', ['security', 'ui.bootstrap' , 'angularFileU
 //app
 angular.module('lecture.controller')
 .controller('LectureItemCtrl',
-['$scope', '$q', '$location','$stateParams','Lecture','User','lectureId', '$modalInstance', '$modal', function($scope, $q, $location, $stateParams,Lecture,User,lectureId, $modalInstance, $modal) {
+['$scope', '$q', '$location','$stateParams','Lecture','User','lectureId', '$modalInstance', '$modal','lectureService', function($scope, $q, $location, $stateParams,Lecture,User,lectureId, $modalInstance, $modal,lectureService) {
 
 	$scope.lecture = Lecture.get({lectureId: lectureId});
 	
 	$scope.lecture.$promise.then(function() {
-
-		}
-	);
+		lectureService.setLecture($scope.lecture);
+	});
 
 	$scope.launchEdit = function() {
 		//$modalInstance.close();
 		
 		var dlg = null;
 		dlg = $modal.open({
-				templateUrl: 'lecture/edit',
+				templateUrl: '/partials/lecture/edit',
 				controller: 'LectureEditCtrl',
 				resolve: {
 					lecture: function() {
@@ -99,6 +98,7 @@ angular.module('lecture.controller')
 		status: 0,
 		duration: 0,
 		ppt_page: 0,
+		ppt_event_log: "",
 		course: course._id,
 		vod_url: '',
 		material_url: [],
@@ -279,13 +279,9 @@ angular.module('lecture.controller')
 angular.module('lecture.controller')
 .controller('LectureEditCtrl',
 ['$scope', '$modalInstance', '$location','$stateParams','Lecture', 'Course', 'lecture', function($scope, $modalInstance, $location, $stateParams,Lecture, Course, lecture) {
-	//var user = $scope.user;
 
 	$scope.lecture = lecture;
-	//console.log(lecture);	
 	$scope.course = Course.get({courseId: lecture.course});
-	
-	//console.log($scope.course);
 	
 	$scope.updateLecture = function() {
 

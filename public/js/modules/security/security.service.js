@@ -1,14 +1,14 @@
 'use strict';
 
 define(['angular', 'access-config'], function(angular, accessConfig) {
-//'ui.bootstrap.dialog'
 angular.module('security.service', ['ngResource'])
 //.factory('security', ['$http', '$dialog', '$cookieStore', function($http, $dialog, $cookieStore) {
 .factory('security', ['$http', '$cookieStore', function($http, $cookieStore) {
 
     var accessLevels = accessConfig.accessLevels
         , userRoles = accessConfig.userRoles
-        , currentUser = $cookieStore.get('user') || { username: '', role: userRoles.public, _id: '' };
+        , currentUser = $cookieStore.get('user') || { username: '', role: userRoles.public, _id: '' }
+    	, thisUserCtrl = {};
 
     $cookieStore.remove('user');
     
@@ -18,7 +18,7 @@ angular.module('security.service', ['ngResource'])
       if ( loginDialog ) {
         throw new Error('Trying to open a dialog that is already open!');
       }
-      //loginDialog = $dialog.dialog();
+
       //TODO partial view change
       //loginDialog.open('security/login/form.tpl.html', 'LoginFormController').then(onLoginDialogClose);
     }
@@ -88,6 +88,14 @@ angular.module('security.service', ['ngResource'])
                 success();
             }).error(error);
         },
+        setThisUserCtrl: function(c) {
+        	currentUser.thisUserCtrl = c;
+        	$cookieStore.put('thisUserCtrl', c);
+        },
+        getThisUserCtrl: function() {
+        	return currentUser.thisUserCtrl || $cookieStore.get('thisUserCtrl');
+        },
+        
         accessLevels: accessLevels,
         userRoles: userRoles,
         user: currentUser,
@@ -98,7 +106,6 @@ angular.module('security.service', ['ngResource'])
 }]);
 
 angular.module('security.service')
-//app
 	.factory('Users', function($http) {
 	    return {
 	        getAll: function(success, error) {
@@ -110,7 +117,6 @@ angular.module('security.service')
 
 
 angular.module('security.service')
-//app
 	.factory('User', function($resource) {
 	    return $resource('/user/:userId', {}, {
 			// Use this method for getting a list of polls

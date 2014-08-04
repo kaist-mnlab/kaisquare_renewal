@@ -23,6 +23,6 @@ angular.module('lapp.service', ['ngResource'])
 	      })
 	    }
 		};
-	});
+	})
 	
 });

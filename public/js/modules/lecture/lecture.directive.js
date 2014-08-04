@@ -9,7 +9,7 @@ angular.module('lecture.directives', [])
 
     return {
 
-        templateUrl: 'lecture/index',
+        templateUrl: '/partials/lecture/index',
         link: function(scope, element, attrs) {
             scope.location = $location;
 

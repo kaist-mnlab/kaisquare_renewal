@@ -1,5 +1,14 @@
-h1 ppt test
-div#content
-	h1 Hello world
-	
-	
+//div#ppt_popup(ppt-popup)
+div
+	div#popup_slide(lapp-presentation, data-ng-switch="thisUserCtrl")
+		div
+		img#slide(width="320px", height="240px", fallback-src="/thumb/KAIST.jpg")
+		canvas#slide_pen(width="320px" height="240px")
+		div#presentation_controller
+			i.fa.fa-arrow-circle-left.fa-3x(ng-click="moveLeft()")
+			i.fa.fa-arrow-circle-right.fa-3x(ng-click="moveRight()")
+			i.fa.fa-repeat.fa-3x(ng-click="presentationReplay()")
+			i.fa.fa-trash-o.fa-3x(ng-click="presentationReset()")
+			div#colors(ng-repeat="color in presentationPenColor")
+				span(ng-click="presentationSelectColor(color.color)", style="float:left; margin-left:5px; margin-right: 5px;")
+					| {{color.color}}

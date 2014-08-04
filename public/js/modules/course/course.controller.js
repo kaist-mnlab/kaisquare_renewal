@@ -8,6 +8,8 @@ angular.module('course.controller', ['security', 'lecture','ui.bootstrap'])
 [ '$scope', 'Course', '$modal','User', function( $scope, Course, $modal,User) {
 
 	$scope.courses = Course.query();
+	
+	
 	$scope.launch = function(which){
 		
 		var dlg = null;
@@ -15,7 +17,7 @@ angular.module('course.controller', ['security', 'lecture','ui.bootstrap'])
 		switch(which){
 		case 'newCourse':
 			dlg = $modal.open({
-				templateUrl: 'course/new',
+				templateUrl: '/partials/course/new',
 				controller: 'CourseNewCtrl',
 				resolve: {
 					user: function() {
@@ -59,7 +61,7 @@ angular.module('course.controller', ['security', 'lecture','ui.bootstrap'])
 //app
 angular.module('course.controller')
 .controller('CourseItemCtrl',
-['$rootScope', '$scope','$state', '$q', '$location','$stateParams','Course','User','$http','Lecture','$modal','security', function($rootScope,$scope, $state,$q, $location, $stateParams,Course,User, $http, Lecture, $modal, security) {
+['$rootScope', '$scope','$state', '$q', '$location','$stateParams','Course','User','$http','Lecture','$modal','security','courseService', function($rootScope,$scope, $state,$q, $location, $stateParams,Course,User, $http, Lecture, $modal, security, courseService) {
 	$scope.courseAccessLevels = accessConfig.courseAccessLevels;
 	$scope.course = Course.get({courseId: $stateParams.courseId});
 	$scope.course.usersData = [];
@@ -69,7 +71,7 @@ angular.module('course.controller')
 	$scope.courseId = $scope.course._id;
 	$scope.lectures = {};
 	$scope.alerts = [];
-	
+
 	$scope.addAlert = function(msg, type) {
 		$scope.alerts.push({msg: msg, type: type});
 	};
@@ -78,6 +80,13 @@ angular.module('course.controller')
 	}	
 	
 	$scope.course.$promise.then(function() {
+		courseService.setCourse($scope.course);
+		for( var u in $scope.course.users)
+			if($scope.course.users[u].user === $scope.user._id) {
+				security.setThisUserCtrl($scope.course.users[u].role_bitMask);
+				break;
+			}
+		
 		$scope.refreshCourse();
 		$scope.courseId = $scope.course._id;
 		$scope.lectures = Lecture.query({course: $scope.courseId});
@@ -85,7 +94,7 @@ angular.module('course.controller')
 			$scope.launchLecture = function(id){
 				var dlg = null;
 				dlg = $modal.open({
-						templateUrl: 'lecture/show',
+						templateUrl: '/partials/lecture/show',
 						controller: 'LectureItemCtrl',
 						resolve: {
 							lectureId: function() {
@@ -105,10 +114,6 @@ angular.module('course.controller')
 			
 		});
 	});
-	
-	
-	
-	
 	
 	$scope.enroll = function() {
 		if($scope.user.role.bitMask == 1) {
@@ -189,7 +194,7 @@ angular.module('course.controller')
 		case 'newLecture':
 			
 			dlg = $modal.open({
-				templateUrl: 'lecture/new',
+				templateUrl: '/partials/lecture/new',
 				controller: 'LectureNewCtrl',
 				resolve: {
 					user: function() {
@@ -212,7 +217,7 @@ angular.module('course.controller')
 			break;
 		case 'editCourse':
 				dlg = $modal.open({
-					templateUrl: 'course/edit',
+					templateUrl: '/partials/course/edit',
 					controller: 'CourseNewCtrl',
 					resolve: {
 						user: function() {

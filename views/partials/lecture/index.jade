@@ -1,5 +1,5 @@
-.row(data-ng-controller='NavCtrl')
-	.col-xs-5
+.row
+	.col-xs-5(data-ng-controller='NavCtrl')
 		button.btn.btn-default(data-ng-click="launch('newLecture')", act-nav, data-course-access-level='courseAccessLevels.tutor')
 			span.glyphicon.glyphicon-plus() 
 			| New Lecture
@@ -11,14 +11,14 @@
 	.col-xs-12
 		hr
 
-div(data-ng-switch, on="lectures.length")
+div(data-ng-switch="lectures.length")
 	div(data-ng-switch-when="0")
 		| No lecture in databases. Would you like to create one?
 	div(data-ng-repeat="lecture in lectures | filter:query")
 		div.lecturedesc.post.content.well
 			a(data-ng-click="launchLecture(lecture._id)")
 				//img.thumbnail(src="/thumb/{{$index+1}}.jpg")
-				img.lecture.thumbnail(src="/thumb/{{lecture.title}}.jpg")
+				img.lecture.thumbnail(fallback-src="/thumb/KAIST.jpg",src="/thumb/{{lecture.title}}.jpg")
 			div.well.lecturedesc.post-desc
 				p.content.title
 					a(data-ng-click="launchLecture(lecture._id)")
@@ -31,7 +31,7 @@ div(data-ng-switch, on="lectures.length")
 				p.content.tutor
 					strong
 						| Lecture Type
-					div(data-ng-switch, on="lecture.status")
+					div(data-ng-switch="lecture.status")
 						div(data-ng-switch-when="1")
 							| Live
 						div(data-ng-switch-when="0")
