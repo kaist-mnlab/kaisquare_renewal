@@ -11,10 +11,12 @@ form#question_form(role="form", data-ng-submit="raiseQuestion()")
 			input#file.form-control(type="file" data-ng-file-select )
 		.form-group
 			label(for="voice") Voice
-			button#voice.btn.btn-success.small_font(type="button", data-ng-click="record_question()")
-				| Listen My Voice!
+			button#voice.btn.small_font(type="button", data-ng-hide="recordStatus === 2", data-ng-class="{ 'btn-success':recordStatus === 0, 'btn-danger':recordStatus === 1, 'btn-disabled':noStream }", data-ng-click="record_question()")
+				| {{voiceText}}
+			label(ng-show="recordStatus === 2")
+				| : {{voiceText}}
 	.modal-footer   
-		button.btn.btn-primary.pull-right(type="submit", data-ng-click="close()") 
+		button.btn.btn-primary.pull-right(type="submit", data-ng-class="{ 'btn-disabled':nowUpload }", data-ng-click="close()") 
 			| Raise Question!
 		button.btn.btn-danger(type="button", data-ng-click="cancel()")
 			| Cancel

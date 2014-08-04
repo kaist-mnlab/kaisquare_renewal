@@ -50,6 +50,7 @@ module.exports = {
 				lectures[lectureId] = {startAt: 0, lapTime: 0, duration:0, isLectureStarted: 'false', attendee: []};
 				lectures[lectureId].qs = [];
 				lectures[lectureId].cs = [];
+				lectures[lectureId].question_list = [];
 			}
 			console.log(socketRoom);
 			
@@ -261,6 +262,19 @@ module.exports = {
 				}
 			});
 		});
+
+		socket.on('reloadQuestions', function() {
+			socket.emit('updateQuestions', lectures[socketRoom[socket.id].lectureId].question_list);
+		});
+
+		socket.on('raiseQuestion', function(question){
+			console.log(question);
+			var lectureId = socketRoom[socket.id].lectureId;
+			question.userId = socketRoom[socket.id].userId;
+			lectures[lectureId].question_list.push(question);
+			io.sockets.in(lectureId).emit('updateQuestions', lectures[lectureId].question_list);
+		});
+
 		socket.on('disconnect', function(data) {
 			console.log('disconnected');
 			if (socketRoom[socket.id] !== undefined){

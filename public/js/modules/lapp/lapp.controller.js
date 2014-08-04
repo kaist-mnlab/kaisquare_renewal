@@ -142,6 +142,14 @@ define(['angular',
 				});
 			}
 		});
+
+		$(window).bind("unload", function (event) {
+			console.log('state change!');
+			if (typeof $scope.session.session !== 'undefined') {
+				$scope.session.session.close();
+				$scope.session.session = null;
+			}
+		});
 			
 		Stopwatch.text = ($('#timer'));
 		$scope.stopwatch = Stopwatch;
@@ -155,12 +163,22 @@ define(['angular',
 				     lecture: $scope.lecture._id,
 				   };
 		
-		if($scope.thisUserCtrl != "8"){			
+		if($scope.thisUserCtrl != "8") {			
 			$("#q").hide();
 			$("#whiteboard").attr('width', '250px');
 			$("#whiteboard").attr('height', '280px');
 			$("#right_twit").css('width', '230px');
 		}
+
+		$scope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
+			console.log('state change!');
+			if (typeof $scope.session.session !== 'undefined') {
+				$scope.session.session.close();
+				delete $scope.session.session;
+				$scope.session.session = null;
+			}
+		});
+
 		$("#quizStatArea").hide();
 		
 		socket.on('initQnChat', function(qs, cs){
@@ -432,27 +450,20 @@ define(['angular',
 			if($scope.thisUserCtrl != "8") 
 				return;
 	
-	    	var attendance = {};
-	    	attendance = angular.element("#attend_log")[0].children;
-	    	for( ; attendance.length > 0; ){
-				attendance[0].remove();
-	    	}
+	   //  	var attendance = {};
+	   //  	attendance = angular.element("#attend_log")[0].children;
+	   //  	for( ; attendance.length > 0; ){
+				// attendance[0].remove();
+	   //  	}
 			
-	    	for( var i = 0; i<data.length; ++i){
-		    	var user = {img: null, userId: data[i].userId, username: data[i].username};
-		    	$("#attend_log").prepend(
-		    		"<div id='" + user.userId + "' style='float:left' > <div id='" + user.userId + "_thumb' ><span class='u-photo avatar fa fa-twitter-square fa-4x'></span></div> <br> <label>" + user.username  + "</label></div>"
-		    	);
-		    	if ($scope.studentScreen[user.userId] !== undefined){
-		    		var u = $scope.stduentScreen[user.userId];
-		    		var uid = $('#'+u.uid+'_thumb')[0];
-		    		if(typeof uid !== 'undefined')
-		    			uid.children[0].remove();
-					attachMediaStream($('<video></video>').attr({ 'id': u.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': u.uid }).appendTo('#'+u.uid+'_thumb').get(0), u.stream);
-		    	}
-		    }
+	   //  	for( var i = 0; i<data.length; ++i){
+		  //   	var user = {img: null, userId: data[i].userId, username: data[i].username};
+		  //   	$("#attend_log").prepend(
+		  //   		"<div id='" + user.userId + "' style='float:left' > <div id='" + user.userId + "_thumb' ><span class='u-photo avatar fa fa-twitter-square fa-4x'></span></div> <br> <label>" + user.username  + "</label></div>"
+		  //   	);
+		  //   }
 	    	
-	    	$scope.attendance = data;// = user;    	
+	    	// $scope.attendance = data;// = user;    	
 	    });
 	
 	    socket.on('connected',function(){
@@ -462,8 +473,7 @@ define(['angular',
 		});
 		socket.on('disconnect',function(data) {
 			console.log(data + " has been eliminated");
-			$("#"+data).remove();
-			
+			//$("#"+data).remove();
 		});
 		
 		socket.on('joinLecture',function(data){
@@ -476,7 +486,11 @@ define(['angular',
 			if(data.type == 'q')
 				$scope.q_log += 1;
 	    });
-	
+
+	    socket.on('updateQuestions', function (data) {
+			console.log(data);
+			$scope.question_list = data;
+		});
 	}])
 	;
 	
@@ -536,13 +550,15 @@ define(['angular',
 	angular.module('lapp.controller')
 	.controller('RaiseQuestionCtrl',
 	['$rootScope', '$scope', '$location', '$modal', '$modalInstance',  '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', '$fileUploader', 'XSRF_TOKEN', '$http', 'session', function ($rootScope, $scope, $location, $modal, $modalInstance, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl, $fileUploader, csrf_token, $http, session) {
-
-		//TODO : Send question to server, receive function for lecturere
+		
 		//Refer QuizQuestionCtrl
 		$scope.question = {
 			text: '',
 		}
-
+		$scope.voiceText = "Start Record";
+		$scope.noStream = (typeof session.session.localStream === 'undefined');
+		$scope.nowUpload = false;
+		$scope.recordStatus = 0;
 		//File uploader
 		var uploader = $scope.uploader = $fileUploader.create({
 			scope: $scope,                          // to automatically update the html. Default: $rootScope
@@ -575,6 +591,7 @@ define(['angular',
 		uploader.bind('afteraddingall', function (event, items) {
 			console.info('After adding all files', items);
 			uploader.uploadAll();
+			$scope.nowUpload = true;
 		});
 
 		uploader.bind('beforeupload', function (event, item) {
@@ -599,6 +616,7 @@ define(['angular',
 
 		uploader.bind('complete', function (event, xhr, item, response) {
 			console.info('Complete', xhr, item, response);
+			$scope.nowUpload = false;
 			$scope.question.image = '../uploads/temp/' + item.file.name;
 		});
 
@@ -610,9 +628,15 @@ define(['angular',
 			console.log('test');
 			if (typeof $scope.recorder === 'undefined') {
 			 	console.log(session.session);
+			 	$scope.voiceText = "Stop Record";
+			 	$scope.recordStatus = 1;
 				$scope.recorder = new Recorder(session.session.localStream, { gid: lecture._id, uid: user._id, video:false});
 				$scope.recorder.start();
 				$scope.recorder.onRecordCompleted = function(href) {
+					$scope.recordStatus = 2;
+					$scope.nowUpload = false;
+					$scope.noStream = true;
+					$scope.voiceText = "Record Completed";
 					console.log(href);
 					$scope.question.audio = href;
 				};
@@ -620,13 +644,13 @@ define(['angular',
 			else {
 				$scope.recorder.stop();
 				console.log('stop');
+				$scope.nowUpload = true;
 			}
 		};
 
 		$scope.lecture = lecture;
 		$scope.raiseQuestion = function () {
 			//TODO : send file
-			
 			socket.emit('raiseQuestion', { text: $scope.question.text, image: $scope.question.image, audio: $scope.question.audio });
 			$modalInstance.close($scope.question);
 		}
