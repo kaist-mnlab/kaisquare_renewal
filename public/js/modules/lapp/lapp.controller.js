@@ -99,6 +99,7 @@ define(['angular',
 		$scope.lectureId = $stateParams.lectureId;
 		$scope.lecture = lectureService.getLecture();
 		$scope.chat_log = [];
+		$scope.chat = { chat_message:""};
 		$scope.chat_message = "";
 		$scope.course = courseService.getCourse();
 		$scope.thisUserCtrl = 0;
@@ -430,7 +431,8 @@ define(['angular',
 		
 	    $scope.send_chat = function() {
 	    	data.type = 'chat';
-	    	data.message = $scope.chat_message;
+	    	//data.message = $scope.chat_message;
+	    	data.message = $scope.chat.chat_message;
 	    	data.src_name = $scope.user.username;
 	    	if ($scope.lecture.status == 1)
 				$scope.currentTime = $scope.stopwatch.time()* 0.001;
@@ -439,6 +441,8 @@ define(['angular',
 			data.timestamp = Date.now();
 		   	socket.emit('sendMessage', data);
 		   	$scope.chat_message = "";
+		   	
+		   	console.log("send_message:" +  data.message);
 	    }
 	    $scope.click_user = function(data){
 	    	//alert(data);

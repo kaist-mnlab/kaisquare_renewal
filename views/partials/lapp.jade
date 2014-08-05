@@ -84,7 +84,7 @@ div#content(data-ng-switch="thisUserCtrl")
 										| {{chat.message}}
 								div.footer.customisable-border
 				div#inputArea.chat.timeline-footer()
-					input.tweet-box-button#inputMessage(type="text", data-ng-model="chat_message")
+					input.tweet-box-button#inputMessage(type="text", data-ng-model="chat.chat_message")
 					button#btnChat.btn-send(type="button", data-ng-click="send_chat()")
 						| Send
 		accordion-group(heading="Canvas", is-open="true", style="width:322px; float:left; display:inline-block; height: 1%; overflow: hidden;")
@@ -95,7 +95,7 @@ div#content(data-ng-switch="thisUserCtrl")
 					span(ng-click="selectColor(color.color)" style="float:left; margin-left:5px; margin-right: 5px;")
 						| {{color.color}}
 					
-		accordion-group(heading="Quiz Results", is-open="true", style="width:322px; float:left")
+		accordion-group(heading="Quiz Results", is-open="false", style="width:322px; float:left")
 			div#quizStatArea(style="width:250px; height:285px; float:left;")
 				div#quizChart(google-chart chart="quiz_chart")
 				
