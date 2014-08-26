@@ -23,43 +23,43 @@ div#content{
 
 #left_video{
 	float:left;
-	//width:350px;
-	height:100%;
+	height:530px;
 	background-color:#ffffff;
 	margin-right:5px;
 	border-radius: 4px;
-	max-width: 650px;
-	min-width: 350px;
-	//max-height: 490px;
-	min-height: 250px;
+	width: 560px;
 }
 #right_twit{
-	//float:left;
-	overflow:auto;
+	float:left;
+	//overflow:auto;
 	//width:100%;
 	//height:100%;
 	background-color:#ffffff;
 	border-radius: 4px;
-	max-width:700px;
+	width:520px;
 }
 
 ul#chatList{
 	margin-left: -50px;
 }
 
+div.tools{
+	float:left;
+	width:272px;
+	height: 360px;
+}
+
 div#q{
 	float:left;
-	width:100%;
-	max-width:920px;
+	width:1088px;
 	height: 180px;
 	margin-top:5px; 
 	background-color:white;
 }
 div#attendance{
 	float:left;
-	width:340px;
-	height: 315px;
-	margin:5px;
+	width:100%;
+	height: 318px;
 	padding: 5px; 
 	background-color:white;
 	border: 1px solid #000000;
@@ -78,50 +78,54 @@ footer{
 div#kaisqr_canvas {
 	//float:left;
 	display:inline-block;
+	width: 100%;
+	height: 100%;
 }
 div#video{
 	padding:5px;
 	float:none;
 	top:20px;
 	left:20px;
-	max-width: 650px;
-	min-width: 350px;
-	max-height: 490px;
-	min-height: 250px;
+	width: 550px;
+	height: 415px;
 	background-color:#7EABCE;
 	color:#111;
 	border-radius: 4px;
 }
 div.tutorVideo{
-	width: 320px;
-	height: 240px;
+	width: 540px;
+	height: 405px;
 }
 div.studentVideo{
-	width: 640px;
-	height: 480px;
+	width: 540px;
+	height: 405px;
 }
 div#lecture_ctrl{
 	position: relative;
 	float: left;
-	width: 320px;
-	height: 50px;
-	padding: 10px;
+	width: 540px;
+	height: 120px;
+	padding: 0px;
 }
 div#util{
 	width:100%;
 	//height:50px;
-	margin-top:10px;
+	margin-top:5px;
 	max-height: 170px;
 	background-color: #ffffff;
 }
 div#tutorCtrl{
-	width: 320px;
-	height: 50px;
+	width: 550px;
+	height: 105px;
+	background-color: #000000;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	padding: 10px;
 }
 div#studentCtrl{
-	width: 100%;
-	height: 120px;
-	max-height:120px;
+	width: 550px;
+	height: 105px;
 	background-color: #000000;
 	border-radius: 10px;
 	-moz-border-radius: 10px;
@@ -130,18 +134,18 @@ div#studentCtrl{
 
 div#chatModule{
 	float:left; 
-	min-width:250px; 
 	width:100%; 
-	height:305px; 
+	height:318px; 
 	background-color:gray;
 }
 div#chatArea{
 	border:#3F7AA7;
 	border-width:1px;
 	border-style:groove;
-	height: 250px;
+	height: 274px;
 	overflow: scroll;
     overflow-x: hidden;
+    margin:0px;
 }
 div.chat{
 	width: 100%;
@@ -161,10 +165,12 @@ div.stream{
 div.stream::-webkit-scrollbar{
 	display: none;
 }
-#kaisqr_canvas{
+div.#kaisqr_canvas{
 	position:relative;
 	float:left;
 	background-color: #ffffff;
+	width:100%;
+	height:318px;
 }
 div#kaisqr_canvas canvas {
 	border: 1px solid #000000;
@@ -172,12 +178,12 @@ div#kaisqr_canvas canvas {
 .q_button{
 	position:relative;
 	float:left;
-	left:20px;
-	top:15px;
-	width:100px;
+	left:5px;
+	top:10px;
+	width:65px;
 	height:80px;
 	vertical-align:bottom;
-	margin:10px 10px 10px 10px;
+	padding: 0px;
 }
 
 .quiz_button{
@@ -188,8 +194,17 @@ div#kaisqr_canvas canvas {
 	height:80px;
 	vertical-align:bottom;
 	margin:10px 10px 10px 10px;
-
 }
+
+.tutor_button{
+	width:120px;
+	height:80px;
+	vertical-align:bottom;
+	font-weight:bolder;
+	font-size:2em;
+	top: 10px;
+}
+
 .btn{
 	margin:3px;
 }
@@ -206,7 +221,6 @@ div#kaisqr_canvas canvas {
 {
 	font-weight:bolder;
 	font-size:3em;
-
 }
 
 .a_button{
@@ -223,8 +237,8 @@ div#kaisqr_canvas canvas {
 #live_question {
 	position:relative;
 	float:left;
-	left:25px;
-	top:15px;
+	left:10px;
+	top:10px;
 	background-color:#EEE;
 	width:390px;
 	height:80px;
@@ -235,8 +249,8 @@ div#kaisqr_canvas canvas {
 	width:400px;
 	height:40px;
 	font-weight:bolder;
-		font-size:2em;
-		color:black;
+	font-size:2em;
+	color:black;
 }
 .doing
 {
@@ -254,8 +268,8 @@ div.growlUI h1, div.growlUI h2 {
 }
 
 .btn-big {
-width: 200px;
-height: 85px;
+	width: 200px;
+	height: 85px;
 }
 
 .btn-send {
@@ -282,22 +296,26 @@ border-top-right-radius: 4px 4px;
 #kaisqr_presentation{
 	float:left;
 	position:relative;
-	width:320px;
-	height:300px;
+	width:520px;
+	height:485px;
 }
 #popup_slide{
 	position:relative;	
 }
 #slide {
 	position:relative;
+	width:520px;
+	height:410px;
 }
 #slide_pen{
 	position:relative;
-	top:-240px;
+	width:520px;
+	height:410px;
+	top:-410px;
 }
 #presentation_controller{
 	position:relative;
-	top:-240px;
+	top:-400px;
 }
 
 .btn-disabled {

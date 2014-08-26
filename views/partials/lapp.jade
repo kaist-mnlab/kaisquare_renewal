@@ -12,27 +12,27 @@ div#content(data-ng-switch="thisUserCtrl")
 	accordion#left_video(data-ng-switch="thisUserCtrl", close-others="false")
 		div#video(data-ng-switch="thisUserCtrl")
 			div.tutorVideo(data-ng-switch-when="8" data-ng-switch="lecture.status")
-				video#local(data-ng-switch-when="1", lapp-rtclecture, width="320px", height="240px", autoplay, preload, controls, src="{{trustSrc(lecture.vod_url)}}")
-				video(data-ng-switch-when="0", lapp-video, width="320px", height="240px", autoplay, preload, controls, src="{{trustSrc(lecture.vod_url)}}")
+				video#local(data-ng-switch-when="1", lapp-rtclecture, width="540px", height="405px", autoplay, preload, controls, src="{{trustSrc(lecture.vod_url)}}")
+				video(data-ng-switch-when="0", lapp-video, width="540px", height="405px", autoplay, preload, controls, src="{{trustSrc(lecture.vod_url)}}")
 			div.studentVideo(data-ng-switch-default data-ng-switch="lecture.status")
 				div(data-ng-switch-when="1", lapp-rtcstudent)
 					video#remote(autoplay="autoplay")
 				div(data-ng-switch-when="0")
-					video#vod(lapp-video, width="640px",height="480px",autoplay,preload,controls,src="{{trustSrc(lecture.vod_url)}}")
+					video#vod(lapp-video, width="520px",height="390px",autoplay,preload,controls,src="{{trustSrc(lecture.vod_url)}}")
 		#util(data-ng-switch="thisUserCtrl")
 			div#tutorCtrl(data-ng-switch-when="8")
 				div#lecture_ctrl()
-					button#lecture_start.btn.btn-success.small_font(type="button", data-ng-click="start_lecture()")
+					button#lecture_start.btn.btn-success.tutor_button.middle_font(type="button", data-ng-click="start_lecture()")
 						span.glyphicon.glyphicon-play()
-					button#lecture_stop.btn.btn-danger.small_font(type="button", data-ng-click="stop_lecture()")
+					button#lecture_stop.btn.btn-danger.tutor_button.middle_font(type="button", data-ng-click="stop_lecture()")
 						span.glyphicon.glyphicon-stop()
-					button#quiz.btn.btn-primary.small_font(type="button", data-ng-click="make_quiz()")
+					button#quiz.btn.btn-primary.tutor_button(type="button", data-ng-click="make_quiz()")
 						span.glyphicon.glyphicon-check()
 						| Quiz
 			div#studentCtrl(data-ng-switch-default)
-				button#q_button.btn.btn-primary.q_button.big_font(type="button", data-ng-click="send_q()")
+				button#q_button.q_button.btn.btn-primary.middle_font(type="button", data-ng-click="send_q()")
 					| Q
-				button#q_button.btn.btn-primary.q_button(type="button", data-ng-click="raise_question()")
+				button#q_button.q_button.btn.btn-primary(type="button", data-ng-click="raise_question()")
 					| Question
 				div#live_question
 					div#qustion_msg(data-ng-model="quiz")
@@ -45,16 +45,13 @@ div#content(data-ng-switch="thisUserCtrl")
 								input(type="text", data-ng-model="quiz_short_ans")
 								button#btn(type="button", data-ng-click="quiz_ans_send(0)")
 									| Send
-		div(data-ng-switch-when="8")
-			accordion-group(heading="Attendance", is-open="true", style="display:inline-block; ")
-				#attendance()
-					div#attend_log
+		
 	accordion#right_twit(ng-style="{{stud_chat_css}}", close-others="false")
-		accordion-group(heading="Slides", is-open="true", style="width:322px; float:left")
+		accordion-group(heading="Slides", is-open="true", style="float:left; width:520px")
 			div#kaisqr_presentation(lapp-presentation, data-ng-switch="thisUserCtrl")
 				label
-				img#slide(width="320px", height="240px", fallback-src="/thumb/KAIST.jpg")
-				canvas#slide_pen(width="320px" height="240px")
+				img#slide(fallback-src="/thumb/KAIST.jpg")
+				canvas#slide_pen()
 				div#presentation_controller(data-ng-switch-when="8")
 					i.fa.fa-arrow-circle-left.fa-3x(ng-click="moveLeft()")
 					i.fa.fa-arrow-circle-right.fa-3x(ng-click="moveRight()")
@@ -62,42 +59,48 @@ div#content(data-ng-switch="thisUserCtrl")
 					i.fa.fa-trash-o.fa-3x(ng-click="presentationReset()")
 					div#colors(ng-repeat="color in presentationPenColor")
 						span(ng-click="presentationSelectColor(color.color)" style="float:left; margin-left:5px; margin-right: 5px;")
+							| {{color.color}}				
+	accordion(data-ng-switch="thisUserCtrl", close-others="false", style="float:left; clear:both; display:inline-block; zoom:1; *display:inline; width:100%")
+		div.tools(data-ng-switch-when="8")
+			accordion-group(heading="Attendance", is-open="true", style="display:inline-block; width:100%;")
+				#attendance()
+					div#attend_log
+		div.tools(data-ng-switch-when="8")
+			accordion-group(heading="Quiz Results", is-open="true", style="width:100%; float:left")
+				div#quizStatArea(style="width:100%; height:318px; float:left;")
+					div#quizChart(google-chart chart="quiz_chart")
+		div.tools()
+			accordion-group(heading="Canvas", is-open="true", style="width:100%; float:left; display:inline-block; overflow: hidden;")
+				div#kaisqr_canvas(lapp-canvas)
+					div
+					canvas#whiteboard(style="width:100%; height:297px;")
+					div#colors(ng-repeat="color in canvasStrokeColor")
+						span(ng-click="selectColor(color.color)" style="float:left; margin-left:5px; margin-right: 5px;")
 							| {{color.color}}
-		accordion-group(heading="Social Log", is-open="true", style="width:322px; float:left; margin-top:0px")
-			div#chatModule()
-				div#chatArea.chat.root.timeline.ltr.customisable-border.twitter-timeline.twitter-timeline-rendered(data-ng-model="chat_log")
-					div.stream
-						ul#chatList
-							li.h-entry.tweet.customisable-border(data-ng-repeat="chat in chat_log")
-								div.header
-									p.dt-updated.permalink(pubdate)
-										| {{chat.time}}
-									div.h-card.p-author()
-										a.u-url.profile()
-											span.u-photo.avatar.fa.fa-twitter-square.fa-4x()
-											span.p-name.customisable-highlight()
-												| {{chat.src_name}} 
-								div.e-entry-content
-									p.e-entry-title
-										| {{chat.message}}
-								div.footer.customisable-border
-				div#inputArea.chat.timeline-footer()
-					input.tweet-box-button#inputMessage(type="text", data-ng-model="chat_message")
-					button#btnChat.btn-send(type="button", data-ng-click="send_chat()")
-						| Send
-		accordion-group(heading="Canvas", is-open="true", style="width:322px; float:left; display:inline-block; height: 1%; overflow: hidden;")
-			div#kaisqr_canvas(lapp-canvas)
-				div
-				canvas#whiteboard(width="320px" height="265px")
-				div#colors(ng-repeat="color in canvasStrokeColor")
-					span(ng-click="selectColor(color.color)" style="float:left; margin-left:5px; margin-right: 5px;")
-						| {{color.color}}
-					
-		accordion-group(heading="Quiz Results", is-open="true", style="width:322px; float:left")
-			div#quizStatArea(style="width:250px; height:285px; float:left;")
-				div#quizChart(google-chart chart="quiz_chart")
-				
-	accordion(close-others="false", style="float:left; clear:both; display:inline-block; zoom:1; *display:inline; ")
+		div.tools()
+			accordion-group(heading="Social Log", is-open="true", style="width:100%; float:left; margin-top:0px")
+				div#chatModule()
+					div#chatArea.chat.root.timeline.ltr.customisable-border.twitter-timeline.twitter-timeline-rendered(data-ng-model="chat_log")
+						div.stream
+							ul#chatList
+								li.h-entry.tweet.customisable-border(data-ng-repeat="chat in chat_log")
+									div.header
+										p.dt-updated.permalink(pubdate)
+											| {{chat.time}}
+										div.h-card.p-author()
+											a.u-url.profile()
+												span.u-photo.avatar.fa.fa-twitter-square.fa-4x()
+												span.p-name.customisable-highlight()
+													| {{chat.src_name}} 
+									div.e-entry-content
+										p.e-entry-title
+											| {{chat.message}}
+									div.footer.customisable-border
+					div#inputArea.chat.timeline-footer()
+						input.tweet-box-button#inputMessage(type="text", data-ng-model="chat_message")
+						button#btnChat.btn-send(type="button", data-ng-click="send_chat()")
+							| Send
+	accordion(data-ng-switch="thisUserCtrl", close-others="false", style="float:left; clear:both; display:inline-block; zoom:1; *display:inline; width:100%")
 		#q(data-ng-switch-when="8")
 			accordion-group(heading="Q Log", is-open="true")
 				div#q_log()

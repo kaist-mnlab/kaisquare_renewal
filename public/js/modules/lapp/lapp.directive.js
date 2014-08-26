@@ -32,14 +32,14 @@ define(['angular'], function(angular) {
 					audio: true
 				};
 				getUserMedia(constraints, handleUserMedia, handleUserMediaError);
-				var videoElement = $('#local').attr({'width':  320, 'height': 240}).get(0);
+				var videoElement = $('#local').get(0);
 				videoElement.muted = true;
 				var session;
 				function handleUserMedia(stream) {
 					//startRecording.disabled = false;
 					videoElement.src = window.URL.createObjectURL(stream);
-					scope.recorder = new Recorder(stream, { gid: parentScope.lectureId, uid: parentScope.user._id, vidio:true });
-					scope.recorder.onRecordCompleted = onRecordCompleted;
+					parentScope.session.recorder = new Recorder(stream, { gid: parentScope.lectureId, uid: parentScope.user._id, video:true });
+					parentScope.session.recorder.onRecordCompleted = onRecordCompleted;
 					parentScope.session.session = session = new CreateSession(stream, { gid: parentScope.lectureId, uid: parentScope.user._id, width: 640, height: 480, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
 
 					session.onSessionJoined = onSessionJoined;
@@ -130,8 +130,8 @@ define(['angular'], function(angular) {
 				};
 
 				function onSessionJoined(event) {
-					var width = 640;
-					var height = 480;
+					var width = 540;
+					var height = 405;
 					console.log(parentScope.isMobile);
 
 					if (parentScope.isMobile == 1) {

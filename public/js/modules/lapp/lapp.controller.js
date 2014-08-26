@@ -143,7 +143,7 @@ define(['angular',
 			}
 		});
 
-		$(window).bind("unload", function (event) {
+		$(window).bind("beforeunload", function (event) {
 			console.log('state change!');
 			if (typeof $scope.session.session !== 'undefined') {
 				$scope.session.session.close();
@@ -248,7 +248,7 @@ define(['angular',
 			//with recording logic
 			socket.emit('startLecture', {startAt: $scope.stopwatch.startAt, lapTime: $scope.stopwatch.lapTime});
 			try{
-				recorder.start();
+				$scope.session.recorder.start();
 			}catch(err){}
 			
 			$("#lecture_start").attr("disabled", true);
@@ -307,7 +307,7 @@ define(['angular',
 				data.lectureId = $scope.lectureId;
 				data.base_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/";
 			
-				recorder.stop(data);
+				$scope.session.recorder.stop();
 			}catch(err){}
 			
 			$scope.presentationSave();
