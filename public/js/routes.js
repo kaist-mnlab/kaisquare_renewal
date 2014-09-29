@@ -22,7 +22,7 @@ define([
 		            }
 		        })
 		        .state('public.404', {
-		            url: '/404/',
+		            url2cduw: '/404/',
 		            templateUrl: '404'
 		        })
 		        .state('public.lapp', {
