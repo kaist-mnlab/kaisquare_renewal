@@ -17,14 +17,154 @@ var fs = require('fs');
 var LectureSchema = require('../models/Lecture.js').LectureSchema;
 var Lecture = mongoose.model('lectures', LectureSchema);
 
+
+var net = require('net'),
+    N = require('../controllers/mcu/nuve'),
+    config = require('../controllers/mcu/licode_config');
+
+N.API.init(config.nuve.superserviceID, config.nuve.superserviceKey, 'http://143.248.152.94:3000/'); //localhost
+
+var myRoom;
+
+//N.API.getRooms(function (roomlist) {
+//    "use strict";
+//    var rooms = JSON.parse(roomlist);
+//    console.log(rooms.length);
+//    if (rooms.length === 0) {
+//        N.API.createRoom('myRoom', function (roomID) {
+//            myRoom = roomID._id;
+//            console.log('Created room ', myRoom);
+//        });
+//    } else {
+//        myRoom = rooms[0]._id;
+//        console.log('Using room ', myRoom);
+//    }
+//});
+function removeRoom(roomLists){
+    if(roomLists.length == 0 || typeof roomLists == 'undefined') return;
+
+    N.API.deleteRoom(roomLists[0]._id, function(result){
+        console.log('MCU initiation process Result: ', result);
+
+        roomLists.shift(); //remove the first item of roomLists array
+        removeRoom(roomLists);
+    })
+}
+//Initial process : If MCU has previous works, get rid of it.....
+N.API.getRooms(function(roomList){
+    console.log('Initiate the rooms on MCU...');
+    var roomList = JSON.parse(roomList);
+
+    removeRoom(roomList);
+});
+
+
+
 // Main application view
 index = function(req, res) {
 	res.render('index');
 };
 
 var routes = [
-
     // Views
+    {
+        path: '/createorjoin',
+        httpMethod: 'POST',
+        middleware: [function(req, res){
+            var roomName = req.body.gid,
+                userName = req.body.username,
+//              userID = req.body.uid
+                role = req.body.role;
+            console.log('---------------------> POST');
+            N.API.getRooms(function(roomList){
+                var rooms = JSON.parse(roomList);
+
+                for(var i in rooms){
+                    if( rooms[i].name == roomName ){
+                        console.log('rooms[i].name ' + rooms[i].name);
+                        console.log('roomName ' + roomName);
+                        N.API.createToken(rooms[i]._id, userName, role, function(token){
+                            console.log('matched');
+                            console.log('creating Token : ' + token);
+                            res.send(token);
+                        });
+                        return;
+                    }//end if
+                }//end for
+
+                //create Room
+                N.API.createRoom(roomName, function(room){
+                    N.API.createToken(room._id, userName, role, function(token){
+                        console.log('creating Token : ' + token);
+                        res.send(token);
+                    })
+                });
+            })
+        }]
+    },
+    {
+        path: '/getToken',
+        httpMethod: 'POST',
+        middleware: [function (req, res) {
+            var room = myRoom,
+                username = req.body.uid,
+                role = req.body.role;
+
+            console.log('username ' + req.body.uid );
+            console.log('role ' + req.body.role);
+            console.log('username' );
+            console.log(req.body);
+
+
+            console.log("Creating token");
+            N.API.createToken(room, username, role, function (token) {
+                console.log(token);
+                res.send(token);
+            });
+        }]
+    },
+    {
+        path: '/createToken/',
+        httpMethod: 'POST',
+        middleware: [function (req, res) {
+            var room = myRoom,
+                username = req.body.username,
+                role = req.body.role;
+            console.log('username ' + req.body.username );
+            console.log('role ' + req.body.role);
+
+            console.log("Creating token");
+            N.API.createToken(room, username, role, function (token) {
+                console.log(token);
+                res.send(token);
+            });
+        }]
+    },
+    {
+        path: '/getRooms',
+        httpMethod: 'GET',
+        middleware: [function (req, res) {
+            "use strict";
+            console.log('/getRooms');
+            N.API.getRooms(function (rooms) {
+                console.log(rooms);
+                res.send(rooms);
+            });
+        }]
+    },
+    {
+        path: '/getUsers/:room',
+        httpMethod: 'GET',
+        middleware: [function (req, res) {
+            "use strict";
+            console.log('/getUsers/:room');
+            var room = req.params.room;
+            N.API.getUsers(room, function (users) {
+                res.send(users);
+            });
+        }]
+    },
+    ///////////////////
     {
         path: '/partials/*',
         httpMethod: 'GET',
@@ -239,7 +379,6 @@ var routes = [
     		console.log("POST: CREATELECTURE END")
     	}],
     },
-    
     // All other get requests should be handled by AngularJS's client-side routing system
     {
         path: '/*',
