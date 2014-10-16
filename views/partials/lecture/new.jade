@@ -7,10 +7,10 @@ form(role="form", data-ng-submit="createLecture()", data-ng-file-drop)
 			label(for="course") Course  : {{course.title}}
 		.form-group
 			label(for="lectureTitle") Title
-			input#lectureTitle.form-control(type="text", data-ng-model="lecture.title" ng-minlength="1")
+			input#lectureTitle.form-control(type="text", data-ng-model="lecture.title" ng-minlength="1", required)
 		.form-group
 			label(for="lectureDescription") Description
-			input#lectureDescription.form-control(type="text", data-ng-model="lecture.description" ng-minlength="1")
+			input#lectureDescription.form-control(type="text", data-ng-model="lecture.description" ng-minlength="1", required)
 		.form-group
 			label(for="lectureDate") Date
 			p.input-group

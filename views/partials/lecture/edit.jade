@@ -11,24 +11,25 @@ form(role="form", data-ng-submit="updateLecture()")
         .form-group
             label(for="lectureDescription") Description
             input#lectureDescription.form-control(type="text", data-ng-model="lecture.description",  value='{{lecture.description}}')
-    
+    //
         .form-group
             label(for="lectureStatus") Live/VOD
             div#lectureStatus
                 button.btn.btn-primary(type="button", data-ng-model="lecture.status", btn-radio="1")
                     | LIVE
                 button.btn.btn-primary(type="button", data-ng-model="lecture.status", btn-radio="0")
-                    | VOD
+                    | VOD          
         div(data-ng-switch="lecture.status")
             div(data-ng-switch-when="0")
                 .form-group
                     label(for="lectureVoDURL") VOD URL
                     input#lectureVoDURL.form-control(type="text", data-ng-model="lecture.vod_url")
-                //.form-group
-                //    label(for="lectureVoDFile") Video File Upload
-                //    input#lectureVoDFile.form-control(type="file")                
-            //div(data-ng-switch-when="1")
-            //    | Live
+                .form-group
+                    label(for="lectureVoDFile") Video File Upload
+                    input#lectureVoDFile.form-control(type="file")                
+            div(data-ng-switch-when="1")
+                | Live
+        
     .modal-footer   
         button.btn.btn-primary.pull-right(type="submit") Update Lecture !
         button.btn.btn-danger(type="button", data-ng-click="cancel()")

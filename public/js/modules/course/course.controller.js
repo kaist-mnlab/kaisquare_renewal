@@ -304,7 +304,6 @@ angular.module('course.controller')
 		if(course.title.length > 0) {
 		
 			var newCourse = new Course(course);
-			//console.log(newCourse);
 			newCourse.$save(function(p, resp) {
 				if(!p.error) {
 					$modalInstance.close();

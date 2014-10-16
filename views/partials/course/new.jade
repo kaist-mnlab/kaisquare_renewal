@@ -5,13 +5,13 @@ form(role="form", data-ng-submit="createCourse()")
     .modal-body 
         .form-group
             label(for="courseTitle") Title
-            input#courseTitle.form-control(type="text", data-ng-model="course.title", placeholder="Enter course title")
+            input#courseTitle.form-control(type="text", data-ng-model="course.title", placeholder="Enter course title", required)
         .form-group
             label(for="courseAbstract") Abstract
-            input#courseAbstract.form-control(type="text", data-ng-model="course.abstract", placeholder="Enter course abstract")
+            input#courseAbstract.form-control(type="text", data-ng-model="course.abstract", placeholder="Enter course abstract", required)
         .form-group
             label(for="courseDescription") Description
-            input#courseDescription.form-control(type="text", data-ng-model="course.description", placeholder="Enter course description")
+            input#courseDescription.form-control(type="text", data-ng-model="course.description", placeholder="Enter course description", required)
         .form-group
             label(for="courseTutor") Course Instructor :
             label(for="courseTutor") {{user.username}}

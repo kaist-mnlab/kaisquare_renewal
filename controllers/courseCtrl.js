@@ -48,11 +48,12 @@ module.exports = {
 		
 		// Create Course model from built up Course object
 		var course = new Course(courseObj);
-		
+		console.log(course);
 		// Save Course to DB
 		if(reqBody._id === undefined){
 			course.save(function(err, doc) {
 				if(err || !doc) {
+					console.error(err);
 					throw 'Error';
 				} else {
 					res.json(doc);
