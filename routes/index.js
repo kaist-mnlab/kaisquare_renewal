@@ -266,12 +266,14 @@ function move_uploaded_file(file) {
     var target_path = __dirname + '/../public/uploads/temp/';
     
     file_mkdir(target_path);
-        
-    target_path = target_path + file.name;
+    // filename 
+    var fn = file.name.replace(" ", "_");
+    
+    target_path = target_path + fn;
     
     file_move(tmp_path, target_path, function(err){
     	if(!err){
-    		return file.name;
+    		return fn;
     	}
     });
 }
@@ -301,14 +303,55 @@ function move_lecture_files(info) {
     var presentation_file = info.presentation_url.replace(/^.*[\\\/]/, '');
     console.log("presentation_file: " + presentation_file);
     
-    var isPPT = (presentation_file != '');
-    if (isPPT)
+    var isPresentation = (presentation_file != '');
+    if (isPresentation)
     	file_move(tmp_path + presentation_file, target_path + presentation_file, function(err){});
     
     var ppt_file = target_path + presentation_file;
     var file = presentation_file;
     var isWin = !!process.platform.match(/^win/);
-
+    
+    var isPDF = (file.indexOf(".pdf") > -1);
+    var isPPT = !isPDF;
+    
+    // convert pdf to images 
+    if (!isWin && isPDF){
+    	// probably *nix, assume "unoconv", "convert (from "imagemagick")"
+    	// apt-get install unoconv & imagemagick
+    	
+    	file_mkdir(target_path + "ppt/");
+	    var exec = require('child_process').exec;
+    	
+	    var command = "convert " + target_path + file + " " + target_path + "ppt/" + "%d.png";
+	    console.log(command);
+	    var encode_finished = false;
+	    var child = exec(command, function(error){
+	    				if (error){
+	    		            console.log(error.stack);
+	    		            console.log('Error code: ' + error.code);
+	    		            console.log('Signal received: ' + error.signal);
+	    				}else {
+	    					console.log("pdf conversion is finished");
+	    					
+	    					fs.readdir(__dirname + "/../public/uploads/" + info._id + "/ppt/", function(error, files){
+	    						if (!error){
+	    							var n = files.length;
+	    							console.log(n);
+	    							Lecture.findByIdAndUpdate(info._id, {ppt_page: n}, function(err, doc){
+	    								if(err || !doc) {
+	    									console.log(err);
+	    								} else {
+	    									console.log("update the # of ppt_page");
+	    								}	
+	    							});
+	    						}else{
+	    							console.log(error);
+	    						}
+	    					});
+	    				}
+	    });
+    }
+    
     // convert ppt to images
     if (!isWin && isPPT){
 	    // probably *nix, assume "unoconv", "convert (from "imagemagick")"

@@ -127,7 +127,7 @@ angular.module('lecture.controller')
                 		return false;
                 }
                 else if($scope.fileUploadFlag == 2){
-                	if(item.type.indexOf("presentation")> -1)
+                	if(item.type.indexOf("presentation")> -1 || item.type.indexOf("pdf") > -1)
                 		return true;
                 	else
                 		return false;
