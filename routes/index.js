@@ -406,8 +406,8 @@ function move_uploaded_file(file) {
     
     file_mkdir(target_path);
     // filename 
-    var fn = file.name.replace(" ", "_");
-    console.log(file.name);
+    var fn = file.name.replaceAll(" ", "_");
+    
     target_path = target_path + fn;
     
     file_move(tmp_path, target_path, function(err){
@@ -415,6 +415,10 @@ function move_uploaded_file(file) {
     		return fn;
     	}
     });
+}
+
+function replaceAll(find, replace, str){
+	return str.replace(new RegExp(find, 'g'), replace);
 }
 
 function move_lecture_files(info) {
