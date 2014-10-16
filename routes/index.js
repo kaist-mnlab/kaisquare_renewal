@@ -406,7 +406,7 @@ function move_uploaded_file(file) {
     
     file_mkdir(target_path);
     // filename 
-    var fn = file.name.replace(" ", "_");
+    var fn = file.name.replaceAll(" ", "_");
     
     target_path = target_path + fn;
     
