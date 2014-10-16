@@ -95,7 +95,7 @@ angular.module('security.service', ['ngResource'])
         getThisUserCtrl: function() {
         	return currentUser.thisUserCtrl || $cookieStore.get('thisUserCtrl');
         },
-        
+
         accessLevels: accessLevels,
         userRoles: userRoles,
         user: currentUser,

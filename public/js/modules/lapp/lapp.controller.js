@@ -86,7 +86,7 @@ var Stopwatch = {
 define(['angular',
         'rtcCtrl/recorder','rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session', "https://www.webrtc-experiment.com/RecordRTC.js", 
         'chart', 'angular-google-chart', 'lecture/lecture.service', 'course/course.service','angular-file-upload',
-        '/socket.io/socket.io.js',
+        'rtcCtrl/join_mcu_session','rtcCtrl/create_mcu_session','rtcCtrl/erizo','/socket.io/socket.io.js',
         ], function(angular) {
 	angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart', 'angularFileUpload','lecture.service','course.service' ])
 	//app
@@ -248,9 +248,17 @@ define(['angular',
 			//broadcast to "lecture start"
 			//with recording logic
 			socket.emit('startLecture', {startAt: $scope.stopwatch.startAt, lapTime: $scope.stopwatch.lapTime});
+            console.log('startLecture--------------------------------------->lapp.controller.js');
+//            console.log($scope.session.myRecorder);
+//            console.log($scope.session.session);
+
 			try{
-				recorder.start();
-			}catch(err){}
+//				recorder.start();
+                $scope.session.session.startRecording();
+			}catch(err){
+                console.log('err');
+                console.log(err.message);
+            }
 			
 			$("#lecture_start").attr("disabled", true);
 			$("#lecture_stop").attr("disabled", false);
@@ -292,8 +300,8 @@ define(['angular',
 				var data = {};
 				data.lectureId = $scope.lectureId;
 				data.base_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/";
-			
-				recorder.stop(data);
+
+                $scope.session.session.stopRecording();
 			}catch(err){}
 			
 			$scope.presentationSave();
@@ -559,7 +567,8 @@ define(['angular',
 	angular.module('lapp.controller')
 	.controller('RaiseQuestionCtrl',
 	['$rootScope', '$scope', '$location', '$modal', '$modalInstance',  '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', '$fileUploader', 'XSRF_TOKEN', '$http', 'session', function ($rootScope, $scope, $location, $modal, $modalInstance, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl, $fileUploader, csrf_token, $http, session) {
-		
+
+
 		//Refer QuizQuestionCtrl
 		$scope.question = {
 			text: '',

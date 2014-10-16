@@ -12,87 +12,135 @@ define(['angular'], function(angular) {
 			},
 		}
 	})
-	.directive('lappRtclecture', function(){
+	.directive('lappRtclecture', function($http){
 		// http://stackoverflow.com/questions/22164969/angularjs-two-way-binding-videos-currenttime-with-directive
 		// currentTime of Video 
 		return {
 			scope:false,
+
 			controller: function($scope, $element){
-				
+
 			},
 			link: function(scope, element, attrs){
 				var parentScope = scope.$parent.$parent;
-				var constraints = {
-					video: {
-						mandatory: {
-							minWidth: 640,
-							minHeight: 480
-						}
-					},
-					audio: true
-				};
-				getUserMedia(constraints, handleUserMedia, handleUserMediaError);
-				var videoElement = $('#local').attr({'width':  320, 'height': 240}).get(0);
-				videoElement.muted = true;
-				var session;
-				function handleUserMedia(stream) {
-					//startRecording.disabled = false;
-					videoElement.src = window.URL.createObjectURL(stream);
-					scope.recorder = new Recorder(stream, { gid: parentScope.lectureId, uid: parentScope.user._id, vidio:true });
-					scope.recorder.onRecordCompleted = onRecordCompleted;
-					parentScope.session.session = session = new CreateSession(stream, { gid: parentScope.lectureId, uid: parentScope.user._id, width: 640, height: 480, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
 
-					session.onSessionJoined = onSessionJoined;
-					session.onSessionClosed = onSessionClosed;
-					session.start();
-				};
+                var session;
 
-				function handleUserMediaError(error) {
-					alert('Unable to access user media' );
-					console.log(error);
-				};
+//                console.log('gid:' + parentScope.lectureId + 'uid:' + parentScope.user._id);
+                parentScope.session.session = session = new CreateMCUSession($http, { gid: parentScope.lectureId, uid: parentScope.user._id, username: parentScope.user.username, width: 320, height: 240 });
+                session.onMediaStream = onMediaStream;
+                session.onSessionJoined = onSessionJoined;
+                session.onSessionClosed = onSessionClosed;
+                session.onRecordCompleted = onRecordCompleted;
+                session.start();
+//                parentScope.session.myRecorder = {message: "hello"};
 
-				function onSessionJoined(event) {
-					if( typeof event.uid !== 'undefined' && event.uid !== parentScope.user._id ){
-						console.log("onsessionjoined_lecture");
-						console.log(event);
-						// var uidthumb = $('#'+event.uid+'_thumb')[0];
-						// if(typeof uidthumb.children[0] !== 'undefined')
-						// 	uidthumb.children[0].remove();
-						attachMediaStream($('<video></video>').attr({ 'id': event.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': event.uid, 'muted': 'muted' }).appendTo('#attend_log').get(0), event.stream);
-					}
-				};
+                function onMediaStream(event) {
+//                    event.stream.show('local')
+                    event.stream.play('local');
+                };
 
-				function onSessionClosed(event) {
-					console.log('onSessionClosed', event);
-					//parentScope.studentScreen[event.uid] = null;
-					$('#' + event.sid).remove();
-				};
-				
-				function onRecordCompleted(href) {
-					videoElement.src = href;
-					console.log(href);
-					console.log(scope);
-	                //Turn it to VOD
-	                var lecture = parentScope.lecture;
-	                lecture.duration = parentScope.stopwatch.time();
-	                lecture.status = 0;
-	                lecture.vod_url = href;
+                function onSessionJoined(event) {
+                    session.streamAttachment(event.stream, $('#attend_log'));
+                };
 
-	                lecture.$save(function(p, resp) {
-	                	if(!p.error) {
-							// If there is no error, redirect to the main view
-							console.log("lecture update complete!");
-						} else {
-							alert('Could not create course');
-						}
-					});	
-	            };
-	            
-	        }
-	    }
+                function onSessionClosed(event) {
+                    session.streamDettachment(event.stream);
+                };
+
+
+                function onRecordCompleted(href) {
+                    console.log(href);
+                    console.log(scope);
+                    //Turn it to VOD
+                    var lecture = parentScope.lecture;
+                    lecture.duration = parentScope.stopwatch.time();
+                    lecture.status = 0;
+                    lecture.vod_url = href;
+
+                    lecture.$save(function(p, resp) {
+                        if(!p.error) {
+                            // If there is no error, redirect to the main view
+                            console.log("lecture update complete!");
+                        } else {
+                            alert('Could not create course');
+                        }
+                    });
+                };
+
+//            var videoElement = $('#local').attr({'width':  320, 'height': 240}).get(0);
+//            var constraints = {
+//                video: {
+//                    mandatory: {
+//                        minWidth: 640,
+//                        minHeight: 480
+//                    }
+//                },
+//                audio: true
+//            };
+//            getUserMedia(constraints, handleUserMedia, handleUserMediaError);
+//            var videoElement = $('#local').attr({'width':  320, 'height': 240}).get(0);
+//            videoElement.muted = true;
+//            var session;
+//            function handleUserMedia(stream) {
+//                //startRecording.disabled = false;
+//                videoElement.src = window.URL.createObjectURL(stream);
+//                scope.recorder = new Recorder(stream, { gid: parentScope.lectureId, uid: parentScope.user._id, vidio:true });
+//                scope.recorder.onRecordCompleted = onRecordCompleted;
+//                parentScope.session.session = session = new CreateSession(stream, { gid: parentScope.lectureId, uid: parentScope.user._id, width: 640, height: 480, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+//7
+//                session.onSessionJoined = onSessionJoined;
+//                session.onSessionClosed = onSessionClosed;
+//                session.start();
+//            };
+//
+//            function handleUserMediaError(error) {
+//                alert('Unable to access user media' );
+//                console.log(error);
+//            };
+//
+//            function onSessionJoined(event) {
+//                if( typeof event.uid !== 'undefined' && event.uid !== parentScope.user._id ){
+//                    console.log("onsessionjoined_lecture");
+//                    console.log(event);
+//                    // var uidthumb = $('#'+event.uid+'_thumb')[0];
+//                    // if(typeof uidthumb.children[0] !== 'undefined')
+//                    // 	uidthumb.children[0].remove();
+//                    attachMediaStream($('<video></video>').attr({ 'id': event.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': event.uid, 'muted': 'muted' }).appendTo('#attend_log').get(0), event.stream);
+//                }
+//            };
+//
+//            function onSessionClosed(event) {
+//                console.log('onSessionClosed', event);
+//                //parentScope.studentScreen[event.uid] = null;
+//                $('#' + event.sid).remove();
+//            };
+//
+//            function onRecordCompleted(href) {
+//                videoElement.src = href;
+//                console.log(href);
+//                console.log(scope);
+//                //Turn it to VOD
+//                var lecture = parentScope.lecture;
+//                lecture.duration = parentScope.stopwatch.time();
+//                lecture.status = 0;
+//                lecture.vod_url = href;
+//
+//                lecture.$save(function(p, resp) {
+//                    if(!p.error) {
+//                        // If there is no error, redirect to the main view
+//                        console.log("lecture update complete!");
+//                    } else {
+//                        alert('Could not create course');
+//                    }
+//                });
+//            };
+
+        }//end link
+
+        }//end return
 	})
-.directive('lappRtcstudent', function(){
+    .directive('lappRtcstudent', function($http){
 		// http://stackoverflow.com/questions/22164969/angularjs-two-way-binding-videos-currenttime-with-directive
 		// currentTime of Video 
 		return {
@@ -103,49 +151,68 @@ define(['angular'], function(angular) {
 			link: function(scope, element, attrs){
 				console.log("LINK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				var parentScope = scope.$parent.$parent;
-				var constraints = {
-					video: {
-						mandatory: {
-							minWidth: 720,
-							minHeight: 480
-						}
-					},
-					audio: true
-				};
-				getUserMedia(constraints, handleUserMedia, handleUserMediaError);
-				var session;
-				function handleUserMedia(stream) {
-					parentScope.session.session = session = new JoinSession({ gid: parentScope.lectureId, uid: parentScope.user._id, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
-					session.onSessionJoined = onSessionJoined;
-					session.onSessionClosed = onSessionClosed;
-					session.start();
-				};
+                var session;
+                parentScope.session.session = session = new JoinMCUSession($http, { gid: parentScope.lectureId, uid: parentScope.user._id, username: parentScope.user.username, width: 640, height: 480 });
 
-				function handleUserMediaError(error) {
-					//alert('Access to lecture without media!');
-					parentScope.session.session = session = new JoinSession({ gid: parentScope.lectureId, uid: parentScope.user._id, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
-					session.onSessionJoined = onSessionJoined;
-					session.onSessionClosed = onSessionClosed;
-					session.start();
-				};
+                session.onSessionJoined = onSessionJoined;
+                session.onSessionClosed = onSessionClosed;
+                session.start();
 
-				function onSessionJoined(event) {
-					var width = 640;
-					var height = 480;
-					console.log(parentScope.isMobile);
+                function onSessionJoined(event) {
+                    session.streamAttachment(event.stream, $('#remote'));
+                };
 
-					if (parentScope.isMobile == 1) {
-						width = 320;
-						height = 240;
-					}
+                function onSessionClosed(event) {
+                    session.streamDettachment(event.stream);
+                };
 
-					attachMediaStream($('#remote').attr({ 'width': width, 'height': height }).get(0), event.stream);
-				};
 
-				function onSessionClosed(event) {
-					console.log('강의 종료');
-				};
-			}
+
+//				var constraints = {
+//					video: {
+//						mandatory: {
+//							minWidth: 720,
+//							minHeight: 480
+//						}
+//					},
+//					audio: true
+//				};
+//				getUserMedia(constraints, handleUserMedia, handleUserMediaError);
+//				var session;
+//				function handleUserMedia(stream) {
+//					parentScope.session.session = session = new JoinSession({ gid: parentScope.lectureId, uid: parentScope.user._id, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+//					session.onSessionJoined = onSessionJoined;
+//					session.onSessionClosed = onSessionClosed;
+//					session.start();
+//				};
+//
+//				function handleUserMediaError(error) {
+//					//alert('Access to lecture without media!');
+//					parentScope.session.session = session = new JoinSession({ gid: parentScope.lectureId, uid: parentScope.user._id, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
+//					session.onSessionJoined = onSessionJoined;
+//					session.onSessionClosed = onSessionClosed;
+//					session.start();
+//				};
+//
+//				function onSessionJoined(event) {
+//					var width = 640;
+//					var height = 480;
+//					console.log(parentScope.isMobile);
+//
+//					if (parentScope.isMobile == 1) {
+//						width = 320;
+//						height = 240;
+//					}
+//
+//					attachMediaStream($('#remote').attr({ 'width': width, 'height': height }).get(0), event.stream);
+//				};
+//
+//				function onSessionClosed(event) {
+//					console.log('강의 종료');
+//				};
+
+
+            } //end link
 		}
 	})
 .directive('lappCanvas', function(){
@@ -587,7 +654,11 @@ define(['angular'], function(angular) {
 					}
 				}
 				parentScope.pptPlay = function(){
-					logTracer = setTimeout(pptLogTrace, pptEvents[p].time - scope.currentTime);
+                    try {
+                        logTracer = setTimeout(pptLogTrace, pptEvents[p].time - scope.currentTime);
+                    }catch(err){
+                        console.log(err.message);
+                    }
 				}
 				parentScope.pptPause = function(){
 					clearTimeout(logTracer);

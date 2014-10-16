@@ -6,17 +6,16 @@ link(href="/css/mobile_lapp.css" rel="stylesheet" type="text/css" media="only sc
 
 //script(src="https://www.google.com/jsapi")
 //<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-
 div#content(data-ng-switch="thisUserCtrl")
 	#timer
 	accordion#left_video(data-ng-switch="thisUserCtrl", close-others="false")
 		div#video(data-ng-switch="thisUserCtrl")
-			div.tutorVideo(data-ng-switch-when="8" data-ng-switch="lecture.status")
-				video#local(data-ng-switch-when="1", lapp-rtclecture, width="320px", height="240px", autoplay, preload, controls, src="{{trustSrc(lecture.vod_url)}}")
-				video(data-ng-switch-when="0", lapp-video, width="320px", height="240px", autoplay, preload, controls, src="{{trustSrc(lecture.vod_url)}}")
+			div.tutorVideo(data-ng-switch-when="8" data-ng-switch="lecture.status" style='overflow: visible')
+				div#local(data-ng-switch-when="1", lapp-rtclecture, style="width :320px; height: 240px; margin:0px; border: 0px; overflow: visible" )
+				video(data-ng-switch-when="0", lapp-video, muted="false", width="320px", height="240px", autoplay, preload, controls, src="{{trustSrc(lecture.vod_url)}}")
 			div.studentVideo(data-ng-switch-default data-ng-switch="lecture.status")
 				div(data-ng-switch-when="1", lapp-rtcstudent)
-					video#remote(autoplay="autoplay")
+					div#remote
 				div(data-ng-switch-when="0")
 					video#vod(lapp-video, width="640px",height="480px",autoplay,preload,controls,src="{{trustSrc(lecture.vod_url)}}")
 		#util(data-ng-switch="thisUserCtrl")
@@ -49,7 +48,7 @@ div#content(data-ng-switch="thisUserCtrl")
 									| Send
 		div(data-ng-switch-when="8")
 			accordion-group(heading="Attendance", is-open="true", style="display:inline-block; ")
-				#attendance()
+				#attendance(style = "overflow-y : scroll")
 					div#attend_log
 	accordion#right_twit(ng-style="{{stud_chat_css}}", close-others="false")
 		accordion-group(heading="Slides", is-open="true", style="width:322px; float:left")
