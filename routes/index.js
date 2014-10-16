@@ -454,6 +454,7 @@ function move_lecture_files(info) {
     var file = presentation_file;
     var isWin = !!process.platform.match(/^win/);
     
+    // 나중에 진짜 확장자를 찾아서 확인해야함
     var isPDF = (file.indexOf(".pdf") > -1);
     var isPPT = !isPDF;
     

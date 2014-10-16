@@ -195,7 +195,7 @@ angular.module('lecture.controller')
         }
         
         if (vod == item.file.name){
-        	$scope.lecture.vod_url = base_url + item.file.name;
+        	$scope.lecture.vod_url = base_url + item.file.name.replace(new RegExp(" ", 'g'), "_");
 	        var videoPreview = $('#videoPreview'); 
 	        videoPreview.attr("src",$scope.lecture.vod_url);
 	        videoPreview.get(0).load();
@@ -208,10 +208,10 @@ angular.module('lecture.controller')
 	        });
         }
         else if (presentation == item.file.name){
-        	$scope.lecture.presentation_url = base_url + item.file.name;
+        	$scope.lecture.presentation_url = base_url + item.file.name.replace(new RegExp(" ", 'g'), "_");
         }
         else {
-        	var supply_url = base_url + item.file.name;
+        	var supply_url = base_url + item.file.name.replace(new RegExp(" ", 'g'), "_");
         	$scope.lecture.material_url.push({url: supply_url});
         }
         console.log($scope.lecture);
