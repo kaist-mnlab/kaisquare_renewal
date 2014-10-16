@@ -227,7 +227,7 @@ div#kaisqr_canvas canvas {
 	left:30px;
 	top:15px;
 	background-color:#EEE;
-	width:500px;
+	width:380px;
 	height:80px;
 	border-radius:4px;
 	margin-top: 3px;
@@ -299,4 +299,8 @@ border-top-right-radius: 4px 4px;
 #presentation_controller{
 	position:relative;
 	top:-240px;
+}
+
+.btn-disabled {
+	disabled:disabled;
 }

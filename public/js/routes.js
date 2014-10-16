@@ -7,7 +7,6 @@ define([
 	],
 
 	function (app, accessConfig) {
-
 		//
 		return app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider', function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
 		    
@@ -23,7 +22,7 @@ define([
 		            }
 		        })
 		        .state('public.404', {
-		            url: '/404/',
+		            url2cduw: '/404/',
 		            templateUrl: '404'
 		        })
 		        .state('public.lapp', {

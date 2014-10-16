@@ -1,7 +1,7 @@
 .page-header
 	h1 Courses
-.row(data-ng-controller='NavCtrl')
-	.col-xs-5
+.row
+	.col-xs-5(data-ng-controller='NavCtrl' )
 		button.btn.btn-default(data-ng-click="launch('newCourse')", act-nav, data-access-level='accessLevels.user')
 			span.glyphicon.glyphicon-plus() 
 			| New Course         
@@ -11,10 +11,10 @@
 	.col-xs-12
 		hr
 		
-div(data-ng-switch="courses.length")
+div(data-ng-switch="courses.length" )
 	div(data-ng-switch-when="0")
-		| No course in databases. Would you like to create one? 	{{courses.length}}
-	div(data-ng-repeat="course in courses | filter:query")
+		| No course in databases. Would you like to create one? 
+	div(bindonce, data-ng-repeat="course in courses | filter:query")
 		div.post.content.well
 			a(href="/courses/course/{{course._id}}")
 				//img.thumbnail(src="/thumb/{{$index+1}}.jpg")

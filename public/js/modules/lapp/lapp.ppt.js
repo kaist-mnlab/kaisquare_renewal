@@ -158,7 +158,7 @@ define(['angular', '/socket.io/socket.io.js'], function(angular) {
 					//o.time = stopwatch.time();
 					o.time = -1;
 					eventTrace.push(o);
-					
+
 					// need to optimize
 					if (penTrace[page].clearPoint != 0){
 						//o.pen = penTrace[page].trace[]

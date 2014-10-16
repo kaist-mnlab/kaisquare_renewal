@@ -1,4 +1,3 @@
-/* app css stylesheet */
 * { 
   text-rendering: auto !important; 
 }
@@ -6,7 +5,9 @@
 body {
 
 }
-
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
 .top-wrapper {
 	
 	background: -webkit-linear-gradient(top, #373737, #212121)
@@ -170,4 +171,9 @@ p.lead {
 .mainheader img{
 	width: 100%;
 	height:auto;
+}
+
+#userInfo {
+	color:white;
+	
 }

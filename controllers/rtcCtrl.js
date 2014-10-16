@@ -53,9 +53,9 @@ module.exports = {
              */
             socket.on('create', function (gid) {
                 log('Request to create room ' + gid);
-                socket.join(gid);
+                socket.join('webrtc_'+gid);
                 session_creator[gid] = socket.id;
-                io.sockets.in(gid).emit('created', socket.id);
+                io.sockets.in('webrtc_'+gid).emit('created', socket.id);
             });
 
             /**
@@ -64,9 +64,10 @@ module.exports = {
              * 강의자가 아직 없는 경우에 강의자가 없음을 log를 통해 학생 client에게 알린다.
              */
             socket.on('join', function (msg) {
-                socket.join(msg.gid);
+                console.log(io.sockets.clients('webrtc_'+msg.gid));
+                socket.join('webrtc_'+msg.gid);
                 if (session_creator[msg.gid]) {
-                    log('Request to join room ' + msg.gid, 'creator is ' + session_creator[msg.gid]);
+                    log('Request to join room ' + msg.gid, 'creator is ' + session_creator[msg.gid], 'socket:' + socket.id);
                     socket.emit('joined', { create: session_creator[msg.gid], join: socket.id });
                     io.sockets.socket(session_creator[msg.gid]).emit('joined', { socket_id: socket.id, uid: msg.uid });
                 }
@@ -78,9 +79,15 @@ module.exports = {
              * 학생의 종료 요청에 대한 socket event를 처리함. 학생의 socket를 해당 room에서 나가게 하고, 해당 room의 강의자에게 학생의 종료
              * 를 알리는 socket event를 발생 시킴.
              */
-            socket.on('close', function (msg) {
-                socket.leave(msg.gid);
-                io.sockets.socket(session_creator[msg.gid]).emit('closed', { sid: socket.id, uid: msg.uid });
+            socket.on('close_student', function (msg) {
+                socket.leave('webrtc_'+msg.gid);
+                io.sockets.socket(session_creator[msg.gid]).emit('close_student', msg);
+            });
+
+            socket.on('close_lecturer', function (msg) {
+                socket.leave('webrtc_'+msg.gid);
+                session_creator[msg.gid] = null;
+                io.sockets.in('webrtc_'+msg.gid).emit('close_lecturer', msg);
             });
             /**
              * 강의자의 강의 record에 대한 event를 처리한다.

@@ -50,6 +50,7 @@ module.exports = {
 				lectures[lectureId] = {startAt: 0, lapTime: 0, duration:0, isLectureStarted: 'false', attendee: []};
 				lectures[lectureId].qs = [];
 				lectures[lectureId].cs = [];
+				lectures[lectureId].question_list = [];
 			}
 			console.log(socketRoom);
 			
@@ -94,22 +95,22 @@ module.exports = {
 		});
 		
 		socket.on('startLecture', function(time) {
-			
+
 			console.log(time.startAt);
 			lectures[socketRoom[socket.id].lectureId].startAt = time.startAt;
 			lectures[socketRoom[socket.id].lectureId].lapTime = time.lapTime;
 			lectures[socketRoom[socket.id].lectureId].isLectureStarted = 'true';
-			
+
 			// set as "live"
 			Lecture.findByIdAndUpdate(socketRoom[socket.id].lectureId, {status: 1}, function(err, doc){
 				if (!doc || err){
 					console.log(err);
 				}
 			});
-			
+
 			io.sockets.in(socketRoom[socket.id].lectureId).emit('startLecture', time.startAt, time.lapTime);
 		});
-		
+
 		socket.on('pauseLecture', function(time) {
 			lectures[socketRoom[socket.id].lectureId].lapTime = time.time;
 			lectures[socketRoom[socket.id].lectureId].isLectureStarted = 'false'; 
@@ -261,6 +262,19 @@ module.exports = {
 				}
 			});
 		});
+
+		socket.on('reloadQuestions', function() {
+			socket.emit('updateQuestions', lectures[socketRoom[socket.id].lectureId].question_list);
+		});
+
+		socket.on('raiseQuestion', function(question){
+			console.log(question);
+			var lectureId = socketRoom[socket.id].lectureId;
+			question.userId = socketRoom[socket.id].userId;
+			lectures[lectureId].question_list.push(question);
+			io.sockets.in(lectureId).emit('updateQuestions', lectures[lectureId].question_list);
+		});
+
 		socket.on('disconnect', function(data) {
 			console.log('disconnected');
 			if (socketRoom[socket.id] !== undefined){
@@ -269,11 +283,16 @@ module.exports = {
 				socket.leave(socketRoom[socket.id]);
 				delete socketRoom[socket.id];
 				//delete lectures[key].attendee
-				
-				lectures[key.lectureId].attendee = lectures[key.lectureId].attendee.filter(function(e){
-					return e.userId !== key.userId;
-				});
-				
+
+
+                try {
+                    lectures[key.lectureId].attendee = lectures[key.lectureId].attendee.filter(function (e) {
+                        return e.userId !== key.userId;
+                    });
+                }catch(err){
+                    console.log(err.message);
+                }
+
 				io.sockets.in(key.lectureId).emit('disconnect', key.userId);
 			}
 			/*
