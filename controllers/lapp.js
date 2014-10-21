@@ -244,6 +244,8 @@ module.exports = {
 		});
 		socket.on('pptSave', function(log){
 			
+			console.error(log);
+			
 			lectureObj.ppt_event_log = log;
 			var saveLectureObj = lectureObj;
 			delete saveLectureObj._id;

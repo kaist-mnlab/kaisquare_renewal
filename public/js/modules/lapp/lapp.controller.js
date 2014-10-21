@@ -126,9 +126,6 @@ define(['angular',
 		$scope.question_list = [];
 		$scope.session = {};
 		
-
-		console.log($scope.$id);
-
 		$scope.trustSrc = function(src) {
 		    return $sce.trustAsResourceUrl(src);
 		}
@@ -184,6 +181,8 @@ define(['angular',
 		});
 
 		$("#quizStatArea").hide();
+		
+		console.log($scope.lecture.ppt_event_log);
 		
 		socket.on('initQnChat', function(qs, cs){
 			for (var i in cs){

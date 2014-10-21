@@ -551,9 +551,7 @@ define(['angular'], function(angular) {
 					tracer = setTimeout(startTrace, traceLog[e].time);
 					
 					starttime = (new Date()).getTime(); 			
-					console.log(traceLog);
-					console.log(penTrace);				
-					console.log(eventTrace);
+
 				}
 				
 				function startTrace(){
