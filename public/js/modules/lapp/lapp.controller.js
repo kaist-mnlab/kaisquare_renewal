@@ -228,6 +228,7 @@ define(['angular',
 			//TODO : show ending message
 			
 			$scope.stopwatch.stop();
+			alert("Lecture Finished!");
 			window.location.reload();
 			try{
 				//recorder.stop($scope.lectureId);

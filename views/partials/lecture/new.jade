@@ -7,14 +7,14 @@ form(role="form", data-ng-submit="createLecture()", data-ng-file-drop)
 			label(for="course") Course  : {{course.title}}
 		.form-group
 			label(for="lectureTitle") Title
-			input#lectureTitle.form-control(type="text", data-ng-model="lecture.title" ng-minlength="1", data-ng-required)
+			input#lectureTitle.form-control(type="text", data-ng-model="lecture.title" ng-minlength="1", data-ng-required="true")
 		.form-group
 			label(for="lectureDescription") Description
-			input#lectureDescription.form-control(type="text", data-ng-model="lecture.description" ng-minlength="1", data-ng-required)
+			input#lectureDescription.form-control(type="text", data-ng-model="lecture.description" ng-minlength="1", data-ng-required="true")
 		.form-group
 			label(for="lectureDate") Date
 			p.input-group
-				input#lectureDate.form-control.ng-valid-date(type="text", data-ng-model="lecture.date", datepicker-popup="yyyy-MM-dd", data-ng-required="true", close-text="Close" ui-date)
+				input#lectureDate.form-control.ng-valid-date(type="text", data-ng-model="lecture.date", datepicker-popup="yyyy-MM-dd",is-open="opened" , data-ng-required="true", close-text="Close" ui-date)
 				span.input-group-btn
 					button.btn.btn-default(type="button", data-ng-click="open($event)")
 						i.glyphicon.glyphicon-calendar

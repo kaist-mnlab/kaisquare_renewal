@@ -38,6 +38,7 @@ angular.module('lecture.controller')
 		dlg = $modal.open({
 				templateUrl: '/partials/lecture/edit',
 				controller: 'LectureEditCtrl',
+				backdrop: 'static',
 				resolve: {
 					lecture: function() {
 						return $scope.lecture;
@@ -106,6 +107,14 @@ angular.module('lecture.controller')
 	};
 	console.info("fileupload: debug");
 	
+	$scope.open = function($event) {
+		
+  	    $event.preventDefault();
+    	$event.stopPropagation();
+    	
+    	$scope.opened = true;
+    };
+    
 	// VoD upload
 	var uploader = $scope.uploader = $fileUploader.create({
         scope: $scope,                          // to automatically update the html. Default: $rootScope

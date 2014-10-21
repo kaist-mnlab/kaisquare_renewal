@@ -18,7 +18,14 @@
 					| Date
 				p
 					| {{lecture.date}}
-
+			//Presentation File
+			p
+				strong.atglacesmalltitle
+					| Presentation File
+				p
+					| {{lecture.presentation_url}}
+			//Material File
+			
 			p
 				div(data-ng-switch="lecture.status")
 					strong(data-ng-switch-when="1")
