@@ -521,17 +521,19 @@ define(['angular'], function(angular) {
 					if (event.type == "stroke"){
 						drawTrace(event.stroke);						
 						if(parentScope.thisUserCtrl == 8){
-							penTrace[pageNumber].trace.push(event);
+							var l = penTrace[pageNumber].trace.length - 1;
+							if (event.time != penTrace[pageNumber].trace[l].time)
+								penTrace[pageNumber].trace.push(event);
 						}
-
 					}else if (event.type == "ppt"){
 						ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 						slide.attr('src', ppt + event.page + fileType);
 						drawAllTrace(event.pen, event.time);
 						
 						if (parentScope.thisUserCtrl == 8)
-							eventTrace.push(event);
-						
+							var l = eventTrace.length - 1;
+							if (event.time != eventTrace[l].time)
+								eventTrace.push(event);
 					}
 				});
 				
