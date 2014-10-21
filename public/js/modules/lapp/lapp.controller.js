@@ -8,6 +8,7 @@ var Stopwatch = {
 		lapTime: 0,	// Time on the clock when last stopped in milliseconds
 		timer: null,
 		socket: null,
+		powerOn: false,
 		
 		init: function(socket){
 			this.socket = socket;
@@ -31,6 +32,7 @@ var Stopwatch = {
 	        function redirect(w) {
 	            w.update();
 	        }
+	        powerOn = true;
 		},
 		// Stop or pause
 
@@ -39,6 +41,7 @@ var Stopwatch = {
 			this.lapTime	= this.startAt ? this.lapTime + this.now() - this.startAt : this.lapTime;
 			this.startAt	= 0; // Paused
 			clearInterval(this.timer);
+			powerOn = false;
 		},
  
 		// Reset
@@ -79,6 +82,10 @@ var Stopwatch = {
 	        this.socket.emit("liveTimeUpdate", this.time() / 1000);
 	        //console.log("timer update");
 	    },
+	    
+	    isOn: function(){
+	    	return powerOn;
+	    }
 	};
 
 //javascript:(function(e){e.setAttribute("src","http://debug.build.phonegap.com/target/target-script-min.js#hoh");document.getElementsByTagName("body")[0].appendChild(e);})(document.createElement("script"));void(0);

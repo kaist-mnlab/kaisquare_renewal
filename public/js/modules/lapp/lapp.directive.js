@@ -480,6 +480,14 @@ define(['angular'], function(angular) {
 				};
 				
 				canvas.bind('mousedown', function(event){
+					
+					// blocking
+					if (parentScope.thisUserCtrl != 8)
+						return;
+					if (!parentScope.stopwatch.isOn())
+						return;
+					// end
+					
 					var point = getMousePosition(event);
 					lastX = point.x;
 					lastY = point.y;
