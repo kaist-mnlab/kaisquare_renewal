@@ -135,4 +135,3 @@ var sio = module.exports.io = io.listen(server);
 lapp.index(sio);
 rtcCtrl.index(sio);
 sio.sockets.on('connection', lapp.lecture);
-sio.sockets.on('connection', pollCtrl.vote);
