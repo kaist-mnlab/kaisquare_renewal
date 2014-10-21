@@ -8,10 +8,11 @@ var Stopwatch = {
 		lapTime: 0,	// Time on the clock when last stopped in milliseconds
 		timer: null,
 		socket: null,
-		powerOn: false,
+		powerOn: null,
 		
 		init: function(socket){
 			this.socket = socket;
+			this.powerOn = false;
 		},
 		
  		now	: function() {
@@ -84,7 +85,7 @@ var Stopwatch = {
 	    },
 	    
 	    isOn: function(){
-	    	return powerOn;
+	    	return this.powerOn;
 	    }
 	};
 
