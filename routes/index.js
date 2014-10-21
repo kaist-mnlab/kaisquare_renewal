@@ -406,7 +406,7 @@ function move_uploaded_file(file) {
     
     file_mkdir(target_path);
     // filename 
-    var fn = file.name.replaceAll(" ", "_");
+    var fn = replaceAll(" ", "_", file.name);
     
     target_path = target_path + fn;
     
@@ -454,7 +454,6 @@ function move_lecture_files(info) {
     var file = presentation_file;
     var isWin = !!process.platform.match(/^win/);
     
-    // 나중에 진짜 확장자를 찾아서 확인해야함
     var isPDF = (file.indexOf(".pdf") > -1);
     var isPPT = !isPDF;
     

@@ -185,15 +185,16 @@ angular.module('lecture.controller')
 //        $scope.lecture.vod_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/temp/" + item.file.name;
         console.log($location.$$absUrl + " " + $location.$$url);
         var vod = "";
-        if ($scope.lecture.status == 0)
+        if ($scope.lecture.status == 0){
         	vod = $("#lectureVoDFile").attr("value").replace(/^.*[\\\/]/, '');
+	}
+	
         var presentation = "";
         try{
         	presentation = $("#lecturePresentationFile").attr("value").replace(/^.*[\\\/]/, '');
         }catch(err){
         	
         }
-        
         if (vod == item.file.name){
         	$scope.lecture.vod_url = base_url + item.file.name.replace(new RegExp(" ", 'g'), "_");
 	        var videoPreview = $('#videoPreview'); 
