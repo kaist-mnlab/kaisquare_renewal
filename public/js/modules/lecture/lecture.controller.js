@@ -161,7 +161,6 @@ angular.module('lecture.controller')
 	
 
     uploader.onWhenAddingFileFailed = function (item,filter,option) {
-        console.info('When adding a file failed', item);
         if ($scope.fileUploadFlag == 1)
         	alert("Video Files Only!");
         else if($scope.fileUploadFlag == 2)
@@ -170,21 +169,22 @@ angular.module('lecture.controller')
 
     uploader.onCompleteItem = function (item, response, status, headers) {
         var base_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/temp/";
-//        $scope.lecture.vod_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/temp/" + item.file.name;
-        console.log($location.$$absUrl + " " + $location.$$url);
+        //$scope.lecture.vod_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/temp/" + item.file.name;
+        //console.log($location.$$absUrl + " " + $loca
+        ;
+        
         var vod = "";
         if ($scope.lecture.status == 0){
-        	vod = $("#lectureVoDFile").attr("value").replace(/^.*[\\\/]/, '');
-	}
+        	vod = $("#lectureVoDFile").val().replace(/^.*[\\\/]/, '');
+        }
 	
         var presentation = "";
         try{
-        	presentation = $("#lecturePresentationFile").attr("value").replace(/^.*[\\\/]/, '');
+        	presentation = $("#lecturePresentationFile").val().replace(/^.*[\\\/]/, '');
         }catch(err){
         	
         }
         
-        console.log(item);
         if (vod == item.file.name){
         	$scope.lecture.vod_url = base_url + item.file.name.replace(new RegExp(" ", 'g'), "_");
 	        var videoPreview = $('#videoPreview'); 
