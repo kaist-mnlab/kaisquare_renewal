@@ -225,7 +225,10 @@ define(['angular',
 		socket.on('stopLecture', function(s,l) {
 		
 			//$scope.stopwatch.setTime(time.time);
+			//TODO : show ending message
+			
 			$scope.stopwatch.stop();
+			window.location.reload();
 			try{
 				//recorder.stop($scope.lectureId);
 			}catch(err){}
@@ -306,6 +309,7 @@ define(['angular',
 			
 			$scope.presentationSave();
 			socket.emit('stopLecture', {time: $scope.stopwatch.time()});
+			window.location.reload();
 			
 		};
 		$scope.make_quiz = function() {
@@ -462,20 +466,25 @@ define(['angular',
 			if($scope.thisUserCtrl != "8") 
 				return;
 	
-	   //  	var attendance = {};
-	   //  	attendance = angular.element("#attend_log")[0].children;
-	   //  	for( ; attendance.length > 0; ){
-				// attendance[0].remove();
-	   //  	}
-			
-	   //  	for( var i = 0; i<data.length; ++i){
-		  //   	var user = {img: null, userId: data[i].userId, username: data[i].username};
-		  //   	$("#attend_log").prepend(
-		  //   		"<div id='" + user.userId + "' style='float:left' > <div id='" + user.userId + "_thumb' ><span class='u-photo avatar fa fa-twitter-square fa-4x'></span></div> <br> <label>" + user.username  + "</label></div>"
-		  //   	);
-		  //   }
+	     	var attendance = {};
+	     	
+	     	if(angular.element("#attend_log")[0] !== 'undefined') {
+		     	attendance = angular.element("#attend_log")[0].children;
+		     	for( ; attendance.length > 0; ){
+					 attendance[0].remove();
+		     	}
+	     	}
+	     	/*
+	     	for( var i = 0; i<data.length; ++i){
+		     	var user = {img: null, userId: data[i].userId, username: data[i].username};
+		     	$("#attend_log").prepend(
+		     		"<div id='" + user.userId + "' style='float:left' > <div id='" + user.userId + "_thumb' ><span class='u-photo avatar fa fa-twitter-square fa-4x'></span></div> <br> <label>" + user.username  + "</label></div>"
+		     	);
+		     }
 	    	
-	    	// $scope.attendance = data;// = user;    	
+	    	 $scope.attendance = data;// = user;  
+	    	 
+	    	 */
 	    });
 	
 	    socket.on('connected',function(){
