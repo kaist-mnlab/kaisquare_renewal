@@ -125,6 +125,9 @@ define(['angular',
 		
 		$scope.question_list = [];
 		$scope.session = {};
+		
+
+		console.log($scope.$id);
 
 		$scope.trustSrc = function(src) {
 		    return $sce.trustAsResourceUrl(src);
@@ -158,6 +161,7 @@ define(['angular',
 		$scope.stopwatch.init(socket);
 		
 		//For presentation 
+		//$scope.presentationReset = {};
 		
 		var data = { src: $scope.user._id,
 				     lecture: $scope.lecture._id,
@@ -269,6 +273,9 @@ define(['angular',
 			//Let's pop it up
 			
 			$scope.popup_slides();
+			
+			
+			$scope.presentationReset();
 			
 			
 		};

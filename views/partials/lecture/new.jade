@@ -1,7 +1,7 @@
 .modal-header
 	h1 New Lecture for {{course.title}}
 
-form(role="form", data-ng-submit="createLecture()", data-ng-file-drop)
+form(role="form", data-ng-submit="createLecture()", data-nv-file-drop, uploader="uploader", filters="etcExtensionFilter", multiple)
 	.modal-body
 		.form-group
 			label(for="course") Course  : {{course.title}}
@@ -30,15 +30,15 @@ form(role="form", data-ng-submit="createLecture()", data-ng-file-drop)
 			div(data-ng-switch-when="0")
 				.form-group(ng-mouseenter="updateFlag(1)")
 					label(for="lectureVoDFile") Video File Upload
-					input#lectureVoDFile.form-control(type="file" data-ng-file-select )
+					input#lectureVoDFile.form-control(type="file" data-nv-file-select , uploader="uploader", filters="videoExtensionFilter")
 			div
 				.form-group(ng-mouseenter="updateFlag(2)")
 					label(for="lecturePresentationFile") Presentation File Upload
-					input#lecturePresentationFile.form-control(type="file", data-ng-file-select)
+					input#lecturePresentationFile.form-control(type="file", data-nv-file-select , uploader="uploader", filters="pptExtensionFilter")
 				.form-group(ng-mouseenter="updateFlag(3)") 
 					label(for="lectureMaterialFile") Material File Upload
-					input#lectureMaterialFile.form-control(type="file", data-ng-file-select, multiple)
-				div.well.my-drop-zone(ng-file-over ng-mouseenter="updateFlag(3)") 
+					input#lectureMaterialFile.form-control(type="file", data-nv-file-select , uploader="uploader", filters="etcExtensionFilter", multiple)
+				div.well.my-drop-zone(nv-file-over, ng-mouseenter="updateFlag(3)", uploader="uploader", filters="etcExtensionFilter", multiple) 
 					| Base Drop Zone
 				table
 					thead

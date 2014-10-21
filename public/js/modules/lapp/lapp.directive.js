@@ -221,12 +221,12 @@ define(['angular'], function(angular) {
 		restrict: 'A',
 		link: function(scope, element, attrs){
 				//console.log($(element[0])[0].children[1]);
-				var parentScope = scope.$parent.$parent;
+				var parentScope = scope.$parent.$parent.$parent;
 				var canvas = $(element[0])[0].children[1];
 				var ctx = canvas.getContext('2d');
 				canvas = $(canvas);
 				var socket = scope.socket;
-				
+
 				var isDrawing = false;
 				ctx.lineWidth = 1.0;
 				ctx.miterLimit = 1.0;
@@ -317,7 +317,9 @@ define(['angular'], function(angular) {
 		restrict: 'A',
 		scope: false,
 		link: function(scope, element, attrs){
-			var parentScope = scope.$parent.$parent;
+			var parentScope = scope.$parent.$parent.$parent;
+			
+			
 			var url = scope.location;
 			var ppt = "http://" + url.$$host + ":" + url.$$port + "/uploads/" + scope.lectureId + "/ppt/";
 
