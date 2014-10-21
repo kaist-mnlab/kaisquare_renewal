@@ -472,7 +472,7 @@ define(['angular'], function(angular) {
 					if (color == "clear"){
 						var stroke = {strokeStyle: color};
 						penLog(stroke);
-						socket.emit('pptEvent', stroke);
+						//socket.emit('pptEvent', stroke);
 						ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 					}
 					else 
@@ -517,12 +517,21 @@ define(['angular'], function(angular) {
 				});
 				
 				socket.on('pptEvent', function(event){
+					
 					if (event.type == "stroke"){
-						drawTrace(event.stroke);
+						drawTrace(event.stroke);						
+						if(parentScope.thisUserCtrl == 8){
+							penTrace[pageNumber].trace.push(event);
+						}
+
 					}else if (event.type == "ppt"){
 						ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 						slide.attr('src', ppt + event.page + fileType);
 						drawAllTrace(event.pen, event.time);
+						
+						if (parentScope.thisUserCtrl == 8)
+							eventTrace.push(event);
+						
 					}
 				});
 				
