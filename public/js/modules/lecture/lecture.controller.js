@@ -29,6 +29,18 @@ angular.module('lecture.controller')
 	
 	$scope.lecture.$promise.then(function() {
 		lectureService.setLecture($scope.lecture);
+		$scope.lecture.presentationFile = $scope.lecture.presentation_url.replace(/^.*[\\\/]/, '');
+		$scope.lecture.materialFiles = {};
+	
+		for( var i in $scope.lecture.material_url) {
+			$scope.lecture.materialFiles[i] = { 
+					fileName : $scope.lecture.material_url[i].url.replace(/^.*[\\\/]/, ''),
+					url : $scope.lecture.material_url[i].url,
+			
+			};
+			
+		}
+		
 	});
 
 	$scope.launchEdit = function() {
@@ -159,6 +171,11 @@ angular.module('lecture.controller')
         }
 	});
 	
+	uploader.onAfterAddingFile = function(item) {
+		$("#sBtn").attr("disabled",true);
+		
+	}; 
+	
 
     uploader.onWhenAddingFileFailed = function (item,filter,option) {
         if ($scope.fileUploadFlag == 1)
@@ -207,11 +224,17 @@ angular.module('lecture.controller')
         }
         console.log($scope.lecture);
     };
+    
+    uploader.onCompleteAll = function() {
+    	$("#sBtn").attr("disabled",false);
+    };
 
 
 	$scope.createLecture = function() {
 		var lecture = $scope.lecture;
-		console.log(lecture);
+		
+		//uploader
+		
 		if(lecture.title.length > 0) {
 		
 			var newLecture = new Lecture(lecture);

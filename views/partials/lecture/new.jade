@@ -30,7 +30,7 @@ form(role="form", data-ng-submit="createLecture()", data-nv-file-drop, uploader=
 			div(data-ng-switch-when="0")
 				.form-group(ng-mouseenter="updateFlag(1)")
 					label(for="lectureVoDFile") Video File Upload
-					input#lectureVoDFile.form-control(type="file" data-nv-file-select , uploader="uploader", filters="videoExtensionFilter")
+					input#lectureVoDFile.form-control(type="file" data-nv-file-select , uploader="uploader", filters="videoExtensionFilter", data-ng-required="true")
 			div
 				.form-group(ng-mouseenter="updateFlag(2)")
 					label(for="lecturePresentationFile") Presentation File Upload
@@ -89,6 +89,6 @@ form(role="form", data-ng-submit="createLecture()", data-nv-file-drop, uploader=
 								| Remove All
 			video#videoPreview(width="320", height="240", style="display:none", controls)
 	.modal-footer   
-		button.btn.btn-primary.pull-right(type="submit") Create Lecture !
+		button#sBtn.btn.btn-primary.pull-right(type="submit") Create Lecture !
 		button.btn.btn-danger(type="button", data-ng-click="cancel()")
 			| Cancel
