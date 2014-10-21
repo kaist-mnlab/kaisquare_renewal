@@ -91,7 +91,7 @@ define(['angular',
 	angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart', 'angularFileUpload','lecture.service','course.service' ])
 	//app
 	.controller('LectureAppCtrl',
-	['$rootScope', '$scope', '$location', '$modal', '$stateParams','$sce','socket','security','$compile','courseService', 'lectureService', function($rootScope, $scope, $location, $modal, $stateParams, $sce, socket, security, $compile, courseService, lectureService) {
+	['$rootScope', '$scope', '$location', '$modal', '$stateParams','$sce','socket','security','$compile','courseService', 'lectureService','$state', function($rootScope, $scope, $location, $modal, $stateParams, $sce, socket, security, $compile, courseService, lectureService,$state) {
 		$scope.location = $location;
 		$scope.user = security.user;
 		if($scope.user._id == "")
@@ -232,7 +232,7 @@ define(['angular',
 			
 			$scope.stopwatch.stop();
 			alert("Lecture Finished!");
-			window.location.reload();
+			$state.go('public.courses.show', { courseId : $scope.course._id});
 			try{
 				//recorder.stop($scope.lectureId);
 			}catch(err){}
@@ -314,7 +314,7 @@ define(['angular',
 			
 			$scope.presentationSave();
 			socket.emit('stopLecture', {time: $scope.stopwatch.time()});
-			window.location.reload();
+			
 			
 		};
 		$scope.make_quiz = function() {
