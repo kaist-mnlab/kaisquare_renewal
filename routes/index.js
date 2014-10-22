@@ -457,82 +457,85 @@ function move_lecture_files(info) {
     var isPDF = (file.indexOf(".pdf") > -1);
     var isPPT = !isPDF;
     
-    // convert pdf to images 
-    if (!isWin && isPDF){
-    	// probably *nix, assume "unoconv", "convert (from "imagemagick")"
-    	// apt-get install unoconv & imagemagick
-    	
-    	file_mkdir(target_path + "ppt/");
-	    var exec = require('child_process').exec;
-    	
-	    var command = "convert " + target_path + file + " " + target_path + "ppt/" + "%d.png";
-	    console.log(command);
-	    var encode_finished = false;
-	    var child = exec(command, function(error){
-	    				if (error){
-	    		            console.log(error.stack);
-	    		            console.log('Error code: ' + error.code);
-	    		            console.log('Signal received: ' + error.signal);
-	    				}else {
-	    					console.log("pdf conversion is finished");
-	    					
-	    					fs.readdir(__dirname + "/../public/uploads/" + info._id + "/ppt/", function(error, files){
-	    						if (!error){
-	    							var n = files.length;
-	    							console.log(n);
-	    							Lecture.findByIdAndUpdate(info._id, {ppt_page: n}, function(err, doc){
-	    								if(err || !doc) {
-	    									console.log(err);
-	    								} else {
-	    									console.log("update the # of ppt_page");
-	    								}	
-	    							});
-	    						}else{
-	    							console.log(error);
-	    						}
-	    					});
-	    				}
-	    });
-    }
     
-    // convert ppt to images
-    if (!isWin && isPPT){
-	    // probably *nix, assume "unoconv", "convert (from "imagemagick")"
-    	// apt-get install unoconv & imagemagick
-    	
-    	file_mkdir(target_path + "ppt/");
-	    var exec = require('child_process').exec;
+    // convert pdf to images
+    if (isPresentation){
+	    if (!isWin && isPDF){
+	    	// probably *nix, assume "unoconv", "convert (from "imagemagick")"
+	    	// apt-get install unoconv & imagemagick
+	    	
+	    	file_mkdir(target_path + "ppt/");
+		    var exec = require('child_process').exec;
+	    	
+		    var command = "convert " + target_path + file + " " + target_path + "ppt/" + "%d.png";
+		    console.log(command);
+		    var encode_finished = false;
+		    var child = exec(command, function(error){
+		    				if (error){
+		    		            console.log(error.stack);
+		    		            console.log('Error code: ' + error.code);
+		    		            console.log('Signal received: ' + error.signal);
+		    				}else {
+		    					console.log("pdf conversion is finished");
+		    					
+		    					fs.readdir(__dirname + "/../public/uploads/" + info._id + "/ppt/", function(error, files){
+		    						if (!error){
+		    							var n = files.length;
+		    							console.log(n);
+		    							Lecture.findByIdAndUpdate(info._id, {ppt_page: n}, function(err, doc){
+		    								if(err || !doc) {
+		    									console.log(err);
+		    								} else {
+		    									console.log("update the # of ppt_page");
+		    								}	
+		    							});
+		    						}else{
+		    							console.log(error);
+		    						}
+		    					});
+		    				}
+		    });
+	    }
 	    
-	    var command = "unoconv -f pdf " + ppt_file + " && convert " + target_path + file.substring(0, file.lastIndexOf(".")) + ".pdf " + target_path + "ppt/" + "%d.png";
-	    console.log(command);
-	    var encode_finished = false;
-	    var child = exec(command, function (error){
-	    				encode_finished = true;
-	    				if(error){
-	    		            console.log(error.stack);
-	    		            console.log('Error code: ' + error.code);
-	    		            console.log('Signal received: ' + error.signal);
-	    		            
-	    				} else {
-	    					console.log("ppt conversion is finished");
-	    				    
-	    					fs.readdir(__dirname + "/../public/uploads/" + info._id + "/ppt/", function(error, files){
-	    						if (!error){
-	    							var n = files.length;
-	    							console.log(n);
-	    							Lecture.findByIdAndUpdate(info._id, {ppt_page: n}, function(err, doc){
-	    								if(err || !doc) {
-	    									console.log(err);
-	    								} else {
-	    									console.log("update the # of ppt_page");
-	    								}	
-	    							});
-	    						}else{
-	    							console.log(error);
-	    						}
-	    					});
-	    				}
-	    			});
+	    // convert ppt to images
+	    if (!isWin && isPPT){
+		    // probably *nix, assume "unoconv", "convert (from "imagemagick")"
+	    	// apt-get install unoconv & imagemagick
+	    	
+	    	file_mkdir(target_path + "ppt/");
+		    var exec = require('child_process').exec;
+		    
+		    var command = "unoconv -f pdf " + ppt_file + " && convert " + target_path + file.substring(0, file.lastIndexOf(".")) + ".pdf " + target_path + "ppt/" + "%d.png";
+		    console.log(command);
+		    var encode_finished = false;
+		    var child = exec(command, function (error){
+		    				encode_finished = true;
+		    				if(error){
+		    		            console.log(error.stack);
+		    		            console.log('Error code: ' + error.code);
+		    		            console.log('Signal received: ' + error.signal);
+		    		            
+		    				} else {
+		    					console.log("ppt conversion is finished");
+		    				    
+		    					fs.readdir(__dirname + "/../public/uploads/" + info._id + "/ppt/", function(error, files){
+		    						if (!error){
+		    							var n = files.length;
+		    							console.log(n);
+		    							Lecture.findByIdAndUpdate(info._id, {ppt_page: n}, function(err, doc){
+		    								if(err || !doc) {
+		    									console.log(err);
+		    								} else {
+		    									console.log("update the # of ppt_page");
+		    								}	
+		    							});
+		    						}else{
+		    							console.log(error);
+		    						}
+		    					});
+		    				}
+		    			});
+	    }
     }
 }
 function file_mkdir(path, callback){
