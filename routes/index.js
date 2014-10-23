@@ -12,53 +12,11 @@ var _ =           require('underscore')
 var pollCtrl = require('../controllers/pollCtrl');
 var courseCtrl = require('../controllers/courseCtrl');
 var lectureCtrl = require('../controllers/lectureCtrl');
+var rtcCtrl = require('../controllers/rtcCtrl');
 var fs = require('fs');
 
 var LectureSchema = require('../models/Lecture.js').LectureSchema;
 var Lecture = mongoose.model('lectures', LectureSchema);
-
-
-var net = require('net'),
-    N = require('../controllers/mcu/nuve'),
-    config = require('../controllers/mcu/licode_config');
-
-N.API.init(config.nuve.superserviceID, config.nuve.superserviceKey, 'http://143.248.152.94:3000/'); //localhost
-
-var myRoom;
-
-//N.API.getRooms(function (roomlist) {
-//    "use strict";
-//    var rooms = JSON.parse(roomlist);
-//    console.log(rooms.length);
-//    if (rooms.length === 0) {
-//        N.API.createRoom('myRoom', function (roomID) {
-//            myRoom = roomID._id;
-//            console.log('Created room ', myRoom);
-//        });
-//    } else {
-//        myRoom = rooms[0]._id;
-//        console.log('Using room ', myRoom);
-//    }
-//});
-function removeRoom(roomLists){
-    if(roomLists.length == 0 || typeof roomLists == 'undefined') return;
-
-    N.API.deleteRoom(roomLists[0]._id, function(result){
-        console.log('MCU initiation process Result: ', result);
-
-        roomLists.shift(); //remove the first item of roomLists array
-        removeRoom(roomLists);
-    })
-}
-//Initial process : If MCU has previous works, get rid of it.....
-N.API.getRooms(function(roomList){
-    console.log('Initiate the rooms on MCU...');
-    var roomList = JSON.parse(roomList);
-
-    removeRoom(roomList);
-});
-
-
 
 // Main application view
 index = function(req, res) {
@@ -66,104 +24,6 @@ index = function(req, res) {
 };
 
 var routes = [
-    // Views
-    {
-        path: '/createorjoin',
-        httpMethod: 'POST',
-        middleware: [function(req, res){
-            var roomName = req.body.gid,
-                userName = req.body.username,
-//              userID = req.body.uid
-                role = req.body.role;
-            console.log('---------------------> POST');
-            N.API.getRooms(function(roomList){
-                var rooms = JSON.parse(roomList);
-
-                for(var i in rooms){
-                    if( rooms[i].name == roomName ){
-                        console.log('rooms[i].name ' + rooms[i].name);
-                        console.log('roomName ' + roomName);
-                        N.API.createToken(rooms[i]._id, userName, role, function(token){
-                            console.log('matched');
-                            console.log('creating Token : ' + token);
-                            res.send(token);
-                        });
-                        return;
-                    }//end if
-                }//end for
-
-                //create Room
-                N.API.createRoom(roomName, function(room){
-                    N.API.createToken(room._id, userName, role, function(token){
-                        console.log('creating Token : ' + token);
-                        res.send(token);
-                    })
-                });
-            })
-        }]
-    },
-    {
-        path: '/getToken',
-        httpMethod: 'POST',
-        middleware: [function (req, res) {
-            var room = myRoom,
-                username = req.body.uid,
-                role = req.body.role;
-
-            console.log('username ' + req.body.uid );
-            console.log('role ' + req.body.role);
-            console.log('username' );
-            console.log(req.body);
-
-
-            console.log("Creating token");
-            N.API.createToken(room, username, role, function (token) {
-                console.log(token);
-                res.send(token);
-            });
-        }]
-    },
-    {
-        path: '/createToken/',
-        httpMethod: 'POST',
-        middleware: [function (req, res) {
-            var room = myRoom,
-                username = req.body.username,
-                role = req.body.role;
-            console.log('username ' + req.body.username );
-            console.log('role ' + req.body.role);
-
-            console.log("Creating token");
-            N.API.createToken(room, username, role, function (token) {
-                console.log(token);
-                res.send(token);
-            });
-        }]
-    },
-    {
-        path: '/getRooms',
-        httpMethod: 'GET',
-        middleware: [function (req, res) {
-            "use strict";
-            console.log('/getRooms');
-            N.API.getRooms(function (rooms) {
-                console.log(rooms);
-                res.send(rooms);
-            });
-        }]
-    },
-    {
-        path: '/getUsers/:room',
-        httpMethod: 'GET',
-        middleware: [function (req, res) {
-            "use strict";
-            console.log('/getUsers/:room');
-            var room = req.params.room;
-            N.API.getUsers(room, function (users) {
-                res.send(users);
-            });
-        }]
-    },
     ///////////////////
     {
         path: '/partials/*',
@@ -353,8 +213,38 @@ var routes = [
         middleware: [lectureCtrl.delete],
   
     },
- 
-   
+
+    {
+        path: '/rtc/createJoin',
+        httpMethod: 'POST',
+        middleware: [rtcCtrl.createJoin]
+    },
+    {
+        path: '/rtc/stopRecording',
+        httpMethod: 'POST',
+        middleware: [rtcCtrl.stopRecording]
+    },
+    //for RTC
+    // {
+    //     path: '/rtc/getToken',
+    //     httpMethod: 'POST',
+    //     middleware: [rtcCtrl.getToken]
+    // },
+    // {
+    //     path: '/rtc/createToken/',
+    //     httpMethod: 'POST',
+    //     middleware: [rtcCtrl.createToken]
+    // },
+    // {
+    //     path: '/rtc/getRooms',
+    //     httpMethod: 'GET',
+    //     middleware: [rtcCtrl.getRooms]
+    // },
+    // {
+    //     path: '/rtc/getUsers/:room',
+    //     httpMethod: 'GET',
+    //     middleware: [rtcCtrl.getUsers]
+    // },
  
     {
     	path: '/fileUpload',
@@ -406,7 +296,7 @@ function move_uploaded_file(file) {
     
     file_mkdir(target_path);
     // filename 
-    var fn = replaceAll(" ", "_", file.name);
+    var fn = file.name.replace(" ", "_");
     
     target_path = target_path + fn;
     
@@ -415,10 +305,6 @@ function move_uploaded_file(file) {
     		return fn;
     	}
     });
-}
-
-function replaceAll(find, replace, str){
-	return str.replace(new RegExp(find, 'g'), replace);
 }
 
 function move_lecture_files(info) {
@@ -457,85 +343,82 @@ function move_lecture_files(info) {
     var isPDF = (file.indexOf(".pdf") > -1);
     var isPPT = !isPDF;
     
+    // convert pdf to images 
+    if (!isWin && isPDF){
+    	// probably *nix, assume "unoconv", "convert (from "imagemagick")"
+    	// apt-get install unoconv & imagemagick
+    	
+    	file_mkdir(target_path + "ppt/");
+	    var exec = require('child_process').exec;
+    	
+	    var command = "convert " + target_path + file + " " + target_path + "ppt/" + "%d.png";
+	    console.log(command);
+	    var encode_finished = false;
+	    var child = exec(command, function(error){
+	    				if (error){
+	    		            console.log(error.stack);
+	    		            console.log('Error code: ' + error.code);
+	    		            console.log('Signal received: ' + error.signal);
+	    				}else {
+	    					console.log("pdf conversion is finished");
+	    					
+	    					fs.readdir(__dirname + "/../public/uploads/" + info._id + "/ppt/", function(error, files){
+	    						if (!error){
+	    							var n = files.length;
+	    							console.log(n);
+	    							Lecture.findByIdAndUpdate(info._id, {ppt_page: n}, function(err, doc){
+	    								if(err || !doc) {
+	    									console.log(err);
+	    								} else {
+	    									console.log("update the # of ppt_page");
+	    								}	
+	    							});
+	    						}else{
+	    							console.log(error);
+	    						}
+	    					});
+	    				}
+	    });
+    }
     
-    // convert pdf to images
-    if (isPresentation){
-	    if (!isWin && isPDF){
-	    	// probably *nix, assume "unoconv", "convert (from "imagemagick")"
-	    	// apt-get install unoconv & imagemagick
-	    	
-	    	file_mkdir(target_path + "ppt/");
-		    var exec = require('child_process').exec;
-	    	
-		    var command = "convert " + target_path + file + " " + target_path + "ppt/" + "%d.png";
-		    console.log(command);
-		    var encode_finished = false;
-		    var child = exec(command, function(error){
-		    				if (error){
-		    		            console.log(error.stack);
-		    		            console.log('Error code: ' + error.code);
-		    		            console.log('Signal received: ' + error.signal);
-		    				}else {
-		    					console.log("pdf conversion is finished");
-		    					
-		    					fs.readdir(__dirname + "/../public/uploads/" + info._id + "/ppt/", function(error, files){
-		    						if (!error){
-		    							var n = files.length;
-		    							console.log(n);
-		    							Lecture.findByIdAndUpdate(info._id, {ppt_page: n}, function(err, doc){
-		    								if(err || !doc) {
-		    									console.log(err);
-		    								} else {
-		    									console.log("update the # of ppt_page");
-		    								}	
-		    							});
-		    						}else{
-		    							console.log(error);
-		    						}
-		    					});
-		    				}
-		    });
-	    }
+    // convert ppt to images
+    if (!isWin && isPPT){
+	    // probably *nix, assume "unoconv", "convert (from "imagemagick")"
+    	// apt-get install unoconv & imagemagick
+    	
+    	file_mkdir(target_path + "ppt/");
+	    var exec = require('child_process').exec;
 	    
-	    // convert ppt to images
-	    if (!isWin && isPPT){
-		    // probably *nix, assume "unoconv", "convert (from "imagemagick")"
-	    	// apt-get install unoconv & imagemagick
-	    	
-	    	file_mkdir(target_path + "ppt/");
-		    var exec = require('child_process').exec;
-		    
-		    var command = "unoconv -f pdf " + ppt_file + " && convert " + target_path + file.substring(0, file.lastIndexOf(".")) + ".pdf " + target_path + "ppt/" + "%d.png";
-		    console.log(command);
-		    var encode_finished = false;
-		    var child = exec(command, function (error){
-		    				encode_finished = true;
-		    				if(error){
-		    		            console.log(error.stack);
-		    		            console.log('Error code: ' + error.code);
-		    		            console.log('Signal received: ' + error.signal);
-		    		            
-		    				} else {
-		    					console.log("ppt conversion is finished");
-		    				    
-		    					fs.readdir(__dirname + "/../public/uploads/" + info._id + "/ppt/", function(error, files){
-		    						if (!error){
-		    							var n = files.length;
-		    							console.log(n);
-		    							Lecture.findByIdAndUpdate(info._id, {ppt_page: n}, function(err, doc){
-		    								if(err || !doc) {
-		    									console.log(err);
-		    								} else {
-		    									console.log("update the # of ppt_page");
-		    								}	
-		    							});
-		    						}else{
-		    							console.log(error);
-		    						}
-		    					});
-		    				}
-		    			});
-	    }
+	    var command = "unoconv -f pdf " + ppt_file + " && convert " + target_path + file.substring(0, file.lastIndexOf(".")) + ".pdf " + target_path + "ppt/" + "%d.png";
+	    console.log(command);
+	    var encode_finished = false;
+	    var child = exec(command, function (error){
+	    				encode_finished = true;
+	    				if(error){
+	    		            console.log(error.stack);
+	    		            console.log('Error code: ' + error.code);
+	    		            console.log('Signal received: ' + error.signal);
+	    		            
+	    				} else {
+	    					console.log("ppt conversion is finished");
+	    				    
+	    					fs.readdir(__dirname + "/../public/uploads/" + info._id + "/ppt/", function(error, files){
+	    						if (!error){
+	    							var n = files.length;
+	    							console.log(n);
+	    							Lecture.findByIdAndUpdate(info._id, {ppt_page: n}, function(err, doc){
+	    								if(err || !doc) {
+	    									console.log(err);
+	    								} else {
+	    									console.log("update the # of ppt_page");
+	    								}	
+	    							});
+	    						}else{
+	    							console.log(error);
+	    						}
+	    					});
+	    				}
+	    			});
     }
 }
 function file_mkdir(path, callback){

@@ -13,10 +13,10 @@ CreateMCUSession.prototype = {
         var session = this;
 
         console.log('CreateMCUsession');
-        session.$http.post('/createorjoin', session.attr).success(function (token) {
-            var room = session.room = Erizo.Room({token: token});
-
-            console.log(token);
+        session.$http.post('/rtc/createJoin', session.attr).success(function (info) {
+            var room = session.room = Erizo.Room({token: info.token});
+            session.token = info.token;
+            session.mcu = info.host;
 
             session.localStream.addEventListener('access-accepted', function () {
                 room.addEventListener('room-connected', function (roomEvent) {
@@ -81,34 +81,25 @@ CreateMCUSession.prototype = {
     },
     startRecording: function(){
         var session = this;
-        session.room.startRecording(session.localStream, function(recordingId){
+        console.log('start Recording');
+        session.room.startRecording(session.localStream, function (recordingId) {
             session.recordingId = recordingId;
             console.log('Recording Id: ' + recordingId);
         });
     },
     stopRecording: function(){
         var session = this;
-        session.room.stopRecording(session.recordingId, function(temp){
-            console.log(temp);
-
+        session.room.stopRecording(session.recordingId, function (temp) {
             console.log('Stop recording----> record id: ' + session.recordingId + ' : create_mcu_session.js');
-            var socket = io.connect('http://143.248.152.94:55555');
-            socket.emit('convert', session.recordingId);
-            socket.on('conversion_finished', function(id){
-                if(id instanceof Error){
-                    console.log(id.message)
-                }else{
-                    console.log(id);
-                    var href = 'http://143.248.152.94:55555/vod/' + session.recordingId + '.webm';
-                    console.log('got file ' + href   +'   ----->create_mcu_session.js');
-                    if(!!session.onRecordCompleted){
-                        console.log('Lecture saved');
-                        session.onRecordCompleted(href);
-                    }
+
+            session.$http.post('/rtc/stopRecording', {mcu:session.mcu, rid:session.recordingId}).success(function () {
+                var href = '/record/' + session.recordingId + '.mkv';
+                console.log('got file ' + href   +'   ----->create_mcu_session.js');
+                if(!!session.onRecordCompleted){
+                    console.log('Lecture saved');
+                    session.onRecordCompleted(href);
                 }
-            })
-
+            });
         });
-
     }
 };

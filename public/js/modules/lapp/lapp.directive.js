@@ -27,7 +27,7 @@ define(['angular'], function(angular) {
                 var session;
 
 //                console.log('gid:' + parentScope.lectureId + 'uid:' + parentScope.user._id);
-                parentScope.session.session = session = new CreateMCUSession($http, { gid: parentScope.lectureId, uid: parentScope.user._id, username: parentScope.user.username, width: 320, height: 240 });
+                parentScope.session.session = session = new CreateMCUSession($http, { gid: parentScope.lectureId, uid: parentScope.user._id, username: parentScope.user.username, width: 640, height: 480 });
                 session.onMediaStream = onMediaStream;
                 session.onSessionJoined = onSessionJoined;
                 session.onSessionClosed = onSessionClosed;
@@ -50,22 +50,28 @@ define(['angular'], function(angular) {
 
 
                 function onRecordCompleted(href) {
-                    console.log(href);
-                    console.log(scope);
+                    console.log('onRecordCompleted', href);
                     //Turn it to VOD
                     var lecture = parentScope.lecture;
-                    lecture.duration = parentScope.stopwatch.time();
-                    lecture.status = 0;
-                    lecture.vod_url = href;
 
-                    lecture.$save(function(p, resp) {
-                        if(!p.error) {
-                            // If there is no error, redirect to the main view
-                            console.log("lecture update complete!");
-                        } else {
-                            alert('Could not create course');
-                        }
-                    });
+                    if(typeof lecture !== 'undefined') {
+                    	lecture.duration = parentScope.stopwatch.time();
+                    	lecture.status = 0;
+                    	lecture.vod_url = href;
+
+                    	lecture.$save(function(p, resp) {
+                    		if(!p.error) {
+	                            // If there is no error, redirect to the main view
+	                            console.log("lecture update complete!");
+	                            window.location.href = '/lapp/'+parentScope.lectureId;
+                        	} else {
+	                        	alert('Could not create course');
+	                        }
+                    	});
+                    }
+                    else {
+                    	alert('lecture scope problem');
+                    }
                 };
 
 //            var videoElement = $('#local').attr({'width':  320, 'height': 240}).get(0);
@@ -152,7 +158,7 @@ define(['angular'], function(angular) {
 				console.log("LINK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				var parentScope = scope.$parent.$parent;
                 var session;
-                parentScope.session.session = session = new JoinMCUSession($http, { gid: parentScope.lectureId, uid: parentScope.user._id, username: parentScope.user.username, width: 640, height: 480 });
+                parentScope.session.session = session = new JoinMCUSession($http, { gid: parentScope.lectureId, uid: parentScope.user._id, username: parentScope.user.username, width: 160, height: 120 });
 
                 session.onSessionJoined = onSessionJoined;
                 session.onSessionClosed = onSessionClosed;

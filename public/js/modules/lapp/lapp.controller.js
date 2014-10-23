@@ -152,7 +152,15 @@ define(['angular',
 			}
 		});
 
-		$(window).bind("unload", function (event) {
+		$(window).bind("beforeunload", function (event) {
+			console.log('state change!');
+			if (typeof $scope.session.session !== 'undefined') {
+				$scope.session.session.close();
+				$scope.session.session = null;
+			}
+		});
+
+		$scope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
 			console.log('state change!');
 			if (typeof $scope.session.session !== 'undefined') {
 				$scope.session.session.close();
@@ -178,15 +186,6 @@ define(['angular',
 			$("#whiteboard").attr('height', '280px');
 			$("#right_twit").css('width', '230px');
 		}
-
-		$scope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
-			console.log('state change!');
-			if (typeof $scope.session.session !== 'undefined') {
-				$scope.session.session.close();
-				delete $scope.session.session;
-				$scope.session.session = null;
-			}
-		});
 
 		$("#quizStatArea").hide();
 		

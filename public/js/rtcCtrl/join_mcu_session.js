@@ -13,8 +13,8 @@ JoinMCUSession.prototype = {
     start: function () {
         var session = this;
 
-        session.$http.post('/createorjoin', session.attr).success(function (token) {
-            var room = session.room = Erizo.Room({token: token});
+        session.$http.post('/rtc/createJoin', session.attr).success(function (info) {
+            var room = session.room = Erizo.Room({token: info.token});
             session.localStream.addEventListener('access-accepted', function () {
                 room.addEventListener('room-connected', function (roomEvent) {
                     room.publish(session.localStream, {maxVideoBW: 300});
