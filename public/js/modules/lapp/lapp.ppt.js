@@ -25,8 +25,6 @@ define(['angular', '/socket.io/socket.io.js'], function(angular) {
 				$("#topwrapper").remove();
 				$("div.container").css({margin:0, padding:0});
 				
-				console.log(scope);
-				
 				var url = scope.location;
 				var ppt = "http://" + url.$$host + ":" + url.$$port + "/uploads/" + scope.lectureId + "/ppt/";
 				
@@ -286,9 +284,7 @@ define(['angular', '/socket.io/socket.io.js'], function(angular) {
 					tracer = setTimeout(startTrace, traceLog[e].time);
 					
 					starttime = (new Date()).getTime(); 			
-					console.log(traceLog);
-					console.log(penTrace);				
-					console.log(eventTrace);
+					
 				}
 				
 				function startTrace(){
@@ -348,7 +344,7 @@ define(['angular', '/socket.io/socket.io.js'], function(angular) {
 					log.penTrace = penTrace;
 					log.eventTrace = eventTrace;
 					angular.toJson(log);
-					console.log(angular.toJson(log));
+					
 					socket.emit('pptSave', angular.toJson(log));
 				}
 				

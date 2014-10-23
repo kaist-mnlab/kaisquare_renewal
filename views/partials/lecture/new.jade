@@ -1,20 +1,20 @@
 .modal-header
 	h1 New Lecture for {{course.title}}
 
-form(role="form", data-ng-submit="createLecture()", data-ng-file-drop)
+form(role="form", data-ng-submit="createLecture()", data-nv-file-drop, uploader="uploader", filters="etcExtensionFilter", multiple)
 	.modal-body
 		.form-group
 			label(for="course") Course  : {{course.title}}
 		.form-group
 			label(for="lectureTitle") Title
-			input#lectureTitle.form-control(type="text", data-ng-model="lecture.title" ng-minlength="1")
+			input#lectureTitle.form-control(type="text", data-ng-model="lecture.title" ng-minlength="1", data-ng-required="true")
 		.form-group
 			label(for="lectureDescription") Description
-			input#lectureDescription.form-control(type="text", data-ng-model="lecture.description" ng-minlength="1")
+			input#lectureDescription.form-control(type="text", data-ng-model="lecture.description" ng-minlength="1", data-ng-required="true")
 		.form-group
 			label(for="lectureDate") Date
 			p.input-group
-				input#lectureDate.form-control.ng-valid-date(type="text", data-ng-model="lecture.date", datepicker-popup="yyyy-MM-dd", data-ng-required="true", close-text="Close" ui-date)
+				input#lectureDate.form-control.ng-valid-date(type="text", data-ng-model="lecture.date", datepicker-popup="yyyy-MM-dd",is-open="opened" , data-ng-required="true", close-text="Close" ui-date)
 				span.input-group-btn
 					button.btn.btn-default(type="button", data-ng-click="open($event)")
 						i.glyphicon.glyphicon-calendar
@@ -30,15 +30,15 @@ form(role="form", data-ng-submit="createLecture()", data-ng-file-drop)
 			div(data-ng-switch-when="0")
 				.form-group(ng-mouseenter="updateFlag(1)")
 					label(for="lectureVoDFile") Video File Upload
-					input#lectureVoDFile.form-control(type="file" data-ng-file-select )
+					input#lectureVoDFile.form-control(type="file" data-nv-file-select , uploader="uploader", filters="videoExtensionFilter", data-ng-required="true")
 			div
 				.form-group(ng-mouseenter="updateFlag(2)")
 					label(for="lecturePresentationFile") Presentation File Upload
-					input#lecturePresentationFile.form-control(type="file", data-ng-file-select)
+					input#lecturePresentationFile.form-control(type="file", data-nv-file-select , uploader="uploader", filters="pptExtensionFilter")
 				.form-group(ng-mouseenter="updateFlag(3)") 
 					label(for="lectureMaterialFile") Material File Upload
-					input#lectureMaterialFile.form-control(type="file", data-ng-file-select, multiple)
-				div.well.my-drop-zone(ng-file-over ng-mouseenter="updateFlag(3)") 
+					input#lectureMaterialFile.form-control(type="file", data-nv-file-select , uploader="uploader", filters="etcExtensionFilter", multiple)
+				div.well.my-drop-zone(nv-file-over, ng-mouseenter="updateFlag(3)", uploader="uploader", filters="etcExtensionFilter", multiple) 
 					| Base Drop Zone
 				table
 					thead
@@ -89,6 +89,6 @@ form(role="form", data-ng-submit="createLecture()", data-ng-file-drop)
 								| Remove All
 			video#videoPreview(width="320", height="240", style="display:none", controls)
 	.modal-footer   
-		button.btn.btn-primary.pull-right(type="submit") Create Lecture !
+		button#sBtn.btn.btn-primary.pull-right(type="submit") Create Lecture !
 		button.btn.btn-danger(type="button", data-ng-click="cancel()")
 			| Cancel

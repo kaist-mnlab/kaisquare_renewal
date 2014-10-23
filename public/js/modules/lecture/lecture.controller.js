@@ -29,6 +29,18 @@ angular.module('lecture.controller')
 	
 	$scope.lecture.$promise.then(function() {
 		lectureService.setLecture($scope.lecture);
+		$scope.lecture.presentationFile = $scope.lecture.presentation_url.replace(/^.*[\\\/]/, '');
+		$scope.lecture.materialFiles = {};
+	
+		for( var i in $scope.lecture.material_url) {
+			$scope.lecture.materialFiles[i] = { 
+					fileName : $scope.lecture.material_url[i].url.replace(/^.*[\\\/]/, ''),
+					url : $scope.lecture.material_url[i].url,
+			
+			};
+			
+		}
+		
 	});
 
 	$scope.launchEdit = function() {
@@ -38,6 +50,7 @@ angular.module('lecture.controller')
 		dlg = $modal.open({
 				templateUrl: '/partials/lecture/edit',
 				controller: 'LectureEditCtrl',
+				backdrop: 'static',
 				resolve: {
 					lecture: function() {
 						return $scope.lecture;
@@ -84,7 +97,7 @@ angular.module('lecture.controller')
 //app
 angular.module('lecture.controller')
 .controller('LectureNewCtrl',
-['$scope', '$modalInstance', '$location','$stateParams','Lecture', 'course', '$fileUploader','XSRF_TOKEN', '$http',  function($scope, $modalInstance, $location, $stateParams, Lecture, course, $fileUploader, csrf_token, $http) {
+['$scope', '$modalInstance', '$location','$stateParams','Lecture', 'course', 'FileUploader','XSRF_TOKEN', '$http',  function($scope, $modalInstance, $location, $stateParams, Lecture, course, FileUploader, csrf_token, $http) {
 	//var user = $scope.user;
 	
 	$scope.fileUploadFlag = 0;
@@ -106,8 +119,16 @@ angular.module('lecture.controller')
 	};
 	console.info("fileupload: debug");
 	
+	$scope.open = function($event) {
+		
+  	    $event.preventDefault();
+    	$event.stopPropagation();
+    	
+    	$scope.opened = true;
+    };
+    
 	// VoD upload
-	var uploader = $scope.uploader = $fileUploader.create({
+	var uploader = $scope.uploader = new FileUploader({
         scope: $scope,                          // to automatically update the html. Default: $rootScope
         url: '/fileUpload',
         formData: [
@@ -117,85 +138,72 @@ angular.module('lecture.controller')
                   {'X-CSRF-TOKEN': csrf_token
         },
        
-        filters: [
-            function (item) {                    // first user filter
-                console.info('File extension Filter');
-                if ($scope.fileUploadFlag == 1){
-                	if(item.type.indexOf("video/mp4")> -1 || item.type.indexOf("video/webm")> -1 || item.type.indexOf("video/ogg")> -1)
-                		return true;
-                	else
-                		return false;
-                }
-                else if($scope.fileUploadFlag == 2){
-                	if(item.type.indexOf("presentation")> -1 || item.type.indexOf("pdf") > -1)
-                		return true;
-                	else
-                		return false;
-                }
-                else if($scope.fileUploadFlag == 3){
-                	return true;
-                }
-                else {
-                	return false;
-                }
-            }
-        ]
     });
 	
-	uploader.bind('afteraddingfile', function (event, item) {
-        console.info('After adding a file', item);
-    });
+	console.log(uploader);
+	
+	uploader.filters.push({
+		name: "videoExtensionFilter",
+		fn: function (item) {                    // first user filter
+           
+        	if(item.type.indexOf("video/mp4")> -1 || item.type.indexOf("video/webm")> -1 || item.type.indexOf("video/ogg")> -1)
+        		return true;
+        	else
+        		return false;
+        }
+	});
+	
+	uploader.filters.push({
+		name: "pptExtensionFilter",
+		fn: function (item) {                    // first user filter
+           
+         
+        	if(item.type.indexOf("presentation")> -1 || item.type.indexOf("pdf") > -1)
+        		return true;
+        	else
+        		return false;
+        }
+	});
+	uploader.filters.push({
+		name: "etcExtensionFilter",
+		fn: function (item) {                    // first user filter
+           return true;
+        }
+	});
+	
+	uploader.onAfterAddingFile = function(item) {
+		$("#sBtn").attr("disabled",true);
+		
+	}; 
+	
 
-    uploader.bind('whenaddingfilefailed', function (event, item) {
-        console.info('When adding a file failed', item);
+    uploader.onWhenAddingFileFailed = function (item,filter,option) {
         if ($scope.fileUploadFlag == 1)
         	alert("Video Files Only!");
         else if($scope.fileUploadFlag == 2)
         	alert("Presentation Files Only!");
-    });
+    };
 
-    uploader.bind('afteraddingall', function (event, items) {
-        console.info('After adding all files', items);
-    });
-
-    uploader.bind('beforeupload', function (event, item) {
-        console.info('Before upload', item);
-    });
-
-    uploader.bind('progress', function (event, item, progress) {
-        //console.info('Progress: ' + progress, item);
-    });
-
-    uploader.bind('success', function (event, xhr, item, response) {
-        console.info('Success', xhr, item, response);
-    });
-
-    uploader.bind('cancel', function (event, xhr, item) {
-        console.info('Cancel', xhr, item);
-    });
-
-    uploader.bind('error', function (event, xhr, item, response) {
-        console.info('Error', xhr, item, response);
-    });
-
-    uploader.bind('complete', function (event, xhr, item, response) {
-        console.info('Complete', xhr, item, response);
-        console.log(item);
+    uploader.onCompleteItem = function (item, response, status, headers) {
         var base_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/temp/";
-//        $scope.lecture.vod_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/temp/" + item.file.name;
-        console.log($location.$$absUrl + " " + $location.$$url);
+        //$scope.lecture.vod_url = $location.$$absUrl.replace($location.$$url, "") + "/uploads/temp/" + item.file.name;
+        //console.log($location.$$absUrl + " " + $loca
+        ;
+        
         var vod = "";
-        if ($scope.lecture.status == 0)
-        	vod = $("#lectureVoDFile").attr("value").replace(/^.*[\\\/]/, '');
+        if ($scope.lecture.status == 0){
+        	vod = $("#lectureVoDFile").val().replace(/^.*[\\\/]/, '');
+        }
+	
         var presentation = "";
         try{
-        	presentation = $("#lecturePresentationFile").attr("value").replace(/^.*[\\\/]/, '');
+        	presentation = $("#lecturePresentationFile").val().replace(/^.*[\\\/]/, '');
         }catch(err){
         	
         }
         
         if (vod == item.file.name){
-        	$scope.lecture.vod_url = base_url + item.file.name;
+        	$scope.lecture.vod_url = base_url + item.file.name.replace(new RegExp(" ", 'g'), "_");
 	        var videoPreview = $('#videoPreview'); 
 	        videoPreview.attr("src",$scope.lecture.vod_url);
 	        videoPreview.get(0).load();
@@ -208,22 +216,25 @@ angular.module('lecture.controller')
 	        });
         }
         else if (presentation == item.file.name){
-        	$scope.lecture.presentation_url = base_url + item.file.name;
+        	$scope.lecture.presentation_url = base_url + item.file.name.replace(new RegExp(" ", 'g'), "_");
         }
         else {
-        	var supply_url = base_url + item.file.name;
+        	var supply_url = base_url + item.file.name.replace(new RegExp(" ", 'g'), "_");
         	$scope.lecture.material_url.push({url: supply_url});
         }
         console.log($scope.lecture);
-    });
+    };
+    
+    uploader.onCompleteAll = function() {
+    	$("#sBtn").attr("disabled",false);
+    };
 
-    uploader.bind('progressall', function (event, progress) {
-        //console.info('Total progress: ' + progress);
-    });
 
 	$scope.createLecture = function() {
 		var lecture = $scope.lecture;
-		console.log(lecture);
+		
+		//uploader
+		
 		if(lecture.title.length > 0) {
 		
 			var newLecture = new Lecture(lecture);

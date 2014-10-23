@@ -221,12 +221,12 @@ define(['angular'], function(angular) {
 		restrict: 'A',
 		link: function(scope, element, attrs){
 				//console.log($(element[0])[0].children[1]);
-				var parentScope = scope.$parent.$parent;
+				var parentScope = scope.$parent.$parent.$parent;
 				var canvas = $(element[0])[0].children[1];
 				var ctx = canvas.getContext('2d');
 				canvas = $(canvas);
 				var socket = scope.socket;
-				
+
 				var isDrawing = false;
 				ctx.lineWidth = 1.0;
 				ctx.miterLimit = 1.0;
@@ -317,7 +317,9 @@ define(['angular'], function(angular) {
 		restrict: 'A',
 		scope: false,
 		link: function(scope, element, attrs){
-			var parentScope = scope.$parent.$parent;
+			var parentScope = scope.$parent.$parent.$parent;
+			
+			
 			var url = scope.location;
 			var ppt = "http://" + url.$$host + ":" + url.$$port + "/uploads/" + scope.lectureId + "/ppt/";
 
@@ -470,7 +472,7 @@ define(['angular'], function(angular) {
 					if (color == "clear"){
 						var stroke = {strokeStyle: color};
 						penLog(stroke);
-						socket.emit('pptEvent', stroke);
+						//socket.emit('pptEvent', stroke);
 						ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 					}
 					else 
@@ -478,6 +480,14 @@ define(['angular'], function(angular) {
 				};
 				
 				canvas.bind('mousedown', function(event){
+					
+					// blocking
+					if (parentScope.thisUserCtrl != 8)
+						return;
+					if (!parentScope.stopwatch.isOn())
+						return;
+					// end
+					
 					var point = getMousePosition(event);
 					lastX = point.x;
 					lastY = point.y;
@@ -515,12 +525,23 @@ define(['angular'], function(angular) {
 				});
 				
 				socket.on('pptEvent', function(event){
+					
 					if (event.type == "stroke"){
-						drawTrace(event.stroke);
+						drawTrace(event.stroke);						
+						if(parentScope.thisUserCtrl == 8){
+							var l = penTrace[pageNumber].trace.length - 1;
+							if (event.time != penTrace[pageNumber].trace[l].time)
+								penTrace[pageNumber].trace.push(event);
+						}
 					}else if (event.type == "ppt"){
 						ctx.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 						slide.attr('src', ppt + event.page + fileType);
 						drawAllTrace(event.pen, event.time);
+						
+						if (parentScope.thisUserCtrl == 8)
+							var l = eventTrace.length - 1;
+							if (event.time != eventTrace[l].time)
+								eventTrace.push(event);
 					}
 				});
 				
@@ -549,9 +570,7 @@ define(['angular'], function(angular) {
 					tracer = setTimeout(startTrace, traceLog[e].time);
 					
 					starttime = (new Date()).getTime(); 			
-					console.log(traceLog);
-					console.log(penTrace);				
-					console.log(eventTrace);
+
 				}
 				
 				function startTrace(){

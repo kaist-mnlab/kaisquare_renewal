@@ -6,15 +6,15 @@ requirejs.config({
 
 
 		'text': '../lib/require/text', 
-		'jquery': '../lib/jquery/jquery',
-		'jquery-ui': '../lib/jquery/jquery-ui-1.10.2.min',
+		'jquery': '../lib/jquery/jquery-1.11.1.min',
+		'jquery-ui': '../lib/jquery/jquery-ui',
 		'angular': '../lib/angular/angular.min',
-		'angular-resource': '../lib/angular/angular-resource.min',
+		'angular-resource': '../lib/angular/angular-resource',
 		'angular-route': '../lib/angular/angular-route.min',
-		'angular-cookies':'../lib/angular/angular-cookies.min',
+		'angular-cookies':'../lib/angular/angular-cookies',
 		'angular-ui-router':'../lib/angular/angular-ui-router.min',
-		'angular-ui-bootstrap':'../lib/angular/ui-bootstrap-tpls-0.10.0.min',
-		'angular-file-upload':'../lib/angular/angular-file-upload.min',
+		'angular-ui-bootstrap':'../lib/angular/ui-bootstrap-tpls-0.11.2.min',
+		'angular-file-upload':'../lib/angular/angular-file-upload',
 		'library': '../lib',
 		'ocLazyLoad': '../lib/ocLazyLoad',
 		'bindonce': '../lib/bindonce.min',
@@ -29,7 +29,7 @@ requirejs.config({
 		'domReady': '../lib/require/domReady',
 		'chart': '../lib/chart/Chart',
 		'angular-google-chart': '../lib/angular-google-chart/ng-google-chart',
-		'bootstrap': '//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min',
+		'bootstrap': '//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap',
 		
 		
 		

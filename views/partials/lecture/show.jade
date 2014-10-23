@@ -18,7 +18,23 @@
 					| Date
 				p
 					| {{lecture.date}}
-
+			//Presentation File
+			div(data-ng-switch="lecture.presentationFile.length>0?1:0")
+				p(data-ng-switch-when="1")
+					strong.atglacesmalltitle
+						| Presentation File
+					p
+						a(href="{{lecture.presentation_url}}")
+							| {{lecture.presentationFile}}
+			//Material File
+			div(data-ng-switch="lecture.material_url.length>0?1:0")
+				p(data-ng-switch-when="1")
+					strong.atglacesmalltitle
+						| Material Files
+					p(data-ng-repeat= "l in lecture.materialFiles")
+						a(href="{{l.url}}")
+							| {{l.fileName}}
+				
 			p
 				div(data-ng-switch="lecture.status")
 					strong(data-ng-switch-when="1")

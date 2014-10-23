@@ -179,12 +179,6 @@ angular.module('course.controller')
 		});
 	}
 	
-	$scope.open = function($event) {
-  	    $event.preventDefault();
-    	$event.stopPropagation();
-
-    	$scope.opened = true;
-    };
 	
 	$scope.launch = function(which){
 		
@@ -196,6 +190,7 @@ angular.module('course.controller')
 			dlg = $modal.open({
 				templateUrl: '/partials/lecture/new',
 				controller: 'LectureNewCtrl',
+				backdrop: 'static',
 				resolve: {
 					user: function() {
 						return $scope.user;

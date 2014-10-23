@@ -8,9 +8,11 @@ var Stopwatch = {
 		lapTime: 0,	// Time on the clock when last stopped in milliseconds
 		timer: null,
 		socket: null,
+		powerOn: null,
 		
 		init: function(socket){
 			this.socket = socket;
+			this.powerOn = false;
 		},
 		
  		now	: function() {
@@ -31,6 +33,7 @@ var Stopwatch = {
 	        function redirect(w) {
 	            w.update();
 	        }
+	        powerOn = true;
 		},
 		// Stop or pause
 
@@ -39,6 +42,7 @@ var Stopwatch = {
 			this.lapTime	= this.startAt ? this.lapTime + this.now() - this.startAt : this.lapTime;
 			this.startAt	= 0; // Paused
 			clearInterval(this.timer);
+			powerOn = false;
 		},
  
 		// Reset
@@ -79,6 +83,10 @@ var Stopwatch = {
 	        this.socket.emit("liveTimeUpdate", this.time() / 1000);
 	        //console.log("timer update");
 	    },
+	    
+	    isOn: function(){
+	    	return this.powerOn;
+	    }
 	};
 
 //javascript:(function(e){e.setAttribute("src","http://debug.build.phonegap.com/target/target-script-min.js#hoh");document.getElementsByTagName("body")[0].appendChild(e);})(document.createElement("script"));void(0);
@@ -91,7 +99,7 @@ define(['angular',
 	angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart', 'angularFileUpload','lecture.service','course.service' ])
 	//app
 	.controller('LectureAppCtrl',
-	['$rootScope', '$scope', '$location', '$modal', '$stateParams','$sce','socket','security','$compile','courseService', 'lectureService', function($rootScope, $scope, $location, $modal, $stateParams, $sce, socket, security, $compile, courseService, lectureService) {
+	['$rootScope', '$scope', '$location', '$modal', '$stateParams','$sce','socket','security','$compile','courseService', 'lectureService','$state', function($rootScope, $scope, $location, $modal, $stateParams, $sce, socket, security, $compile, courseService, lectureService,$state) {
 		$scope.location = $location;
 		$scope.user = security.user;
 		if($scope.user._id == "")
@@ -125,7 +133,7 @@ define(['angular',
 		
 		$scope.question_list = [];
 		$scope.session = {};
-
+		
 		$scope.trustSrc = function(src) {
 		    return $sce.trustAsResourceUrl(src);
 		}
@@ -158,7 +166,7 @@ define(['angular',
 		$scope.stopwatch.init(socket);
 		
 		//For presentation 
-		$scope.presentationReset = {};
+		//$scope.presentationReset = {};
 		
 		var data = { src: $scope.user._id,
 				     lecture: $scope.lecture._id,
@@ -181,6 +189,8 @@ define(['angular',
 		});
 
 		$("#quizStatArea").hide();
+		
+		console.log($scope.lecture.ppt_event_log);
 		
 		socket.on('initQnChat', function(qs, cs){
 			for (var i in cs){
@@ -225,7 +235,11 @@ define(['angular',
 		socket.on('stopLecture', function(s,l) {
 		
 			//$scope.stopwatch.setTime(time.time);
+			//TODO : show ending message
+			
 			$scope.stopwatch.stop();
+			alert("Lecture Finished!");
+			$state.go('public.courses.show', { courseId : $scope.course._id});
 			try{
 				//recorder.stop($scope.lectureId);
 			}catch(err){}
@@ -267,6 +281,7 @@ define(['angular',
 			
 			$scope.popup_slides();
 			
+			
 			$scope.presentationReset();
 			
 			
@@ -306,6 +321,7 @@ define(['angular',
 			
 			$scope.presentationSave();
 			socket.emit('stopLecture', {time: $scope.stopwatch.time()});
+			
 			
 		};
 		$scope.make_quiz = function() {
@@ -462,20 +478,25 @@ define(['angular',
 			if($scope.thisUserCtrl != "8") 
 				return;
 	
-	   //  	var attendance = {};
-	   //  	attendance = angular.element("#attend_log")[0].children;
-	   //  	for( ; attendance.length > 0; ){
-				// attendance[0].remove();
-	   //  	}
-			
-	   //  	for( var i = 0; i<data.length; ++i){
-		  //   	var user = {img: null, userId: data[i].userId, username: data[i].username};
-		  //   	$("#attend_log").prepend(
-		  //   		"<div id='" + user.userId + "' style='float:left' > <div id='" + user.userId + "_thumb' ><span class='u-photo avatar fa fa-twitter-square fa-4x'></span></div> <br> <label>" + user.username  + "</label></div>"
-		  //   	);
-		  //   }
+	     	var attendance = {};
+	     	
+	     	if(angular.element("#attend_log")[0] !== 'undefined') {
+		     	attendance = angular.element("#attend_log")[0].children;
+		     	for( ; attendance.length > 0; ){
+					 attendance[0].remove();
+		     	}
+	     	}
+	     	/*
+	     	for( var i = 0; i<data.length; ++i){
+		     	var user = {img: null, userId: data[i].userId, username: data[i].username};
+		     	$("#attend_log").prepend(
+		     		"<div id='" + user.userId + "' style='float:left' > <div id='" + user.userId + "_thumb' ><span class='u-photo avatar fa fa-twitter-square fa-4x'></span></div> <br> <label>" + user.username  + "</label></div>"
+		     	);
+		     }
 	    	
-	    	// $scope.attendance = data;// = user;    	
+	    	 $scope.attendance = data;// = user;  
+	    	 
+	    	 */
 	    });
 	
 	    socket.on('connected',function(){
