@@ -33,7 +33,7 @@ var Stopwatch = {
 	        function redirect(w) {
 	            w.update();
 	        }
-	        powerOn = true;
+	        this.powerOn = true;
 		},
 		// Stop or pause
 
@@ -42,7 +42,7 @@ var Stopwatch = {
 			this.lapTime	= this.startAt ? this.lapTime + this.now() - this.startAt : this.lapTime;
 			this.startAt	= 0; // Paused
 			clearInterval(this.timer);
-			powerOn = false;
+			this.powerOn = false;
 		},
  
 		// Reset
