@@ -105,7 +105,7 @@ module.exports = {
         var recordingID = req.body.rid,
             host = req.body.mcu;
         console.log()
-        var command = 'scp ncl@'+host+':/tmp/'+recordingID+'.mkv ~/Documents/git/kaisquare_renewal/public/record';
+        var command = 'scp ncl@'+host+':/tmp/'+recordingID+'.mkv public/record && ffmpeg -i public/record/'+recordingID+'.mkv public/record/'+recordingID+'.webm';
         console.log(command);
         var cmd = exec(command, function (error) {
             if (error) {
@@ -113,7 +113,7 @@ module.exports = {
                 console.log('Error code: ' + error.code);
                 console.log('Signal received: ' + error.signal);
             } else {
-                res.send('');
+                res.send('success');
             }
         });
     },

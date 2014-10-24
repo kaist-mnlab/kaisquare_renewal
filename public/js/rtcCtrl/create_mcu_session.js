@@ -93,7 +93,7 @@ CreateMCUSession.prototype = {
             console.log('Stop recording----> record id: ' + session.recordingId + ' : create_mcu_session.js');
 
             session.$http.post('/rtc/stopRecording', {mcu:session.mcu, rid:session.recordingId}).success(function () {
-                var href = '/record/' + session.recordingId + '.mkv';
+                var href = '/record/' + session.recordingId + '.webm';
                 console.log('got file ' + href   +'   ----->create_mcu_session.js');
                 if(!!session.onRecordCompleted){
                     console.log('Lecture saved');

@@ -1,1 +1,0 @@
-/bin/sh: ffmpeg: command not found

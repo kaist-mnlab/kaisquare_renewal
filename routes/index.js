@@ -295,8 +295,9 @@ function move_uploaded_file(file) {
     var target_path = __dirname + '/../public/uploads/temp/';
     
     file_mkdir(target_path);
-    // filename 
-    var fn = file.name.replace(" ", "_");
+    // filename
+    var fn = replaceAll(" ", "_", file.name);
+
     
     target_path = target_path + fn;
     
@@ -305,6 +306,10 @@ function move_uploaded_file(file) {
     		return fn;
     	}
     });
+}
+
+function replaceAll(find, replace, str){
+	return str.replace(new RegExp(find, 'g'), replace);
 }
 
 function move_lecture_files(info) {
@@ -341,9 +346,10 @@ function move_lecture_files(info) {
     var isWin = !!process.platform.match(/^win/);
     
     var isPDF = (file.indexOf(".pdf") > -1);
-    var isPPT = !isPDF;
-    if(isPresentation){
-	    // convert pdf to images 
+    var isPPT = !isPDF;    
+    
+    // convert pdf to images
+    if (isPresentation){
 	    if (!isWin && isPDF){
 	    	// probably *nix, assume "unoconv", "convert (from "imagemagick")"
 	    	// apt-get install unoconv & imagemagick
