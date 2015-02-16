@@ -34,6 +34,7 @@ var app = exports.app = express();
 var port = exports.port = +process.argv[2] || process.env.PORT || 6789; 
 var server = http.createServer(app);
 var io = require('socket.io');
+
 var lapp = require('./controllers/lapp');
 var rtcCtrl = require('./controllers/rtcCtrl');
 

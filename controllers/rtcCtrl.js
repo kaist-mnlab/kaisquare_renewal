@@ -1,111 +1,198 @@
-var http = require('http'), // http module을 추출
+var http = require('http'), // http module 을 추출
     url = require("url"),
     path = require("path"),
     fs = require("fs"),
     sys = require('sys'),
-    exec = require('child_process').exec;    
+    exec = require('child_process').exec;
 
 // var io; //리턴 받게 될 socket을 저장할 변수 선언.
 // var session_creator = {}; //강의를 개설한 개설자 정보를 담기 위한 object. {key:강의자가 요청한 gid, value:강의자의 socket id}
 
 var config = require('./mcu/rtcConfig');
-// var myRoom;
 
-//N.API.getRooms(function (roomlist) {
-//    "use strict";
-//    var rooms = JSON.parse(roomlist);
-//    console.log(rooms.length);
-//    if (rooms.length === 0) {
-//        N.API.createRoom('myRoom', function (roomID) {
-//            myRoom = roomID._id;
-//            console.log('Created room ', myRoom);
-//        });
-//    } else {
-//        myRoom = rooms[0]._id;
-//        console.log('Using room ', myRoom);
-//    }
-//});
 (function initiation() {
-    for (i in config.mcu) {
+    for (var i in config.mcu) {
         var mcu = config.mcu[i];
         console.log('Initiate the rooms on MCU...' + mcu.address);
-        mcu.connection = require('./mcu/nuve'+i);
-        mcu.connection.API.init(mcu.superserviceID, mcu.superserviceKey, 'http://'+mcu.address+':'+mcu.port+'/');
+
         cleanRoom(mcu);
     }
 
+
     //Initial process : If MCU has previous works, get rid of it.....
     function cleanRoom(mcu) {
-        var N = mcu.connection;
-        N.API.getRooms(function (roomList) {
-            console.log('Clean the rooms on MCU...'+mcu.address);
-            var roomList = JSON.parse(roomList);
-            removeRoom(roomList);
-        }, mcuErrorHandler);
+        // var N = mcu.connection;
+        var options = {};
+        options.port = 3001;
+        options.host = mcu.address;
+        options.path = '/getRooms/';
+        options.method = 'GET';
 
-        function removeRoom(roomLists) {
-            if(roomLists.length == 0 || typeof roomLists == 'undefined')
-                return;
-
-            N.API.deleteRoom(roomLists[0]._id, function (result) {
-                console.log('MCU initiation process Result: ', result);
-                roomLists.shift(); //remove the first item of roomLists array
+        var req = http.request(options, function (res) {
+            //console.log('status: ' + res.statusCode);
+            //console.log('headers: ' + JSON.stringify(res.headers));
+            res.setEncoding('utf8');
+            res.on('data', function (rooms) {
+                //console.log("body: " + chunk);
+                var roomLists = JSON.parse(rooms);
                 removeRoom(roomLists);
             });
+        });
+        req.on('error', function (e) {
+            console.log('problem with request: ' + e.message);
+        });
+        req.end();
+
+        function removeRoom(roomLists) {
+            if (roomLists.length == 0 || typeof roomLists == 'undefined')
+                return;
+
+            var _idString = JSON.stringify({_id: roomLists[0]._id});
+            var options = {};
+            options.port = 3001;
+            options.host = mcu.address;
+            options.path = '/deleteRoom/';
+            options.method = 'POST';
+            options.headers = {
+                'Content-type': 'application/json',
+                'Content-Length': _idString.length
+            };
+            console.log('Clean the rooms on MCU...' + mcu.address);
+
+            var req = http.request(options, function (res) {
+                //console.log('status: ' + res.statusCode);
+                //console.log('headers: ' + JSON.stringify(res.headers));
+                res.setEncoding('utf8');
+                res.on('data', function (result) {
+                    console.log('MCU initiation process Result: ', result);
+
+                    //var roomList = JSON.parse(roomList);
+                    roomLists.shift();
+                    removeRoom(roomLists); //remove all rooms until there are no room recursively.
+                });
+            });
+
+            req.on('error', function (e) {
+                console.log('problem with request: ' + e.message);
+            });
+
+
+            req.write(_idString);
+            req.end();
         }
     }
 })();
 
-function mcuErrorHandler(e) {
-    console.log('error' + e);
-}
 
 var roomList = {};
 var service = 0;
 
 module.exports = {
-    createJoin: function(req, res) {
+    createJoin: function (req, res) {
         var roomName = req.body.gid,
             userName = req.body.username,
-//          userID = req.body.uid
-            role = req.body.role;
-        console.log('---------------------> POST');
+            userID = req.body.uid,
+            role = req.body.role,
+            that = res;
+        //console.log('---------------------> rtcCtrl.js');
+        //console.log(req.body);
+        //console.log('---------------------> POST');
 
-        if(typeof roomList[roomName] === 'undefined') {
-            var mcu = mcuSelect(), 
-                N = mcu.connection;
-            console.log('selected', mcu.address)
-            //create Room
-            N.API.createRoom(roomName, function(room) {
-                roomList[roomName] = {mcu: mcu, room: room};
-                N.API.createToken(room._id, userName, role, function (token) {
+        if (typeof roomList[roomName] === 'undefined') { //The room entitled as roomName not yet exist. Lecturer do open a room
+            var mcu = mcuSelect();
+            console.log('selected', mcu.address);
+
+            var roomNameString = JSON.stringify({roomName: roomName, userName : userName, role : role}),
+                options = {};
+
+            options.port = 3001;
+            options.host = mcu.address;
+            options.path = '/createRoom/';
+            options.method = 'POST';
+            options.headers = {
+                'Content-type': 'application/json',
+                'Content-Length': roomNameString.length
+            };
+
+            var req = http.request(options, function (res) {
+                //console.log('status: ' + res.statusCode);       //console.log('headers: ' + JSON.stringify(res.headers));
+                res.setEncoding('utf8');
+                res.on('data', function (result) {
+                    var jsonObj = JSON.parse(result),
+                        token = jsonObj.token,
+                        roomID = jsonObj.roomID;
+
+                    roomList[roomName] = {mcu: mcu, roomID: roomID}; //add this room to "roomList" variable
+
                     console.log('creating Token : ' + token);
-                    res.json({token:token, host:mcu.address});
-                }, mcuErrorHandler)
-            }, mcuErrorHandler);
-        }
-        else {
+                    that.send({token:token, host:mcu.address});
+
+                });
+            });
+
+            req.on('error', function (e) {
+                console.log('problem with request: ' + e.message);
+            });
+
+            req.write(roomNameString);
+            req.end();
+
+        } else {
             var mcu = roomList[roomName].mcu,
-                N = mcu.connection,
-                room = roomList[roomName].room;
+                roomID = roomList[roomName].roomID;
             console.log('matched', mcu.address);
-            N.API.createToken(room._id, userName, role, function (token) {
-                console.log('creating Token : ' + token);
-                res.send({token:token, host:mcu.address});
-            }, mcuErrorHandler);
+
+            console.log('roomList[roomName].roomID');
+            console.log(roomList[roomName].roomID);
+
+            var roomNameString = JSON.stringify({roomID: roomID, userName : userName, role : role}),
+                options = {};
+            options.port = 3001;
+            options.host = mcu.address;
+            options.path = '/createToken/';
+            options.method = 'POST';
+            options.headers = {
+                'Content-type': 'application/json',
+                'Content-Length': roomNameString.length
+            };
+
+            var req = http.request(options, function (res) {
+
+                res.setEncoding('utf8');
+                res.on('data', function (result) {
+                    roomList[roomName] = {mcu: mcu, roomID: roomID}; //add this room to "roomList" variable
+                    var jsonObj = JSON.parse(result),
+                        token = jsonObj.token;
+
+                    console.log('creating Token : ' + token);
+                    that.send({token: token, host:mcu.address});
+
+                });
+            });
+
+            req.on('error', function (e) {
+                console.log('problem with request: ' + e.message);
+            });
+
+            req.write(roomNameString);
+            req.end();
+
         }
+
         function mcuSelect() {
             var initService = service;
-            while(config.mcu[service].status === 'available' && initStatus != status)
-                service = (++service)%config.mcu.length;
+            while (config.mcu[service].status === 'available' && initStatus != status)
+                service = (++service) % config.mcu.length;
             return config.mcu[service];
         }
     },
-    stopRecording: function(req, res) {
+    stopRecording: function (req, res) { //POST path :  /rtc/stopRecording   (refer : index.js)
         var recordingID = req.body.rid,
             host = req.body.mcu;
-        console.log()
-        var command = 'scp ncl@'+host+':/tmp/'+recordingID+'.mkv public/record && ffmpeg -i public/record/'+recordingID+'.mkv public/record/'+recordingID+'.webm';
+
+        console.log();
+
+        var command = 'scp ncl@' + host + ':/tmp/' + recordingID + '.mkv public/record && ffmpeg -i public/record/' + recordingID + '.mkv public/record/' + recordingID + '.webm';
         console.log(command);
         var cmd = exec(command, function (error) {
             if (error) {
@@ -117,52 +204,6 @@ module.exports = {
             }
         });
     },
-    // getToken: function (req, res) {
-    //     var room = myRoom,
-    //         username = req.body.uid,
-    //         role = req.body.role;
-
-    //     console.log('username ' + req.body.uid );
-    //     console.log('role ' + req.body.role);
-    //     console.log('username' );
-    //     console.log(req.body);
-
-
-    //     console.log("Creating token");
-    //     N.API.createToken(room, username, role, function (token) {
-    //         console.log(token);
-    //         res.send(token);
-    //     });
-    // },
-    // createToken: function (req, res) {
-    //     var room = myRoom,
-    //         username = req.body.username,
-    //         role = req.body.role;
-    //     console.log('username ' + req.body.username );
-    //     console.log('role ' + req.body.role);
-
-    //     console.log("Creating token");
-    //     N.API.createToken(room, username, role, function (token) {
-    //         console.log(token);
-    //         res.send(token);
-    //     });
-    // },
-    // getRooms: function (req, res) {
-    //     "use strict";
-    //     console.log('/getRooms');
-    //     N.API.getRooms(function (rooms) {
-    //         console.log(rooms);
-    //         res.send(rooms);
-    //     });
-    // },
-    // getUsers: function (req, res) {
-    //     "use strict";
-    //     console.log('/getUsers/:room');
-    //     var room = req.params.room;
-    //     N.API.getUsers(room, function (users) {
-    //         res.send(users);
-    //     });
-    // }
 
     /**
      * 외부에서 모듈로 추출되어 사용되기 위한 부분이다. socket event들이 등록되어 있다.

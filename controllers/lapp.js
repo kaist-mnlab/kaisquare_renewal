@@ -70,7 +70,7 @@ module.exports = {
 						socket.emit('initPpt', lecture.ppt_event_log);
 					}
 				}
-			
+
 				while(lectures[lectureId].qs.length > 0) lectures[lectureId].qs.pop();
 				Q.find({lecture: lectureId}, {}, {}, function(error, q){
 					lectures[lectureId].qs = lectures[lectureId].qs.concat(q);

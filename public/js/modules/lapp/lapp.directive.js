@@ -22,7 +22,7 @@ define(['angular'], function(angular) {
 
 			},
 			link: function(scope, element, attrs){
-				var parentScope = scope.$parent.$parent;
+				var parentScope = scope.$parent.$parent.$parent;
 
                 var session;
 
@@ -37,7 +37,7 @@ define(['angular'], function(angular) {
 
                 function onMediaStream(event) {
 //                    event.stream.show('local')
-                    event.stream.play('local');
+                    event.stream.play('local'); //element ID for localStream
                 };
 
                 function onSessionJoined(event) {
@@ -53,9 +53,8 @@ define(['angular'], function(angular) {
                     console.log('onRecordCompleted', href);
                     //Turn it to VOD
                     var lecture = parentScope.lecture;
-
                     if(typeof lecture !== 'undefined') {
-                    	lecture.duration = parentScope.stopwatch.time();
+                    	//lecture.duration = parentScope.stopwatch.time();
                     	lecture.status = 0;
                     	lecture.vod_url = href;
 
@@ -63,7 +62,10 @@ define(['angular'], function(angular) {
                     		if(!p.error) {
 	                            // If there is no error, redirect to the main view
 	                            console.log("lecture update complete!");
-	                            window.location.href = '/lapp/'+parentScope.lectureId;
+	                            alert("Lecture Record Completed");
+	                            $location.path("/lapp/"+lecture._id);
+	                            //window.href =
+	                            // $state.go('public.courses.show', { courseId : parentScope.course._id});
                         	} else {
 	                        	alert('Could not create course');
 	                        }
@@ -73,74 +75,6 @@ define(['angular'], function(angular) {
                     	alert('lecture scope problem');
                     }
                 };
-
-//            var videoElement = $('#local').attr({'width':  320, 'height': 240}).get(0);
-//            var constraints = {
-//                video: {
-//                    mandatory: {
-//                        minWidth: 640,
-//                        minHeight: 480
-//                    }
-//                },
-//                audio: true
-//            };
-//            getUserMedia(constraints, handleUserMedia, handleUserMediaError);
-//            var videoElement = $('#local').attr({'width':  320, 'height': 240}).get(0);
-//            videoElement.muted = true;
-//            var session;
-//            function handleUserMedia(stream) {
-//                //startRecording.disabled = false;
-//                videoElement.src = window.URL.createObjectURL(stream);
-//                scope.recorder = new Recorder(stream, { gid: parentScope.lectureId, uid: parentScope.user._id, vidio:true });
-//                scope.recorder.onRecordCompleted = onRecordCompleted;
-//                parentScope.session.session = session = new CreateSession(stream, { gid: parentScope.lectureId, uid: parentScope.user._id, width: 640, height: 480, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
-//7
-//                session.onSessionJoined = onSessionJoined;
-//                session.onSessionClosed = onSessionClosed;
-//                session.start();
-//            };
-//
-//            function handleUserMediaError(error) {
-//                alert('Unable to access user media' );
-//                console.log(error);
-//            };
-//
-//            function onSessionJoined(event) {
-//                if( typeof event.uid !== 'undefined' && event.uid !== parentScope.user._id ){
-//                    console.log("onsessionjoined_lecture");
-//                    console.log(event);
-//                    // var uidthumb = $('#'+event.uid+'_thumb')[0];
-//                    // if(typeof uidthumb.children[0] !== 'undefined')
-//                    // 	uidthumb.children[0].remove();
-//                    attachMediaStream($('<video></video>').attr({ 'id': event.socket_id, 'autoplay': 'autoplay', 'width': '160', 'height': '120', 'class': event.uid, 'muted': 'muted' }).appendTo('#attend_log').get(0), event.stream);
-//                }
-//            };
-//
-//            function onSessionClosed(event) {
-//                console.log('onSessionClosed', event);
-//                //parentScope.studentScreen[event.uid] = null;
-//                $('#' + event.sid).remove();
-//            };
-//
-//            function onRecordCompleted(href) {
-//                videoElement.src = href;
-//                console.log(href);
-//                console.log(scope);
-//                //Turn it to VOD
-//                var lecture = parentScope.lecture;
-//                lecture.duration = parentScope.stopwatch.time();
-//                lecture.status = 0;
-//                lecture.vod_url = href;
-//
-//                lecture.$save(function(p, resp) {
-//                    if(!p.error) {
-//                        // If there is no error, redirect to the main view
-//                        console.log("lecture update complete!");
-//                    } else {
-//                        alert('Could not create course');
-//                    }
-//                });
-//            };
 
         }//end link
 
@@ -156,7 +90,7 @@ define(['angular'], function(angular) {
 			},
 			link: function(scope, element, attrs){
 				console.log("LINK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-				var parentScope = scope.$parent.$parent;
+				var parentScope = scope.$parent.$parent.$parent;
                 var session;
                 parentScope.session.session = session = new JoinMCUSession($http, { gid: parentScope.lectureId, uid: parentScope.user._id, username: parentScope.user.username, width: 160, height: 120 });
 
@@ -165,58 +99,14 @@ define(['angular'], function(angular) {
                 session.start();
 
                 function onSessionJoined(event) {
+					console.log('----------------------------> Lecture joined');
                     session.streamAttachment(event.stream, $('#remote'));
                 };
 
                 function onSessionClosed(event) {
+					console.log('----------------------------> Lecture finished');
                     session.streamDettachment(event.stream);
                 };
-
-
-
-//				var constraints = {
-//					video: {
-//						mandatory: {
-//							minWidth: 720,
-//							minHeight: 480
-//						}
-//					},
-//					audio: true
-//				};
-//				getUserMedia(constraints, handleUserMedia, handleUserMediaError);
-//				var session;
-//				function handleUserMedia(stream) {
-//					parentScope.session.session = session = new JoinSession({ gid: parentScope.lectureId, uid: parentScope.user._id, stream: stream, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
-//					session.onSessionJoined = onSessionJoined;
-//					session.onSessionClosed = onSessionClosed;
-//					session.start();
-//				};
-//
-//				function handleUserMediaError(error) {
-//					//alert('Access to lecture without media!');
-//					parentScope.session.session = session = new JoinSession({ gid: parentScope.lectureId, uid: parentScope.user._id, iceServers: { 'iceServers': [{ 'url': 'stun:repo.ncl.kaist.ac.kr:3478' }] } });
-//					session.onSessionJoined = onSessionJoined;
-//					session.onSessionClosed = onSessionClosed;
-//					session.start();
-//				};
-//
-//				function onSessionJoined(event) {
-//					var width = 640;
-//					var height = 480;
-//					console.log(parentScope.isMobile);
-//
-//					if (parentScope.isMobile == 1) {
-//						width = 320;
-//						height = 240;
-//					}
-//
-//					attachMediaStream($('#remote').attr({ 'width': width, 'height': height }).get(0), event.stream);
-//				};
-//
-//				function onSessionClosed(event) {
-//					console.log('강의 종료');
-//				};
-
 
             } //end link
 		}

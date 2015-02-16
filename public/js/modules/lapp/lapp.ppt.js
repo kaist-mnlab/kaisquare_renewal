@@ -1,5 +1,5 @@
 
-define(['angular', '/socket.io/socket.io.js'], function(angular) {
+define(['angular', '/socket.io/socket.io'], function(angular) {
 	
 	angular.module('lapp.ppt', ['security', 'ui.bootstrap', 'lecture.service', 'lapp.service' ])
 	

@@ -94,7 +94,7 @@ var Stopwatch = {
 define(['angular',
         'rtcCtrl/recorder','rtcCtrl/adapter', 'rtcCtrl/create_session', 'rtcCtrl/join_session', "https://www.webrtc-experiment.com/RecordRTC.js", 
         'chart', 'angular-google-chart', 'lecture/lecture.service', 'course/course.service','angular-file-upload',
-        'rtcCtrl/join_mcu_session','rtcCtrl/create_mcu_session','rtcCtrl/erizo','/socket.io/socket.io.js',
+        'rtcCtrl/join_mcu_session','rtcCtrl/create_mcu_session','rtcCtrl/erizo','/socket.io/socket.io', 'rtcCtrl/shaka-player.compiled'
         ], function(angular) {
 	angular.module('lapp.controller', ['security', 'ui.bootstrap', 'googlechart', 'angularFileUpload','lecture.service','course.service' ])
 	//app
@@ -136,7 +136,8 @@ define(['angular',
 		
 		$scope.trustSrc = function(src) {
 		    return $sce.trustAsResourceUrl(src);
-		}
+		};
+
 		$scope.open = function($event) {
 	  	    $event.preventDefault();
 	    	$event.stopPropagation();
@@ -172,15 +173,48 @@ define(['angular',
 		$scope.stopwatch = Stopwatch;
 		lectureService.setStopwatch($scope.stopwatch);
 		$scope.stopwatch.init(socket);
-		
-		//For presentation 
+		//For presentation
 		//$scope.presentationReset = {};
 		
 		var data = { src: $scope.user._id,
 				     lecture: $scope.lecture._id,
 				   };
-		
-		if($scope.thisUserCtrl != "8") {			
+
+        $scope.initVodUrl = function(){
+            if($scope.lecture.status == "0" ){
+                var vod_url = $scope.lecture.vod_url,
+                    type = vod_url.split(".").pop();
+                console.log($scope.lecture.vod_url);
+                if(type != 'mpd'){
+                    $('<source>').attr('src', $scope.lecture.vod_url).appendTo('#vod');  //, src="{{trustSrc(lecture.vod_url)}}"
+                }else{
+                    shaka.polyfill.Fullscreen.install();
+                    shaka.polyfill.MediaKeys.install();
+                    shaka.polyfill.VideoPlaybackQuality.install();
+
+                    // Find the video element.
+                    var video = document.getElementById('vod');
+
+                    // Construct a Player to wrap around it.
+                    var player = new shaka.player.Player(video);
+
+                    // Attach the player to the window so that it can be easily debugged.
+                    window.player = player;
+
+                    // Listen for errors from the Player.
+                    player.addEventListener('error', function(event) {
+                        console.error(event);
+                    });
+                    // Construct a DashVideoSource to represent the DASH manifest.
+                    var source = new shaka.player.DashVideoSource(vod_url, null);
+                    // Load the source into the Player.
+                    player.load(source);
+                }
+
+            }
+        };
+
+		if($scope.thisUserCtrl != "8") {		 //student
 			$("#q").hide();
 			$("#whiteboard").attr('width', '250px');
 			$("#whiteboard").attr('height', '280px');
@@ -236,9 +270,9 @@ define(['angular',
 			//$scope.stopwatch.setTime(time.time);
 			//TODO : show ending message
 			
-			$scope.stopwatch.stop();
-			alert("Lecture Finished!");
-			$state.go('public.courses.show', { courseId : $scope.course._id});
+//			$scope.stopwatch.stop();
+//			alert("Lecture Finished!");
+//			$state.go('public.courses.show', { courseId : $scope.course._id});
 			try{
 				//recorder.stop($scope.lectureId);
 			}catch(err){}
@@ -320,8 +354,6 @@ define(['angular',
 			
 			$scope.presentationSave();
 			socket.emit('stopLecture', {time: $scope.stopwatch.time()});
-			
-			
 		};
 		$scope.make_quiz = function() {
 			//modal
@@ -392,6 +424,7 @@ define(['angular',
 			
 		}
 		$scope.raise_question = function () {
+			console.log('test1');
 			//modal
 			var dlg = $modal.open({
 				templateUrl: '/partials/lapp/question',
@@ -462,14 +495,17 @@ define(['angular',
 			
 	    	data.time = $scope.currentTime;
 			data.timestamp = Date.now();
+
 		   	socket.emit('sendMessage', data);
 		   	$scope.chat_message = "";
 		   	
-		   	console.log("send_message:" +  data.message);
+		   	//console.log("send_message:" +  data.message);
 	    }
+
 	    $scope.click_user = function(data){
 	    	//alert(data);
 	    }
+
 	    $scope.studentScreen = {};
 	    
 	    socket.on('lectureAttend', function(data){
@@ -581,7 +617,7 @@ define(['angular',
 
 	angular.module('lapp.controller')
 	.controller('RaiseQuestionCtrl',
-	['$rootScope', '$scope', '$location', '$modal', '$modalInstance',  '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', '$fileUploader', 'XSRF_TOKEN', '$http', 'session', function ($rootScope, $scope, $location, $modal, $modalInstance, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl, $fileUploader, csrf_token, $http, session) {
+	['$rootScope', '$scope', '$location', '$modal', '$modalInstance',  '$stateParams', '$sce', 'socket', 'security', 'user', 'lecture', 'course', 'thisUserCtrl', 'FileUploader', 'XSRF_TOKEN', '$http', 'session', function ($rootScope, $scope, $location, $modal, $modalInstance, $stateParams, $sce, socket, security, user, lecture, course, thisUserCtrl, FileUploader, csrf_token, $http, session) {
 
 
 		//Refer QuizQuestionCtrl
@@ -593,69 +629,30 @@ define(['angular',
 		$scope.nowUpload = false;
 		$scope.recordStatus = 0;
 		//File uploader
-		var uploader = $scope.uploader = $fileUploader.create({
-			scope: $scope,                          // to automatically update the html. Default: $rootScope
-			url: '/fileUpload',
-			formData: [
-			{ key: 'value' }
-			],
-			headers:
-			{
-				'X-CSRF-TOKEN': csrf_token
-			},
+		var uploader = $scope.uploader = new FileUploader({
+        scope: $scope,                          // to automatically update the html. Default: $rootScope
+        url: '/fileUpload',
+        formData: [
+        { key: 'value' }
+        ],
+        headers: 
+        {'X-CSRF-TOKEN': csrf_token
+    },
 
-			filters: [
-				function (item) {                    // first user filter
-					console.info('File extension Filter');
-					//TODO : Filter
-					return true;
-				}
-			]
-		});
+});
 
-		uploader.bind('afteraddingfile', function (event, item) {
-			console.info('After adding a file', item);
-		});
-
-		uploader.bind('whenaddingfilefailed', function (event, item) {
-			console.info('When adding a file failed', item);
-		});
-
-		uploader.bind('afteraddingall', function (event, items) {
-			console.info('After adding all files', items);
-			uploader.uploadAll();
+		uploader.onAfterAddingFile = function(item) {
+			console.info('After adding all files', item);
+			item.upload();
 			$scope.nowUpload = true;
-		});
+		}; 
 
-		uploader.bind('beforeupload', function (event, item) {
-			console.info('Before upload', item);
-		});
-
-		uploader.bind('progress', function (event, item, progress) {
-			//console.info('Progress: ' + progress, item);
-		});
-
-		uploader.bind('success', function (event, xhr, item, response) {
-			console.info('Success', xhr, item, response);
-		});
-
-		uploader.bind('cancel', function (event, xhr, item) {
-			console.info('Cancel', xhr, item);
-		});
-
-		uploader.bind('error', function (event, xhr, item, response) {
-			console.info('Error', xhr, item, response);
-		});
-
-		uploader.bind('complete', function (event, xhr, item, response) {
-			console.info('Complete', xhr, item, response);
+		uploader.onCompleteItem = function (item) {
+			console.info('Complete');
 			$scope.nowUpload = false;
 			$scope.question.image = '../uploads/temp/' + item.file.name;
-		});
+		};
 
-		uploader.bind('progressall', function (event, progress) {
-			//console.info('Total progress: ' + progress);
-		});
 
 		$scope.record_question = function () {
 			console.log('test');
